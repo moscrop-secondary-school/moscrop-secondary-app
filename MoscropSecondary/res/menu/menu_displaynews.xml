@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ivon.moscropsecondary.NewsDisplayActivity" >
+    
+	<item
+	    android:id="@+id/action_openbrowser"
+	    android:orderInCategory="100"
+	    android:title="@string/action_openbrowser"
+	    android:icon="@drawable/ic_action_browser"
+	    app:showAsAction="ifRoom"/>
+	
+	<item 
+	    android:id="@+id/action_viewsource"
+	    android:orderInCategory="200"
+	    android:title="View source"
+	    app:showAsAction="never"/>
+	    
+</menu>
