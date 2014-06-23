@@ -1,5 +1,6 @@
 package com.ivon.moscropsecondary.ui;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.mcsoxford.rss.RSSFeed;
@@ -7,8 +8,10 @@ import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
 import org.mcsoxford.rss.RSSReaderException;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,12 +19,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -96,6 +97,15 @@ public class RSSFragment extends AbstractFeedFragment implements OnScrollListene
     
     private class FeedLoaderTask extends AsyncTask<String, Void, RSSFeed> {
 		
+    	private File getCacheFile(String uri) {
+    		// Create the file to save to
+    	    File fileDir = getActivity().getCacheDir();
+    	    String condensedUri = uri.replaceAll("\\W+","");
+    	    String fileName = condensedUri + "_cache.xml";
+    	    File file = new File(fileDir, fileName);
+    	    return file;
+    	}
+    	
     	@Override
     	protected void onPreExecute() {
     		feedList.removeFooterView(tv);
@@ -104,9 +114,12 @@ public class RSSFragment extends AbstractFeedFragment implements OnScrollListene
     	@Override
     	protected final RSSFeed doInBackground(String... urls) {
     		
-        	RSSReader reader = new RSSReader(getActivity());
+    		ConnectivityManager cm =
+    		        (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+    		
+        	RSSReader reader = new RSSReader(cm);
     		try {
-    			feed = reader.load(urls[0]);
+    			feed = reader.load(urls[0], getCacheFile(urls[0]));
     		} catch (RSSReaderException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
