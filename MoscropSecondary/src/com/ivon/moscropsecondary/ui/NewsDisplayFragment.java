@@ -7,13 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.R.id;
-import com.ivon.moscropsecondary.util.Logger;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,6 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+
+import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.util.Logger;
 
 public class NewsDisplayFragment extends Fragment {
 	
