@@ -12,11 +12,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -25,13 +31,29 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.ui.RSSAdapter.CardProcessor;
 import com.ivon.moscropsecondary.util.Logger;
 
-public class RSSFragment extends AbstractFeedFragment implements OnScrollListener, OnItemClickListener {
+public class RSSFragment extends Fragment implements OnItemClickListener, OnRefreshListener {
 
+	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
+	public static final String REDDIT_URL = "http://www.reddit.com/r/aww/.rss";
+	public static final String HUGO_BARA_URL = "http://gplus-to-rss.appspot.com/rss/+HugoBarra";
+	public static final String MOSCROP_PAGE_URL = "http://gplus-to-rss.appspot.com/rss/108865428316172309900";
+	public static final String TEST_EMAIL_URL = "http://emails2rss.appspot.com/rss?id=1af3a2260113d04b2c0b99e0f751921b9365";
+	public static final String BLOGGER_URL = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
+	public static final String BLOGGER_NEWS_URL = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
+	public static final String BLOGGER_SUBS_URL = "http://moscropstudents.blogspot.ca/feeds/posts/default?alt=rss";
+	public static final String BLOGGER_NEWSLETTER_URL = "http://moscropnewsletters.blogspot.ca/feeds/posts/default?alt=rss";
+	
+	private RSSFeed feed = null;
+	SwipeRefreshLayout swipeLayout;
+	
+	private String feedToLoad = BLOGGER_URL;
+	
 	ListView feedList = null;
 	ArrayList<RSSItem> mArrayList = new ArrayList<RSSItem>();
 	private RSSAdapter mAdapter = null;
@@ -39,11 +61,34 @@ public class RSSFragment extends AbstractFeedFragment implements OnScrollListene
 	
 	private CardProcessor cardProcessor;
 	
+	/**
+	 * Create and return a new instance of RSSFragment with given parameters
+	 * 
+	 * @param feed URL of the RSS feed to load and display
+	 * @param cardProcessor A CardProcessor to define the design of the list item cards
+	 * @return New instance of RSSFragment
+	 */
 	public static RSSFragment newInstance(String feed, CardProcessor cardProcessor) {
 		RSSFragment n = new RSSFragment();
 		n.feedToLoad = feed;
 		n.cardProcessor = cardProcessor;
 		return n;
+	}
+	
+	/**
+	 * Check network connectivity state
+	 * 
+	 * @return True if device is connected to network. Otherwise false. 
+	 */
+	private boolean isConnected() {
+		ConnectivityManager cm =
+				(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+			 
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		boolean isConnected = 
+				activeNetwork != null &&
+				activeNetwork.isConnected();
+		return isConnected;
 	}
 	
 	@Override
@@ -89,10 +134,26 @@ public class RSSFragment extends AbstractFeedFragment implements OnScrollListene
     	//feedList.setOnScrollListener(this);
     	
     	tv = new TextView(getActivity());
-    	doRefresh();
+    	doRefresh(false);
     	
     	return mContentView;
     }
+	
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    	super.onCreateOptionsMenu(menu, inflater);
+    	menu.findItem(R.id.action_refresh).setVisible(true);
+    }
+    
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int itemId = item.getItemId();
+        if(itemId == R.id.action_refresh) {
+        	onRefresh();
+        	return true;
+        }
+        return super.onOptionsItemSelected(item);
+	}
     
     private class FeedLoaderTask extends AsyncTask<String, Void, RSSFeed> {
 		
@@ -194,34 +255,37 @@ public class RSSFragment extends AbstractFeedFragment implements OnScrollListene
 		getActivity().startActivity(intent);
 	}
 	
+	/**
+	 * Perform a refresh of the feed.
+	 * This method will create and start
+	 * an AsyncTask to download and parse
+	 * a RSS feed and load it to a ListView
+	 * 
+	 * @param force Refresh even if feed is not null when true. Only refresh when feed is null if false.
+	 */
+	private void doRefresh(boolean force) {
+		
+		if(force || (feed == null)) {
+			
+			// Refresh only if forced or if feed is null
+			
+			if(isConnected()) {
+				if(swipeLayout != null) swipeLayout.setRefreshing(true);
+				FeedLoaderTask mTask = new FeedLoaderTask();
+				mTask.execute(feedToLoad);
+			} else {
+				Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+		} else {
+			// No need to refresh
+			Logger.log("doRefresh(): no need to refresh");
+		}
+	}
+	
 	@Override
 	public void onRefresh() {
-		super.onRefresh();
-		FeedLoaderTask mTask = new FeedLoaderTask();
-		//feedToLoad = TEST_EMAIL_URL;
-		mTask.execute(feedToLoad);
-	}
-
-	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		int index = view.getFirstVisiblePosition();
-		if(index == 0) {
-			View v = view.getChildAt(0);
-			int top = (v == null) ? 0 : v.getTop();
-			if(top == 0) {
-				swipeLayout.setEnabled(true);
-			} else {
-				swipeLayout.setEnabled(false);
-			}
-		} else {
-			swipeLayout.setEnabled(false);
-		}		
-	}
-
-	@Override
-	public void onScroll(AbsListView view, int firstVisibleItem,
-			int visibleItemCount, int totalItemCount) {
-		// TODO Auto-generated method stub
-		
+		doRefresh(true);
 	}
 }
