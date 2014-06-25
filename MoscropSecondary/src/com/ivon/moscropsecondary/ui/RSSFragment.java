@@ -106,19 +106,6 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
                 R.color.background_holo_light, 
                 android.R.color.holo_blue_dark, 
                 R.color.background_holo_light);*/
-    	
-        /*int topPaddingHeightDp = (int) (getResources().getDimension(R.dimen.card_list_top) / getResources().getDisplayMetrics().density);
-        int bottomPaddingHeightDp = (int) (getResources().getDimension(R.dimen.card_list_bottom) / getResources().getDisplayMetrics().density);
-        
-        LinearLayout topPadding = new LinearLayout(getActivity());
-        topPadding.setOrientation(LinearLayout.HORIZONTAL);
-        ViewGroup.LayoutParams topParam = new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, topPaddingHeightDp);
-        topPadding.setLayoutParams(topParam);
-        
-        LinearLayout bottomPadding = new LinearLayout(getActivity());
-        bottomPadding.setOrientation(LinearLayout.HORIZONTAL);
-        ViewGroup.LayoutParams bottomParam = new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, bottomPaddingHeightDp);
-        bottomPadding.setLayoutParams(bottomParam);*/
         
         View header = inflater.inflate(R.layout.rss_list_header, null);
         View footer = inflater.inflate(R.layout.rss_list_footer, null);
@@ -181,7 +168,6 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     		try {
     			feed = reader.load(urls[0], getCacheFile(urls[0]));
     		} catch (RSSReaderException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
     		reader.close();
@@ -189,7 +175,6 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     		try {
     			Thread.sleep(500);
     		} catch (InterruptedException e1) {
-    			// TODO Auto-generated catch block
     			e1.printStackTrace();
     		}
     		return feed;
