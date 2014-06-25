@@ -51,6 +51,7 @@ public class RSSFragment extends AbstractFeedFragment implements OnScrollListene
             Bundle savedInstanceState) {
     	
     	setHasOptionsMenu(true);
+    	setRetainInstance(true);
     	
     	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
     	
