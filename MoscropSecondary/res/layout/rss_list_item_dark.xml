@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <!-- Stub view to remove annoying warning about redundant layouts - they're useful! -->
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/card_side_padding"
+    	android:layout_marginRight="@dimen/card_side_padding"
+    	android:background="@drawable/card_background_dark">
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selectable_background_cardbank_dark">
+        
+    <TextView
+        android:id="@+id/rli_title"
+    	style="@style/CardTitle_dark"
+    	android:ellipsize="end"
+    	android:maxLines="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:textStyle="italic"
+        android:textColor="@android:color/white"/>
+    
+    <View
+        android:id="@+id/rli_divider"
+        android:layout_below="@+id/rli_title"
+        android:layout_width="60dp"
+        android:layout_height="2dp"
+		android:layout_marginLeft="10dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginBottom="10dp"
+        android:background="#33b5e5" />
+    
+	<TextView
+        android:id="@+id/rli_description"
+        android:layout_below="@+id/rli_divider"
+        style="@style/CardText_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+    	android:ellipsize="end"
+        android:textStyle="italic"/>
+	        
+    </RelativeLayout>
+	</RelativeLayout>
+</RelativeLayout>
