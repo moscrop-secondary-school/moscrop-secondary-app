@@ -17,5 +17,21 @@
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
+	
+	
+    <style name="CardTitle_dark" parent="@style/CardText_dark">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/card_large_text_dark</item>
+        <item name="android:textColor">@color/card_title_text_dark</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+    
+    <style name="CardText_dark">
+        <item name="android:textSize">@dimen/card_small_text</item>
+        <item name="android:textColor">@color/card_text_dark</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>	
 
 </resources>

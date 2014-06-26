@@ -8,5 +8,9 @@
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- API 14 theme customizations can go here. -->
     </style>
+	
+	<style name="AppBaseTheme_dark" parent="Theme.AppCompat.Dark">
+        <!-- API 14 theme customizations can go here. -->
+    </style>
 
 </resources>
