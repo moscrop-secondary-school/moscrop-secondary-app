@@ -1,1 +1,2 @@
-include ':moscropApp'
+include ':moscropApp', ':android-rss'
+project(':android-rss').projectDir = new File('../android-rss')
