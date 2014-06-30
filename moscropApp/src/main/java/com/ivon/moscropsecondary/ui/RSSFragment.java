@@ -96,6 +96,7 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
             Bundle savedInstanceState) {
     	
     	setHasOptionsMenu(true);
+    	setRetainInstance(true);
     	
     	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
     	
