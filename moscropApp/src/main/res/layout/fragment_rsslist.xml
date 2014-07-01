@@ -6,12 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.ivon.moscropsecondary.MainActivity$RSSFragment" >
 
-	<ListView
-	    android:id="@+id/news_list"
+	<android.support.v7.widget.RecyclerView
+	    android:id="@+id/rlf_list"
 	    android:layout_height="match_parent"
-	    android:layout_width="match_parent"
-	    android:listSelector="@android:color/transparent"
-	    android:divider="@android:color/transparent"
-	    android:dividerHeight="@dimen/card_spacing"/>
+	    android:layout_width="match_parent"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>

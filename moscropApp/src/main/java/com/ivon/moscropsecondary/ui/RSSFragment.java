@@ -1,16 +1,7 @@
 package com.ivon.moscropsecondary.ui;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import org.mcsoxford.rss.RSSFeed;
-import org.mcsoxford.rss.RSSItem;
-import org.mcsoxford.rss.RSSReader;
-import org.mcsoxford.rss.RSSReaderException;
-
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -18,24 +9,31 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.view.Gravity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.ui.RSSAdapter.CardProcessor;
+import com.ivon.moscropsecondary.list.CardUtil.CardProcessor;
+import com.ivon.moscropsecondary.list.RSSAdapter;
+import com.ivon.moscropsecondary.list.RSSAdapter.OnItemClickListener;
+import com.ivon.moscropsecondary.list.RSSAdapter.ViewModel;
 import com.ivon.moscropsecondary.util.Logger;
+
+import org.mcsoxford.rss.RSSFeed;
+import org.mcsoxford.rss.RSSItem;
+import org.mcsoxford.rss.RSSReader;
+import org.mcsoxford.rss.RSSReaderException;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RSSFragment extends Fragment implements OnItemClickListener, OnRefreshListener {
 
@@ -53,12 +51,13 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
 	SwipeRefreshLayout swipeLayout;
 	
 	private String feedToLoad = BLOGGER_URL;
-	
-	ListView feedList = null;
-	ArrayList<RSSItem> mArrayList = new ArrayList<RSSItem>();
-	private RSSAdapter mAdapter = null;
-	private TextView tv;
-	
+
+	// RecyclerView stuff
+    RecyclerView mRecyclerView = null;
+    RSSAdapter mAdapter = null;
+    RecyclerView.LayoutManager mLayoutManager;
+    List<ViewModel> mItems = new ArrayList<ViewModel>();
+
 	private CardProcessor cardProcessor;
 	
 	/**
@@ -99,29 +98,32 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     	setRetainInstance(true);
     	
     	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
-    	
+
+        mContentView.setBackgroundColor(0xffe4e4e4);
+
     	swipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setEnabled(false);
+
+        // Uncomment to set colors for loading bar of SwipeRefreshLayout
         /*swipeLayout.setColorScheme(
         		android.R.color.holo_blue_dark, 
                 R.color.background_holo_light, 
                 android.R.color.holo_blue_dark, 
                 R.color.background_holo_light);*/
-        
-        View header = inflater.inflate(R.layout.rss_list_header, null);
-        View footer = inflater.inflate(R.layout.rss_list_footer, null);
-        
-    	feedList = (ListView) mContentView.findViewById(R.id.news_list);
-    	
-    	feedList.addHeaderView(header, null, false);
-    	feedList.addFooterView(footer, null, false);
-    	
-    	mAdapter = new RSSAdapter(getActivity(), mArrayList, cardProcessor);
-    	feedList.setAdapter(mAdapter);
-    	feedList.setOnItemClickListener(this);
-    	//feedList.setOnScrollListener(this);
-    	
-    	tv = new TextView(getActivity());
+
+        mRecyclerView = (RecyclerView) mContentView.findViewById(R.id.rlf_list);
+        mRecyclerView.setHasFixedSize(true);
+
+        // Use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // Set the adapter for the recycler view
+        mAdapter = new RSSAdapter(mItems);
+        mAdapter.setOnItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
+
     	doRefresh(false);
     	
     	return mContentView;
@@ -135,14 +137,14 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int itemId = item.getItemId();
-        if(itemId == R.id.action_refresh) {
-        	onRefresh();
-        	return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_refresh) {
+            onRefresh();
+            return true;
         }
         return super.onOptionsItemSelected(item);
-	}
-    
+    }
+
     private class FeedLoaderTask extends AsyncTask<String, Void, RSSFeed> {
 		
     	private File getCacheFile(String uri) {
@@ -156,7 +158,7 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     	
     	@Override
     	protected void onPreExecute() {
-    		feedList.removeFooterView(tv);
+    		//feedList.removeFooterView(tv);
     	}
     	
     	@Override
@@ -195,18 +197,18 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     	
     	private void onValidFeed(RSSFeed feed) {
 			Logger.log("feed is not null, it has " + feed.getItems().size() + " items.");
-			mArrayList.clear();
+			mAdapter.clear();
 			mAdapter.notifyDataSetChanged();
 			for(RSSItem r : feed.getItems()) {
-				if(r.getTitle() != null) {
-					mArrayList.add(r);
-					mAdapter.notifyDataSetChanged();
+				if(r != null) {
+                    ViewModel vm = new ViewModel(r, cardProcessor);
+                    mAdapter.add(vm);
 				}
 			}
     	}
     	
     	private void onInvalidFeed(RSSFeed feed) {
-    		tv.setGravity(Gravity.CENTER);
+    		/*tv.setGravity(Gravity.CENTER);
     		tv.setTypeface(null, Typeface.BOLD_ITALIC);
     		feedList.setFooterDividersEnabled(false);
     		if(feed == null) {
@@ -216,16 +218,15 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     			Logger.log("feed has 0 items");
     			tv.setText("Nothing to display");
     		}
-    		feedList.addFooterView(tv);
+    		feedList.addFooterView(tv);*/
     	}
     }
     
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		
-		RSSItem r = mArrayList.get(position-1);
-		
+	public void onItemClick(View view, ViewModel item) {
+
+		RSSItem r = item.mRSSItem;
+
 		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
 		Logger.log("Link is " + r.getLink());
 		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.getLink().toString());

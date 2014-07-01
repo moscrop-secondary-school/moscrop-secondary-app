@@ -1,18 +1,20 @@
-package com.ivon.moscropsecondary.ui;
+package com.ivon.moscropsecondary.list;
 
-import com.ivon.moscropsecondary.ui.RSSAdapter.CardProcessor;
+import com.ivon.moscropsecondary.list.CardUtil.CardProcessor;
 import com.ivon.moscropsecondary.util.StringUtil;
 
 public class HtmlCardProcessor implements CardProcessor {
 
-	private final int cardColor;
+    private final int DEFAULT_COLOR = 0xff33b5e5;
+
+    protected final int mColor;
 	
 	public HtmlCardProcessor() {
-		this.cardColor = 0xff33b5e5;
+		mColor = DEFAULT_COLOR;
 	}
 	
-	public HtmlCardProcessor(int cardColor) {
-		this.cardColor = cardColor;
+	public HtmlCardProcessor(int color) {
+	    mColor = color;
 	}
 	
 	@Override
@@ -35,7 +37,7 @@ public class HtmlCardProcessor implements CardProcessor {
 
 	@Override
 	public int getCardColor() {
-		return cardColor;
+		return mColor;
 	}
 
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/card_side_padding"
+    android:paddingRight="@dimen/card_side_padding"
+    android:paddingTop="@dimen/card_spacing"
+    android:paddingBottom="@dimen/card_spacing">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rlc_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardCornerRadius="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/rlc_title"
+                style="@style/CardTitle"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:textStyle="italic"
+                android:textColor="@android:color/black"/>
+
+            <View
+                android:id="@+id/rlc_divider"
+                android:layout_below="@+id/rlc_title"
+                android:layout_width="60dp"
+                android:layout_height="2dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="#33b5e5" />
+
+            <TextView
+                android:id="@+id/rlc_description"
+                android:layout_below="@+id/rlc_divider"
+                style="@style/CardText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:ellipsize="end"
+                android:textStyle="italic"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</FrameLayout>

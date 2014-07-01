@@ -20,6 +20,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.list.EmailCardProcessor;
+import com.ivon.moscropsecondary.list.HtmlCardProcessor;
 import com.ivon.moscropsecondary.util.Logger;
 
 public class MainActivity extends ActionBarActivity implements OnItemClickListener {
@@ -151,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
     	
     	switch(position) {
     	case 1:
-    		if(mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(RSSFragment.BLOGGER_NEWSLETTER_URL, new EmailCardProcessor());
+    		if(mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(RSSFragment.BLOGGER_NEWSLETTER_URL, new EmailCardProcessor(0xffaa66cc));
     		fragment = mEmailFragment;
     		tag = "emailFragment";
     		break;
@@ -171,7 +173,7 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
     		tag = "teacherFragment";
     		break;
     	default:
-    		if(mNewsFragment == null) mNewsFragment = RSSFragment.newInstance(RSSFragment.BLOGGER_NEWS_URL, new HtmlCardProcessor());
+    		if(mNewsFragment == null) mNewsFragment = RSSFragment.newInstance(RSSFragment.BLOGGER_NEWS_URL, new HtmlCardProcessor(0xff33b5e5));
             fragment = mNewsFragment;
             tag = "newsFragment";
     		break;

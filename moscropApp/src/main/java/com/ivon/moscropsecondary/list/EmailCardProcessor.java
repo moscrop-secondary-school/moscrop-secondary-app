@@ -1,12 +1,19 @@
-package com.ivon.moscropsecondary.ui;
+package com.ivon.moscropsecondary.list;
+
+import com.ivon.moscropsecondary.util.StringUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ivon.moscropsecondary.ui.RSSAdapter.CardProcessor;
-import com.ivon.moscropsecondary.util.StringUtil;
-
 public class EmailCardProcessor extends HtmlCardProcessor {
+
+    public EmailCardProcessor() {
+        super();
+    }
+
+    public EmailCardProcessor(int color) {
+        super(color);
+    }
 
 	@Override
 	public String toProcessedTitle(String s) {
@@ -106,8 +113,7 @@ public class EmailCardProcessor extends HtmlCardProcessor {
 
 	@Override
 	public int getCardColor() {
-		// TODO Auto-generated method stub
-		return 0xffaa66cc;
+		return mColor;
 	}
 
 }
