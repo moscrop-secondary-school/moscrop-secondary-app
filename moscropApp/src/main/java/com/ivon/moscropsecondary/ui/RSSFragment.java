@@ -30,13 +30,15 @@ import com.ivon.moscropsecondary.util.Logger;
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
+import org.mcsoxford.rss.RSSReader.RSSReaderCallbacks;
 import org.mcsoxford.rss.RSSReaderException;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RSSFragment extends Fragment implements OnItemClickListener, OnRefreshListener {
+public class RSSFragment extends Fragment
+        implements OnItemClickListener, OnRefreshListener, RSSReaderCallbacks {
 
 	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
 	public static final String REDDIT_URL = "http://www.reddit.com/r/aww/.rss";
@@ -157,16 +159,22 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onRequestNetworkState() {
+        return isConnected();
+    }
+
+    @Override
+    public File onRequestCacheFile(String uri) {
+        // Create the file to save to
+        File fileDir = getActivity().getCacheDir();
+        String condensedUri = uri.replaceAll("\\W+","");
+        String fileName = condensedUri + "_cache.xml";
+        File file = new File(fileDir, fileName);
+        return file;
+    }
+
     private class FeedLoaderTask extends AsyncTask<String, Void, RSSFeed> {
-		
-    	private File getCacheFile(String uri) {
-    		// Create the file to save to
-    	    File fileDir = getActivity().getCacheDir();
-    	    String condensedUri = uri.replaceAll("\\W+","");
-    	    String fileName = condensedUri + "_cache.xml";
-    	    File file = new File(fileDir, fileName);
-    	    return file;
-    	}
     	
     	@Override
     	protected void onPreExecute() {
@@ -176,12 +184,10 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     	@Override
     	protected final RSSFeed doInBackground(String... urls) {
     		
-    		ConnectivityManager cm =
-    		        (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-    		
-        	RSSReader reader = new RSSReader(cm);
+        	RSSReader reader = new RSSReader();
+            reader.setCallbacks(RSSFragment.this);
     		try {
-    			mFeed = reader.load(urls[0], getCacheFile(urls[0]));
+    			mFeed = reader.load(urls[0]);
     		} catch (RSSReaderException e) {
     			e.printStackTrace();
     		}
