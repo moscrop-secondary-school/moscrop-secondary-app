@@ -17,10 +17,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.list.CardUtil.CardProcessor;
+import com.ivon.moscropsecondary.list.CardUtil;
 import com.ivon.moscropsecondary.list.RSSAdapter;
 import com.ivon.moscropsecondary.list.RSSAdapter.OnItemClickListener;
 import com.ivon.moscropsecondary.list.RSSAdapter.ViewModel;
@@ -46,32 +47,33 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
 	public static final String BLOGGER_NEWS_URL = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
 	public static final String BLOGGER_SUBS_URL = "http://moscropstudents.blogspot.ca/feeds/posts/default?alt=rss";
 	public static final String BLOGGER_NEWSLETTER_URL = "http://moscropnewsletters.blogspot.ca/feeds/posts/default?alt=rss";
-	
-	private RSSFeed feed = null;
-	SwipeRefreshLayout swipeLayout;
-	
-	private String feedToLoad = BLOGGER_URL;
 
-	// RecyclerView stuff
+    private static final String KEY_URL = "url";
+    private static final String KEY_TYPE = "type";
+	
+	private String mURL = BLOGGER_URL;
+    private RSSFeed mFeed = null;
+
+    SwipeRefreshLayout mSwipeLayout;
     RecyclerView mRecyclerView = null;
     RSSAdapter mAdapter = null;
     RecyclerView.LayoutManager mLayoutManager;
     List<ViewModel> mItems = new ArrayList<ViewModel>();
 
-	private CardProcessor cardProcessor;
-	
+    private int mType;  // TODO determine this from the category of RSS Item instead of globally defined
+
 	/**
 	 * Create and return a new instance of RSSFragment with given parameters
 	 * 
 	 * @param feed URL of the RSS feed to load and display
-	 * @param cardProcessor A CardProcessor to define the design of the list item cards
+	 * @param type Type of CardProcessor that is used
 	 * @return New instance of RSSFragment
 	 */
-	public static RSSFragment newInstance(String feed, CardProcessor cardProcessor) {
-		RSSFragment n = new RSSFragment();
-		n.feedToLoad = feed;
-		n.cardProcessor = cardProcessor;
-		return n;
+	public static RSSFragment newInstance(String feed, int type) {
+		RSSFragment fragment = new RSSFragment();
+		fragment.mURL = feed;
+        fragment.mType = type;
+		return fragment;
 	}
 	
 	/**
@@ -95,15 +97,18 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
             Bundle savedInstanceState) {
     	
     	setHasOptionsMenu(true);
-    	setRetainInstance(true);
-    	
-    	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
 
+    	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
         mContentView.setBackgroundColor(0xffe4e4e4);
 
-    	swipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setEnabled(false);
+        if(savedInstanceState != null) {
+            mURL = savedInstanceState.getString(KEY_URL, mURL);
+            mType = savedInstanceState.getInt(KEY_TYPE, mType);
+        }
+
+    	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.swipe_container);
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setEnabled(false); // TODO: Temporarily disabled
 
         // Uncomment to set colors for loading bar of SwipeRefreshLayout
         /*swipeLayout.setColorScheme(
@@ -128,7 +133,14 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     	
     	return mContentView;
     }
-	
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_URL, mURL);
+        outState.putInt(KEY_TYPE, mType);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     	super.onCreateOptionsMenu(menu, inflater);
@@ -169,7 +181,7 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     		
         	RSSReader reader = new RSSReader(cm);
     		try {
-    			feed = reader.load(urls[0], getCacheFile(urls[0]));
+    			mFeed = reader.load(urls[0], getCacheFile(urls[0]));
     		} catch (RSSReaderException e) {
     			e.printStackTrace();
     		}
@@ -180,7 +192,7 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
     		} catch (InterruptedException e1) {
     			e1.printStackTrace();
     		}
-    		return feed;
+    		return mFeed;
     	}
     	
     	@Override
@@ -192,7 +204,7 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
 			} else {
 				onInvalidFeed(feed);
 			}
-			swipeLayout.setRefreshing(false);
+			mSwipeLayout.setRefreshing(false);
     	}
     	
     	private void onValidFeed(RSSFeed feed) {
@@ -201,7 +213,7 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
 			mAdapter.notifyDataSetChanged();
 			for(RSSItem r : feed.getItems()) {
 				if(r != null) {
-                    ViewModel vm = new ViewModel(r, cardProcessor);
+                    ViewModel vm = new ViewModel(r, CardUtil.getCardProcessor(mType));
                     mAdapter.add(vm);
 				}
 			}
@@ -226,20 +238,15 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
 	public void onItemClick(View view, ViewModel item) {
 
 		RSSItem r = item.mRSSItem;
+        String title = ((TextView) view.findViewById(R.id.rlc_title)).getText().toString();
 
 		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
-		Logger.log("Link is " + r.getLink());
+
 		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.getLink().toString());
 		intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.getDescription());
-		
-		String title = "";
-		if(cardProcessor != null) {
-			title = cardProcessor.toProcessedTitle(r.getTitle());
-		} else {
-			title = "Unknown";
-		}
 		intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, title);
-		getActivity().startActivity(intent);
+
+        getActivity().startActivity(intent);
 	}
 	
 	/**
@@ -252,14 +259,14 @@ public class RSSFragment extends Fragment implements OnItemClickListener, OnRefr
 	 */
 	private void doRefresh(boolean force) {
 		
-		if(force || (feed == null)) {
+		if(force || (mFeed == null)) {
 			
 			// Refresh only if forced or if feed is null
 			
 			if(isConnected()) {
-				if(swipeLayout != null) swipeLayout.setRefreshing(true);
+				if(mSwipeLayout != null) mSwipeLayout.setRefreshing(true);
 				FeedLoaderTask mTask = new FeedLoaderTask();
-				mTask.execute(feedToLoad);
+				mTask.execute(mURL);
 			} else {
 				Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
 				return;
