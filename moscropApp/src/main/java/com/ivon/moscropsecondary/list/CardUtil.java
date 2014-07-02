@@ -16,10 +16,10 @@ public class CardUtil {
         public abstract int getCardColor();
     }
 
-    public static HtmlCardProcessor mGenericCardProcessor = new HtmlCardProcessor();
-    public static HtmlCardProcessor mNewsCardProcessor = new HtmlCardProcessor(0xff33b5e5);
-    public static EmailCardProcessor mEmailCardProcessor = new EmailCardProcessor(0xffaa66cc);
-    public static HtmlCardProcessor mSubsCardProcessor = new HtmlCardProcessor(0xffcc0000);
+    private static final HtmlCardProcessor mGenericCardProcessor = new HtmlCardProcessor();
+    private static final HtmlCardProcessor mNewsCardProcessor = new HtmlCardProcessor(0xff33b5e5);
+    private static final EmailCardProcessor mEmailCardProcessor = new EmailCardProcessor(0xffaa66cc);
+    private static final HtmlCardProcessor mSubsCardProcessor = new HtmlCardProcessor(0xffcc0000);
 
     public static CardProcessor getCardProcessor(int type) {
         switch(type) {

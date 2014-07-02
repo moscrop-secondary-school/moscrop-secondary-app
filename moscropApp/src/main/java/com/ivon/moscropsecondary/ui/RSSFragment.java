@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,20 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.list.CardUtil;
+import com.ivon.moscropsecondary.list.FeedDownloader;
+import com.ivon.moscropsecondary.list.LoadHandler;
 import com.ivon.moscropsecondary.list.RSSAdapter;
 import com.ivon.moscropsecondary.list.RSSAdapter.OnItemClickListener;
 import com.ivon.moscropsecondary.list.RSSAdapter.ViewModel;
 import com.ivon.moscropsecondary.util.Logger;
 
-import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
 import org.mcsoxford.rss.RSSReader.RSSReaderCallbacks;
-import org.mcsoxford.rss.RSSReaderException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +36,7 @@ import java.util.List;
 
 public class RSSFragment extends Fragment
         implements OnItemClickListener, OnRefreshListener, RSSReaderCallbacks {
+
 
 	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
 	public static final String REDDIT_URL = "http://www.reddit.com/r/aww/.rss";
@@ -50,31 +48,33 @@ public class RSSFragment extends Fragment
 	public static final String BLOGGER_SUBS_URL = "http://moscropstudents.blogspot.ca/feeds/posts/default?alt=rss";
 	public static final String BLOGGER_NEWSLETTER_URL = "http://moscropnewsletters.blogspot.ca/feeds/posts/default?alt=rss";
 
+
+    public static final String FEED_ALL = "http://www.feedcombine.com/rss/2122/moscrop-feeds-all.xml";
+    public static final String FEED_NEWS = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
+    public static final String FEED_NEWSLETTERS = "http://moscropnewsletters.blogspot.ca/feeds/posts/default?alt=rss";
+    public static final String FEED_SUBS = "http://moscropstudents.blogspot.ca/feeds/posts/default?alt=rss";
+
     private static final String KEY_URL = "url";
-    private static final String KEY_TYPE = "type";
 	
-	private String mURL = BLOGGER_URL;
-    private RSSFeed mFeed = null;
+	private String mURL = FEED_ALL;
 
-    SwipeRefreshLayout mSwipeLayout;
-    RecyclerView mRecyclerView = null;
-    RSSAdapter mAdapter = null;
-    RecyclerView.LayoutManager mLayoutManager;
-    List<ViewModel> mItems = new ArrayList<ViewModel>();
+    public SwipeRefreshLayout mSwipeLayout = null;
+    public RecyclerView mRecyclerView = null;
+    public RSSAdapter mAdapter = null;
+    public RecyclerView.LayoutManager mLayoutManager;
+    public List<ViewModel> mItems = new ArrayList<ViewModel>();
 
-    private int mType;  // TODO determine this from the category of RSS Item instead of globally defined
+    private LoadHandler mHandler = new LoadHandler(this);
 
 	/**
 	 * Create and return a new instance of RSSFragment with given parameters
 	 * 
 	 * @param feed URL of the RSS feed to load and display
-	 * @param type Type of CardProcessor that is used
 	 * @return New instance of RSSFragment
 	 */
-	public static RSSFragment newInstance(String feed, int type) {
+	public static RSSFragment newInstance(String feed) {
 		RSSFragment fragment = new RSSFragment();
 		fragment.mURL = feed;
-        fragment.mType = type;
 		return fragment;
 	}
 	
@@ -105,10 +105,9 @@ public class RSSFragment extends Fragment
 
         if(savedInstanceState != null) {
             mURL = savedInstanceState.getString(KEY_URL, mURL);
-            mType = savedInstanceState.getInt(KEY_TYPE, mType);
         }
 
-    	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.swipe_container);
+    	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
         mSwipeLayout.setEnabled(false); // TODO: Temporarily disabled
 
@@ -131,7 +130,7 @@ public class RSSFragment extends Fragment
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-    	doRefresh(false);
+    	loadFeed(false, RSSReader.CONFIG_CACHED_PRIORITY);
     	
     	return mContentView;
     }
@@ -140,7 +139,6 @@ public class RSSFragment extends Fragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_URL, mURL);
-        outState.putInt(KEY_TYPE, mType);
     }
 
     @Override
@@ -173,72 +171,6 @@ public class RSSFragment extends Fragment
         File file = new File(fileDir, fileName);
         return file;
     }
-
-    private class FeedLoaderTask extends AsyncTask<String, Void, RSSFeed> {
-    	
-    	@Override
-    	protected void onPreExecute() {
-    		//feedList.removeFooterView(tv);
-    	}
-    	
-    	@Override
-    	protected final RSSFeed doInBackground(String... urls) {
-    		
-        	RSSReader reader = new RSSReader();
-            reader.setCallbacks(RSSFragment.this);
-    		try {
-    			mFeed = reader.load(urls[0], RSSReader.CONFIG_ONLINE_PRIORITY);
-    		} catch (RSSReaderException e) {
-    			e.printStackTrace();
-    		}
-    		reader.close();
-    		
-    		try {
-    			Thread.sleep(500);
-    		} catch (InterruptedException e1) {
-    			e1.printStackTrace();
-    		}
-    		return mFeed;
-    	}
-    	
-    	@Override
-		protected void onPostExecute(RSSFeed feed) {
-			Logger.log("onposeexecute");
-			
-			if( (feed != null) && (feed.getItems().size() > 0) ) {
-				onValidFeed(feed);
-			} else {
-				onInvalidFeed(feed);
-			}
-			mSwipeLayout.setRefreshing(false);
-    	}
-    	
-    	private void onValidFeed(RSSFeed feed) {
-			Logger.log("feed is not null, it has " + feed.getItems().size() + " items.");
-			mAdapter.clear();
-			mAdapter.notifyDataSetChanged();
-			for(RSSItem r : feed.getItems()) {
-				if(r != null) {
-                    ViewModel vm = new ViewModel(r, CardUtil.getCardProcessor(mType));
-                    mAdapter.add(vm);
-				}
-			}
-    	}
-    	
-    	private void onInvalidFeed(RSSFeed feed) {
-    		/*tv.setGravity(Gravity.CENTER);
-    		tv.setTypeface(null, Typeface.BOLD_ITALIC);
-    		feedList.setFooterDividersEnabled(false);
-    		if(feed == null) {
-    			Logger.log("feed is null");
-    			tv.setText("Error loading feed");
-    		} else { 
-    			Logger.log("feed has 0 items");
-    			tv.setText("Nothing to display");
-    		}
-    		feedList.addFooterView(tv);*/
-    	}
-    }
     
 	@Override
 	public void onItemClick(View view, ViewModel item) {
@@ -263,29 +195,18 @@ public class RSSFragment extends Fragment
 	 * 
 	 * @param force Refresh even if feed is not null when true. Only refresh when feed is null if false.
 	 */
-	private void doRefresh(boolean force) {
-		
-		if(force || (mFeed == null)) {
-			
-			// Refresh only if forced or if feed is null
-			
-			if(isConnected()) {
-				if(mSwipeLayout != null) mSwipeLayout.setRefreshing(true);
-				FeedLoaderTask mTask = new FeedLoaderTask();
-				mTask.execute(mURL);
-			} else {
-				Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
-				return;
-			}
-			
-		} else {
-			// No need to refresh
-			Logger.log("doRefresh(): no need to refresh");
+	private void loadFeed(boolean force, int loadConfig) {
+
+        Logger.log(String.format("There are %d items in the adapter", mAdapter.getItemCount()));
+
+		if(force || (mAdapter.getItemCount() == 0)) {
+            Logger.log("Starting load");
+            new Thread(new FeedDownloader(mHandler, mURL, loadConfig, this)).start();
 		}
 	}
 	
 	@Override
 	public void onRefresh() {
-		doRefresh(true);
+		loadFeed(true, RSSReader.CONFIG_ONLINE_PRIORITY);
 	}
 }

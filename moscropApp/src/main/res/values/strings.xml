@@ -17,5 +17,6 @@
     
     <string name="error">Error</string>
     <string name="error_format">[Error] %s</string>
+    <string name="load_error_text">Error loading feed</string>
 
 </resources>
