@@ -187,7 +187,7 @@ public class RSSFragment extends Fragment
         	RSSReader reader = new RSSReader();
             reader.setCallbacks(RSSFragment.this);
     		try {
-    			mFeed = reader.load(urls[0]);
+    			mFeed = reader.load(urls[0], RSSReader.CONFIG_ONLINE_PRIORITY);
     		} catch (RSSReaderException e) {
     			e.printStackTrace();
     		}
