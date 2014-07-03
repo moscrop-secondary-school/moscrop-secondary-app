@@ -32,6 +32,14 @@ public class LoadHandler extends Handler {
         mWeakReference = new WeakReference<RSSFragment>(fragment);
     }
 
+    public void removeAllMessages() {
+        removeMessages(START_LOAD);
+        removeMessages(ADD_ITEM);
+        removeMessages(CLEAR_ADAPTER);
+        removeMessages(INVALID_FEED);
+        removeMessages(FINISH_LOAD);
+    }
+
     private int getTypeFromLink(String link) {
         if(link.contains("moscropschool")) {
             return CardUtil.TYPE_NEWS_CARD;
@@ -48,6 +56,8 @@ public class LoadHandler extends Handler {
     public void handleMessage(Message msg) {
 
         final int what = msg.what;
+
+        // Holding on to this reference is ok because handleMessage does not block
         RSSFragment fragment = mWeakReference.get();
 
         if(fragment == null)

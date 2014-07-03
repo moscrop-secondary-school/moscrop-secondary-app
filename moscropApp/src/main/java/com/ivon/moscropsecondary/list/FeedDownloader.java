@@ -1,6 +1,5 @@
 package com.ivon.moscropsecondary.list;
 
-import android.os.Handler;
 import android.os.Message;
 
 import org.mcsoxford.rss.RSSFeed;
@@ -16,12 +15,12 @@ import java.util.List;
  */
 public class FeedDownloader implements Runnable {
 
-    Handler mHandler;
+    LoadHandler mHandler;
     String mUri;
     int mLoadConfig;
     WeakReference<RSSReader.RSSReaderCallbacks> mWeakReference;
 
-    public FeedDownloader(Handler handler, String uri, int loadConfig, RSSReader.RSSReaderCallbacks callbacks) {
+    public FeedDownloader(LoadHandler handler, String uri, int loadConfig, RSSReader.RSSReaderCallbacks callbacks) {
         mHandler = handler;
         mUri = uri;
         mLoadConfig = loadConfig;
@@ -30,6 +29,24 @@ public class FeedDownloader implements Runnable {
 
     @Override
     public void run() {
+
+        /**
+         * TODO git commit -m 'Fix memory leak caused by loading feed'
+         *
+         * 1. Remove RSSFragment fragment = mWeakReference.get();
+         *
+         * 2. Call mWeakReference.get() each time you want to use
+         * the fragment. Don't be lazy! Check for null each time!
+         *
+         * 3. Add a WeakReference for the RSSCallbacks passed to
+         * RSSReader, so that doesn't hold on to the fragment.
+         *
+         * 4. ???
+         *
+         * 5. Profit!
+         */
+
+        //RSSFragment fragment = mWeakReference.get();
 
         if(mHandler == null)
             return;
@@ -40,10 +57,7 @@ public class FeedDownloader implements Runnable {
         RSSReader reader = new RSSReader();
         RSSFeed feed = null;
 
-        RSSReader.RSSReaderCallbacks mCallbacks = mWeakReference.get();
-        if(mCallbacks != null) {
-            reader.setCallbacks(mCallbacks);
-        }
+        reader.setCallbacks(mWeakReference);
 
         try {
             feed = reader.load(mUri, mLoadConfig);
@@ -59,11 +73,6 @@ public class FeedDownloader implements Runnable {
                 e1.printStackTrace();
             }
             */
-
-        // Check again, it may have become null
-        // during the loading process
-        if(mHandler == null)
-            return;
 
         if(feed == null) {
             Message invalidFeedMsg = mHandler.obtainMessage(LoadHandler.INVALID_FEED);

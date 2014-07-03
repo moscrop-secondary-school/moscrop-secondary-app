@@ -64,7 +64,7 @@ public class RSSFragment extends Fragment
     public RecyclerView.LayoutManager mLayoutManager;
     public List<ViewModel> mItems = new ArrayList<ViewModel>();
 
-    private LoadHandler mHandler = new LoadHandler(this);
+    public LoadHandler mHandler = new LoadHandler(this);
 
 	/**
 	 * Create and return a new instance of RSSFragment with given parameters
@@ -139,6 +139,12 @@ public class RSSFragment extends Fragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_URL, mURL);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mHandler.removeAllMessages();
     }
 
     @Override
