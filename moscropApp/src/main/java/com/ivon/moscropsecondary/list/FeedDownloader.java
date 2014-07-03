@@ -30,24 +30,6 @@ public class FeedDownloader implements Runnable {
     @Override
     public void run() {
 
-        /**
-         * TODO git commit -m 'Fix memory leak caused by loading feed'
-         *
-         * 1. Remove RSSFragment fragment = mWeakReference.get();
-         *
-         * 2. Call mWeakReference.get() each time you want to use
-         * the fragment. Don't be lazy! Check for null each time!
-         *
-         * 3. Add a WeakReference for the RSSCallbacks passed to
-         * RSSReader, so that doesn't hold on to the fragment.
-         *
-         * 4. ???
-         *
-         * 5. Profit!
-         */
-
-        //RSSFragment fragment = mWeakReference.get();
-
         if(mHandler == null)
             return;
 
