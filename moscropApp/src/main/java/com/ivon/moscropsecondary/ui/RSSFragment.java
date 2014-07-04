@@ -1,5 +1,6 @@
 package com.ivon.moscropsecondary.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -78,22 +79,6 @@ public class RSSFragment extends Fragment
 		return fragment;
 	}
 	
-	/**
-	 * Check network connectivity state
-	 * 
-	 * @return True if device is connected to network. Otherwise false. 
-	 */
-	private boolean isConnected() {
-		ConnectivityManager cm =
-				(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-			 
-		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		boolean isConnected = 
-				activeNetwork != null &&
-				activeNetwork.isConnected();
-		return isConnected;
-	}
-	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -142,9 +127,14 @@ public class RSSFragment extends Fragment
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mHandler.removeAllMessages();
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        interruptAll();
     }
 
     @Override
@@ -165,12 +155,29 @@ public class RSSFragment extends Fragment
 
     @Override
     public boolean onRequestNetworkState() {
-        return isConnected();
+
+        // TODO fix getActivity() checking
+        if(getActivity() == null)
+            return false;
+
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected =
+                activeNetwork != null &&
+                        activeNetwork.isConnected();
+        return isConnected;
     }
 
     @Override
     public File onRequestCacheFile(String uri) {
-        // Create the file to save to
+
+        // TODO fix getActivity() checking
+        if(getActivity() == null) {
+            return null;
+        }
+
         File fileDir = getActivity().getCacheDir();
         String condensedUri = uri.replaceAll("\\W+","");
         String fileName = condensedUri + "_cache.xml";
@@ -192,7 +199,7 @@ public class RSSFragment extends Fragment
 
         getActivity().startActivity(intent);
 	}
-	
+
 	/**
 	 * Perform a refresh of the feed.
 	 * This method will create and start
@@ -206,13 +213,66 @@ public class RSSFragment extends Fragment
         Logger.log(String.format("There are %d items in the adapter", mAdapter.getItemCount()));
 
 		if(force || (mAdapter.getItemCount() == 0)) {
-            Logger.log("Starting load");
-            new Thread(new FeedDownloader(mHandler, mURL, loadConfig, this)).start();
+            if(runningThreads() == 0) {
+                newThread(loadConfig).start();
+            }
 		}
 	}
-	
+
 	@Override
 	public void onRefresh() {
 		loadFeed(true, RSSReader.CONFIG_ONLINE_PRIORITY);
 	}
+
+    /** Keep tabs on threads */
+
+    private static int threadCount = 0;
+    private List<Thread> mThreads = new ArrayList<Thread>();
+
+    /**
+     * Create a new thread from FeedLoader and add it to list
+     *
+     * @param loadConfig Define RSSReader loading behavior
+     * @return new thread from FeedLoader runnable
+     */
+    private Thread newThread(int loadConfig) {
+        threadCount++;
+        Thread thread =  new Thread(new FeedDownloader(this, mURL, loadConfig), "feed-loader-thread-" + threadCount);
+        mThreads.add(thread);
+        return thread;
+    }
+
+    /**
+     * Iterate through list of threads.
+     * If thread is null or not alive,
+     * remove it from list.
+     * Otherwise, it is counted as running thread
+     * @return number of running threads
+     */
+    private int runningThreads() {
+        int running = 0;
+        for(Thread t : mThreads) {
+            if(t != null) {
+                if(t.isAlive()) {
+                    running++;
+                } else {
+                    mThreads.remove(t);
+                }
+            } else {
+                mThreads.remove(t);
+            }
+        }
+        return running;
+    }
+
+    /**
+     * Interrupt all threads in list
+     */
+    private void interruptAll() {
+        for(Thread t : mThreads) {
+            if(t != null) {
+                t.interrupt();
+            }
+        }
+    }
 }

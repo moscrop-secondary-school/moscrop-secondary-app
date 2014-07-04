@@ -2,6 +2,8 @@ package com.ivon.moscropsecondary.list;
 
 import android.os.Message;
 
+import com.ivon.moscropsecondary.ui.RSSFragment;
+
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
@@ -15,38 +17,45 @@ import java.util.List;
  */
 public class FeedDownloader implements Runnable {
 
-    LoadHandler mHandler;
+    WeakReference<RSSFragment> mWeakReference;
     String mUri;
     int mLoadConfig;
-    WeakReference<RSSReader.RSSReaderCallbacks> mWeakReference;
 
-    public FeedDownloader(LoadHandler handler, String uri, int loadConfig, RSSReader.RSSReaderCallbacks callbacks) {
-        mHandler = handler;
+    public FeedDownloader(RSSFragment fragment, String uri, int loadConfig) {
+        mWeakReference = new WeakReference(fragment);
         mUri = uri;
         mLoadConfig = loadConfig;
-        mWeakReference = new WeakReference<RSSReader.RSSReaderCallbacks>(callbacks);
     }
+
+
 
     @Override
     public void run() {
 
-        if(mHandler == null)
+        if (Thread.currentThread().isInterrupted()) {
+            finish();
             return;
-
-        Message startMsg = mHandler.obtainMessage(LoadHandler.START_LOAD);
-        mHandler.sendMessage(startMsg);
+        }
+        if(!obtainAndSend(LoadHandler.START_LOAD, null))
+            return;
 
         RSSReader reader = new RSSReader();
         RSSFeed feed = null;
 
-        reader.setCallbacks(mWeakReference);
+        reader.setCallbacks(mWeakReference.get());
 
+        if (Thread.currentThread().isInterrupted()) {
+            finish();
+            return;
+        }
         try {
             feed = reader.load(mUri, mLoadConfig);
         } catch (RSSReaderException e) {
             e.printStackTrace();
+            return;
+        } finally {
+            reader.close();
         }
-        reader.close();
 
             /*
             try {
@@ -56,25 +65,52 @@ public class FeedDownloader implements Runnable {
             }
             */
 
+        if (Thread.currentThread().isInterrupted()) {
+            finish();
+            return;
+        }
         if(feed == null) {
-            Message invalidFeedMsg = mHandler.obtainMessage(LoadHandler.INVALID_FEED);
-            mHandler.sendMessage(invalidFeedMsg);
+            obtainAndSend(LoadHandler.INVALID_FEED, null);
             return;
         }
 
-        Message clearAdapterMsg = mHandler.obtainMessage(LoadHandler.CLEAR_ADAPTER);
-        mHandler.sendMessage(clearAdapterMsg);
+        if (Thread.currentThread().isInterrupted()) {
+            finish();
+            return;
+        }
+        if(!obtainAndSend(LoadHandler.CLEAR_ADAPTER, null))
+            return;
 
+        // Get a list of items from the feed
         List<RSSItem> mRSSItems = feed.getItems();
 
         for(RSSItem item : mRSSItems) {
+            // Before adding another item check if we've been interrupted
+            if (Thread.currentThread().isInterrupted()) {
+                finish();
+                return;
+            }
             if(item != null) {
-                Message addItemMsg = mHandler.obtainMessage(LoadHandler.ADD_ITEM, item);
-                mHandler.sendMessage(addItemMsg);
+                if(!obtainAndSend(LoadHandler.ADD_ITEM, item))
+                    return;
             }
         }
 
-        Message finishMsg = mHandler.obtainMessage(LoadHandler.FINISH_LOAD);
-        mHandler.sendMessage(finishMsg);
+        finish();
+    }
+
+    private void finish() {
+        obtainAndSend(LoadHandler.FINISH_LOAD, null);
+    }
+
+    private boolean obtainAndSend(int what, Object obj) {
+        if(mWeakReference.get() != null) {
+            LoadHandler handler = mWeakReference.get().mHandler;
+            Message msg = handler.obtainMessage(what, obj);
+            handler.sendMessage(msg);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
