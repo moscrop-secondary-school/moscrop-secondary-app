@@ -1,5 +1,6 @@
 package com.ivon.moscropsecondary.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,16 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.R.id;
-import com.ivon.moscropsecondary.R.layout;
 
 public class CalendarFragment extends Fragment {
-	
+
+    private int mPosition;
     private View mContentView;
     
-    public static CalendarFragment newInstance() {
-    	CalendarFragment c = new CalendarFragment();
-    	return c;
+    public static CalendarFragment newInstance(int position) {
+    	CalendarFragment fragment = new CalendarFragment();
+        fragment.mPosition = position;
+    	return fragment;
     }
     
     @Override
@@ -36,5 +37,11 @@ public class CalendarFragment extends Fragment {
     	mListView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listItems));
     	
     	return mContentView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((MainActivity) activity).onSectionAttached(mPosition);
     }
 }

@@ -59,6 +59,8 @@ public class RSSFragment extends Fragment
 	
 	private String mURL = FEED_ALL;
 
+    private int mPosition;
+
     public SwipeRefreshLayout mSwipeLayout = null;
     public RecyclerView mRecyclerView = null;
     public RSSAdapter mAdapter = null;
@@ -73,8 +75,9 @@ public class RSSFragment extends Fragment
 	 * @param feed URL of the RSS feed to load and display
 	 * @return New instance of RSSFragment
 	 */
-	public static RSSFragment newInstance(String feed) {
+	public static RSSFragment newInstance(int position, String feed) {
 		RSSFragment fragment = new RSSFragment();
+        fragment.mPosition = position;
 		fragment.mURL = feed;
 		return fragment;
 	}
@@ -129,6 +132,7 @@ public class RSSFragment extends Fragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        ((MainActivity) activity).onSectionAttached(mPosition);
     }
 
     @Override
@@ -140,7 +144,10 @@ public class RSSFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     	super.onCreateOptionsMenu(menu, inflater);
-    	menu.findItem(R.id.action_refresh).setVisible(true);
+    	MenuItem refresh = menu.findItem(R.id.action_refresh);
+        if(refresh != null) {
+            refresh.setVisible(true);
+        }
     }
     
 	@Override

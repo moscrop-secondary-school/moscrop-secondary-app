@@ -1,9 +1,6 @@
 package com.ivon.moscropsecondary.ui;
 
-import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.R.id;
-import com.ivon.moscropsecondary.R.layout;
-
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,13 +9,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.ivon.moscropsecondary.R;
+
 public class TeachersFragment extends Fragment {
-	
+
+    private int mPosition;
     private View mContentView;
 
-    public static TeachersFragment newInstance() {
-    	TeachersFragment t = new TeachersFragment();
-    	return t;
+    public static TeachersFragment newInstance(int position) {
+    	TeachersFragment fragment = new TeachersFragment();
+        fragment.mPosition = position;
+    	return fragment;
     }
     
     @Override
@@ -35,5 +36,11 @@ public class TeachersFragment extends Fragment {
     	}
     	mListView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listItems));
         return mContentView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((MainActivity) activity).onSectionAttached(mPosition);
     }
 }

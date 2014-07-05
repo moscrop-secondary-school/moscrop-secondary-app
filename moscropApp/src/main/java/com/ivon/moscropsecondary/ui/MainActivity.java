@@ -1,92 +1,110 @@
 package com.ivon.moscropsecondary.ui;
 
-import android.app.Activity;
+import android.app.ActionBar;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.util.Logger;
 
-public class MainActivity extends ActionBarActivity implements OnItemClickListener {
-	
-    protected DrawerLayout mDrawerLayout;
-    protected ListView mDrawerList;
-    protected ActionBarDrawerToggle mDrawerToggle;
-    
-    protected String[] mFragmentTitles;
-    
+public class MainActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 	protected RSSFragment mNewsFragment;
 	protected RSSFragment mEmailFragment;
 	protected RSSFragment mStudentSubsFragment;
 	protected CalendarFragment mEventsFragment;
 	protected TeachersFragment mTeachersFragment;
     
-	protected static int currentFragment;
+	//protected static int currentFragment;
 
-	protected void initializeNavigationDrawer() {
-        mFragmentTitles = getResources().getStringArray(R.array.navigation_items);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mFragmentTitles));
-        mDrawerList.setOnItemClickListener(this);
-        
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        
-        mDrawerToggle = new DrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-                );
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-	}
-    
-	protected void initializeFragments() {
-		mNewsFragment = (RSSFragment) getSupportFragmentManager().findFragmentByTag("newsFragment");
-		mEmailFragment = (RSSFragment) getSupportFragmentManager().findFragmentByTag("emailFragment");
-		mStudentSubsFragment = (RSSFragment) getSupportFragmentManager().findFragmentByTag("studentSubsFragment");
-        mEventsFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag("eventsFragment");
-        mTeachersFragment = (TeachersFragment) getSupportFragmentManager().findFragmentByTag("teachersFragment");
-        selectItem(currentFragment);
-	}
+    /**
+     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     */
+    private CharSequence mTitle;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	Logger.log("oncreate activity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        initializeNavigationDrawer();
-        initializeFragments();
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = getTitle();
+
+        // Set up the drawer.
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
-    
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+
+        // determine which fragment to load
+        Fragment mNextFragment = null;
+        switch(position) {
+
+            case 0:
+                if(mNewsFragment == null) mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_ALL);
+                mNextFragment = mNewsFragment;
+                break;
+            case 1:
+                if(mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS);
+                mNextFragment = mEmailFragment;
+                break;
+            case 2:
+                if(mStudentSubsFragment == null) mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS);
+                mNextFragment = mStudentSubsFragment;
+                break;
+            case 3:
+                if(mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(3);
+                mNextFragment = mEventsFragment;
+                break;
+            case 4:
+                if(mTeachersFragment == null) mTeachersFragment = TeachersFragment.newInstance(4);
+                mNextFragment = mTeachersFragment;
+                break;
+        }
+
+        // update the main content by replacing fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, mNextFragment)
+                .commit();
+    }
+
+    public void onSectionAttached(int position) {
+        mTitle = getResources().getStringArray(R.array.navigation_items)[position];
+    }
+
+    public void restoreActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+            // Only show items in the action bar relevant to this screen
+            // if the drawer is not showing. Otherwise, let the drawer
+            // decide what to show in the action bar.
+            getMenuInflater().inflate(R.menu.main, menu);
+            restoreActionBar();
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -95,9 +113,6 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
     	// If drawr toggle was selected
-    	if (mDrawerToggle.onOptionsItemSelected(item)) {
-    		return true;
-    	}
     	
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
@@ -107,21 +122,8 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	@Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-    
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-    
+
+    /*
     public class DrawerToggle extends ActionBarDrawerToggle {
 
 		public DrawerToggle(Activity activity, DrawerLayout drawerLayout,
@@ -138,13 +140,8 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
         public void onDrawerOpened(View drawerView) {
             supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
         }
-    }
-    
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        selectItem(position);
-    }
-    
+    }*/
+    /*
     protected void selectItem(final int position) {
     	String tag;
     	Fragment fragment;
@@ -193,5 +190,5 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 	    }, 150);
         mDrawerList.setItemChecked(position, true);
         setTitle(mFragmentTitles[position]);
-    }
+    }*/
 }
