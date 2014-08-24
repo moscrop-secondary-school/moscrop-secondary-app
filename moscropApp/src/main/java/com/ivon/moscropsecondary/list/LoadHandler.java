@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.ivon.moscropsecondary.ui.RSSFragment;
 import org.mcsoxford.rss.RSSItem;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Created by ivon on 01/07/14.
@@ -72,8 +74,8 @@ public class LoadHandler extends Handler {
 
                 if(srl != null && lv != null) {
                     srl.setRefreshing(true);
-                    srl.removeAllViews();
-                    srl.addView(lv);
+                    //srl.removeAllViews();
+                    //srl.addView(lv);
                 }
 
                 break;
@@ -86,10 +88,12 @@ public class LoadHandler extends Handler {
                 if (item != null) {
                     String link = item.getLink().toString();
                     int type = getTypeFromLink(link);
-                    RSSAdapter.RSSAdapterItem vm = new RSSAdapter.RSSAdapterItem(item, CardUtil.getCardProcessor(type));
-                    RSSAdapter adapter = fragment.mAdapter;
-                    if (adapter != null) {
-                        adapter.add(vm);
+                    RSSAdapter.RSSAdapterItem rai = new RSSAdapter.RSSAdapterItem(item, CardUtil.getCardProcessor(type));
+                    List<RSSAdapter.RSSAdapterItem> list = fragment.mItems;
+                    ArrayAdapter<RSSAdapter.RSSAdapterItem> adapter = fragment.mAdapter;
+                    if (list != null && adapter != null) {
+                        list.add(rai);
+                        adapter.notifyDataSetChanged();
                     }
                 }
 
@@ -98,10 +102,12 @@ public class LoadHandler extends Handler {
 
             case CLEAR_ADAPTER: {
 
+                List<RSSAdapter.RSSAdapterItem> list = fragment.mItems;
                 RSSAdapter adapter = fragment.mAdapter;
 
-                if (adapter != null) {
-                    adapter.clear();
+                if (list != null && adapter != null) {
+                    list.clear();
+                    adapter.notifyDataSetChanged();
                 }
 
                 break;
@@ -109,14 +115,15 @@ public class LoadHandler extends Handler {
 
             case INVALID_FEED: {
 
-                RSSAdapter adapter = fragment.mAdapter;
-                if (adapter == null) {
+                List<RSSAdapter.RSSAdapterItem> list = fragment.mItems;
+                if (list == null) {
                     return;
                 }
 
-                if (adapter.getCount() > 0) {
+                if (list.size() > 0) {
                     Toast.makeText(fragment.getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
                 } else {
+                    // TODO use listview header
                     SwipeRefreshLayout srl = fragment.mSwipeLayout;
 
                     if (srl != null) {
