@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.ivon.moscropsecondary.MainActivity$RSSFragment" >
 
-	<android.support.v7.widget.RecyclerView
+	<ListView
 	    android:id="@+id/rlf_list"
 	    android:layout_height="match_parent"
 	    android:layout_width="match_parent"/>

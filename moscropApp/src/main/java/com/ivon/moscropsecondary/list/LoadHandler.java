@@ -3,8 +3,8 @@ package com.ivon.moscropsecondary.list;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,12 +68,12 @@ public class LoadHandler extends Handler {
             case START_LOAD: {
 
                 SwipeRefreshLayout srl = fragment.mSwipeLayout;
-                RecyclerView rv = fragment.mRecyclerView;
+                ListView lv = fragment.mListView;
 
-                if(srl != null && rv != null) {
+                if(srl != null && lv != null) {
                     srl.setRefreshing(true);
                     srl.removeAllViews();
-                    srl.addView(rv);
+                    srl.addView(lv);
                 }
 
                 break;
@@ -86,7 +86,7 @@ public class LoadHandler extends Handler {
                 if (item != null) {
                     String link = item.getLink().toString();
                     int type = getTypeFromLink(link);
-                    RSSAdapter.ViewModel vm = new RSSAdapter.ViewModel(item, CardUtil.getCardProcessor(type));
+                    RSSAdapter.RSSAdapterItem vm = new RSSAdapter.RSSAdapterItem(item, CardUtil.getCardProcessor(type));
                     RSSAdapter adapter = fragment.mAdapter;
                     if (adapter != null) {
                         adapter.add(vm);
@@ -114,7 +114,7 @@ public class LoadHandler extends Handler {
                     return;
                 }
 
-                if (adapter.getItemCount() > 0) {
+                if (adapter.getCount() > 0) {
                     Toast.makeText(fragment.getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
                 } else {
                     SwipeRefreshLayout srl = fragment.mSwipeLayout;

@@ -1,14 +1,14 @@
 package com.ivon.moscropsecondary.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ivon.moscropsecondary.R;
 
-public class NewsDisplayActivity extends ActionBarActivity {
+public class NewsDisplayActivity extends FragmentActivity {
 	
 	public static final String EXTRA_URL = "url";
 	public static final String EXTRA_CONTENT = "content";

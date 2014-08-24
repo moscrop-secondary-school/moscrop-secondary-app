@@ -1,14 +1,14 @@
 package com.ivon.moscropsecondary.list;
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.list.CardUtil.CardProcessor;
-import com.ivon.moscropsecondary.util.Logger;
 
 import org.mcsoxford.rss.RSSItem;
 
@@ -17,72 +17,42 @@ import java.util.List;
 /**
  * Created by ivon on 30/06/14.
  */
-public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ViewHolder> implements View.OnClickListener {
+public class RSSAdapter extends ArrayAdapter<RSSAdapter.RSSAdapterItem> {
 
-    OnItemClickListener itemClickListener = null;
-    List<ViewModel> mItems = null;
+    List<RSSAdapterItem> mItems = null;
 
-    public RSSAdapter(List<ViewModel> items) {
+    public RSSAdapter(Context context, List<RSSAdapterItem> items) {
+        super(context, android.R.layout.simple_list_item_1, items);
         mItems = items;
     }
 
+    public static class RSSAdapterItem {
 
+        public final RSSItem item;
+        public final CardProcessor processor;
 
-    public interface OnItemClickListener {
-        public abstract void onItemClick(View view, ViewModel item);
-    }
-
-    public static class ViewModel {
-
-        public final RSSItem mRSSItem;
-        public final CardProcessor mCardProcessor;
-
-        public ViewModel(RSSItem r, CardProcessor c) {
-            mRSSItem = r;
-            mCardProcessor = c;
-        }
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView mTitleText;
-        View mDividerView;
-        TextView mDescText;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            if(itemView == null) {
-                Logger.log("itemView is null!");
-                return;
-            }
-
-            mTitleText = (TextView) itemView.findViewById(R.id.rlc_title);
-            mDividerView = itemView.findViewById(R.id.rlc_divider);
-            mDescText = (TextView) itemView.findViewById(R.id.rlc_description);
+        public RSSAdapterItem(RSSItem r, CardProcessor c) {
+            item = r;
+            processor = c;
         }
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.rss_list_card, null);
-        v.setOnClickListener(this);
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
-    }
+        View view = convertView;
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.rss_list_card, null);
+        }
 
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        RSSAdapterItem rai = mItems.get(position);
+        RSSItem r = rai.item;
+        CardProcessor c = rai.processor;
 
-        ViewModel item = mItems.get(i);
-        RSSItem r = item.mRSSItem;
-        CardProcessor c = item.mCardProcessor;
-
-        TextView title = viewHolder.mTitleText;
-        View divider = viewHolder.mDividerView;
-        TextView description = viewHolder.mDescText;
+        TextView title = (TextView) view.findViewById(R.id.rlc_title);
+        View divider = view.findViewById(R.id.rlc_divider);
+        TextView description = (TextView) view.findViewById(R.id.rlc_description);
 
         // Set title
         if(title != null) {
@@ -116,49 +86,6 @@ public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ViewHolder> impl
             }
         }
 
-        // Associate the view with the item it is displaying
-        viewHolder.itemView.setTag(item);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
-
-    public void add(ViewModel item) {
-        int position = mItems.size();
-        add(item, position);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (itemClickListener != null) {
-            ViewModel item = (ViewModel) view.getTag();
-            itemClickListener.onItemClick(view, item);
-        }
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.itemClickListener = listener;
-    }
-
-    public void add(ViewModel item, int position) {
-        mItems.add(position, item);
-        notifyItemInserted(position);
-    }
-
-    public void remove(ViewModel item) {
-        int position = mItems.indexOf(item);
-        remove(position);
-    }
-
-    public void remove(int position) {
-        mItems.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void clear() {
-        mItems.clear();
-        notifyDataSetChanged();
+        return view;
     }
 }

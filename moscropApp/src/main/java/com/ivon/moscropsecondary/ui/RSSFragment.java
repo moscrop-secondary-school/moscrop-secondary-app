@@ -9,22 +9,21 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.list.FeedDownloader;
 import com.ivon.moscropsecondary.list.LoadHandler;
 import com.ivon.moscropsecondary.list.RSSAdapter;
-import com.ivon.moscropsecondary.list.RSSAdapter.OnItemClickListener;
-import com.ivon.moscropsecondary.list.RSSAdapter.ViewModel;
+import com.ivon.moscropsecondary.list.RSSAdapter.RSSAdapterItem;
 import com.ivon.moscropsecondary.util.Logger;
 
 import org.mcsoxford.rss.RSSItem;
@@ -36,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFragment extends Fragment
-        implements OnItemClickListener, OnRefreshListener, RSSReaderCallbacks {
+        implements AdapterView.OnItemClickListener, OnRefreshListener, RSSReaderCallbacks {
 
 
 	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
@@ -62,10 +61,9 @@ public class RSSFragment extends Fragment
     private int mPosition;
 
     public SwipeRefreshLayout mSwipeLayout = null;
-    public RecyclerView mRecyclerView = null;
+    public ListView mListView = null;
     public RSSAdapter mAdapter = null;
-    public RecyclerView.LayoutManager mLayoutManager;
-    public List<ViewModel> mItems = new ArrayList<ViewModel>();
+    public List<RSSAdapterItem> mItems = new ArrayList<RSSAdapterItem>();
 
     public LoadHandler mHandler = new LoadHandler(this);
 
@@ -97,7 +95,7 @@ public class RSSFragment extends Fragment
 
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
-        mSwipeLayout.setEnabled(false); // TODO: Temporarily disabled
+        //mSwipeLayout.setEnabled(false); // TODO: Temporarily disabled
 
         // Uncomment to set colors for loading bar of SwipeRefreshLayout
         /*swipeLayout.setColorScheme(
@@ -106,17 +104,12 @@ public class RSSFragment extends Fragment
                 android.R.color.holo_blue_dark, 
                 R.color.background_holo_light);*/
 
-        mRecyclerView = (RecyclerView) mContentView.findViewById(R.id.rlf_list);
-        mRecyclerView.setHasFixedSize(true);
-
-        // Use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mListView = (ListView) mContentView.findViewById(R.id.rlf_list);
 
         // Set the adapter for the recycler view
-        mAdapter = new RSSAdapter(mItems);
-        mAdapter.setOnItemClickListener(this);
-        mRecyclerView.setAdapter(mAdapter);
+        mAdapter = new RSSAdapter(getActivity(), mItems);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
     	loadFeed(false, RSSReader.CONFIG_CACHED_PRIORITY);
     	
@@ -193,9 +186,9 @@ public class RSSFragment extends Fragment
     }
     
 	@Override
-	public void onItemClick(View view, ViewModel item) {
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-		RSSItem r = item.mRSSItem;
+		RSSItem r = mItems.get(position).item;
         String title = ((TextView) view.findViewById(R.id.rlc_title)).getText().toString();
 
 		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
@@ -217,9 +210,9 @@ public class RSSFragment extends Fragment
 	 */
 	private void loadFeed(boolean force, int loadConfig) {
 
-        Logger.log(String.format("There are %d items in the adapter", mAdapter.getItemCount()));
+        Logger.log(String.format("There are %d items in the adapter", mAdapter.getCount()));
 
-		if(force || (mAdapter.getItemCount() == 0)) {
+		if(force || (mAdapter.getCount() == 0)) {
             if(runningThreads() == 0) {
                 newThread(loadConfig).start();
             }

@@ -4,16 +4,16 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.util.Logger;
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -122,73 +122,4 @@ public class MainActivity extends ActionBarActivity
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-    /*
-    public class DrawerToggle extends ActionBarDrawerToggle {
-
-		public DrawerToggle(Activity activity, DrawerLayout drawerLayout,
-				int drawerImageRes, int openDrawerContentDescRes,
-				int closeDrawerContentDescRes) {
-			super(activity, drawerLayout, drawerImageRes, openDrawerContentDescRes,
-					closeDrawerContentDescRes);
-		}
-    	
-        public void onDrawerClosed(View view) {
-            supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-        }
-
-        public void onDrawerOpened(View drawerView) {
-            supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-        }
-    }*/
-    /*
-    protected void selectItem(final int position) {
-    	String tag;
-    	Fragment fragment;
-    	
-    	switch(position) {
-    	case 1:
-    		if(mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(RSSFragment.FEED_NEWSLETTERS);
-    		fragment = mEmailFragment;
-    		tag = "emailFragment";
-    		break;
-    	case 2:
-    		if(mStudentSubsFragment == null) mStudentSubsFragment = RSSFragment.newInstance(RSSFragment.FEED_SUBS);
-    		fragment = mStudentSubsFragment;
-    		tag = "studentSubsFragment";
-    		break;
-    	case 3:
-    		if(mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance();
-    		fragment = mEventsFragment;
-    		tag = "eventsFragment";
-    		break;
-    	case 4:
-    		if(mTeachersFragment == null) mTeachersFragment = TeachersFragment.newInstance();
-    		fragment = mTeachersFragment;
-    		tag = "teacherFragment";
-    		break;
-    	default:
-    		if(mNewsFragment == null) mNewsFragment = RSSFragment.newInstance(RSSFragment.FEED_ALL);
-            fragment = mNewsFragment;
-            tag = "newsFragment";
-    		break;
-    	}
-    	loadFragment(position, fragment, tag);
-    }
-    
-    protected void loadFragment(final int position, Fragment fragment, String tag) {
-			
-		currentFragment = position;
-	    FragmentManager fragmentManager = getSupportFragmentManager();
-	    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment, tag).commit();
-			
-	    new Handler().postDelayed(new Runnable() {
-	        @Override
-	        public void run() {
-	            mDrawerLayout.closeDrawer(mDrawerList);
-	        }           
-	    }, 150);
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mFragmentTitles[position]);
-    }*/
 }
