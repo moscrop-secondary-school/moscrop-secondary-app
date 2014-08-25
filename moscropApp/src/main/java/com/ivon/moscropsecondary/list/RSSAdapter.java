@@ -88,4 +88,10 @@ public class RSSAdapter extends ArrayAdapter<RSSAdapter.RSSAdapterItem> {
 
         return view;
     }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        //Logger.log("notifyDataSetChanged");
+    }
 }

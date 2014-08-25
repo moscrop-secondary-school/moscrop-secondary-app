@@ -1,12 +1,11 @@
 package com.ivon.moscropsecondary.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
@@ -18,24 +17,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.list.FeedDownloader;
-import com.ivon.moscropsecondary.list.LoadHandler;
 import com.ivon.moscropsecondary.list.RSSAdapter;
 import com.ivon.moscropsecondary.list.RSSAdapter.RSSAdapterItem;
+import com.ivon.moscropsecondary.list.RSSListLoader;
 import com.ivon.moscropsecondary.util.Logger;
 
 import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
-import org.mcsoxford.rss.RSSReader.RSSReaderCallbacks;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFragment extends Fragment
-        implements AdapterView.OnItemClickListener, OnRefreshListener, RSSReaderCallbacks {
+        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<List<RSSAdapterItem>> {
 
 
 	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
@@ -57,6 +54,8 @@ public class RSSFragment extends Fragment
     private static final String KEY_URL = "url";
 	
 	private String mURL = FEED_ALL;
+    private int mLoadConfig = RSSListLoader.CONFIG_CACHED_PRIORITY;
+    private boolean mLoading = false;
 
     private int mPosition;
 
@@ -64,8 +63,6 @@ public class RSSFragment extends Fragment
     public ListView mListView = null;
     public RSSAdapter mAdapter = null;
     public List<RSSAdapterItem> mItems = new ArrayList<RSSAdapterItem>();
-
-    public LoadHandler mHandler = new LoadHandler(this);
 
 	/**
 	 * Create and return a new instance of RSSFragment with given parameters
@@ -95,7 +92,6 @@ public class RSSFragment extends Fragment
 
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
-        //mSwipeLayout.setEnabled(false); // TODO: Temporarily disabled
 
         // Uncomment to set colors for loading bar of SwipeRefreshLayout
         /*swipeLayout.setColorScheme(
@@ -111,8 +107,8 @@ public class RSSFragment extends Fragment
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-    	loadFeed(false, RSSReader.CONFIG_CACHED_PRIORITY);
-    	
+        loadFeed(false, RSSListLoader.CONFIG_CACHED_PRIORITY);
+
     	return mContentView;
     }
 
@@ -126,12 +122,6 @@ public class RSSFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(mPosition);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        interruptAll();
     }
 
     @Override
@@ -151,38 +141,6 @@ public class RSSFragment extends Fragment
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onRequestNetworkState() {
-
-        // TODO fix getActivity() checking
-        if(getActivity() == null)
-            return false;
-
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected =
-                activeNetwork != null &&
-                        activeNetwork.isConnected();
-        return isConnected;
-    }
-
-    @Override
-    public File onRequestCacheFile(String uri) {
-
-        // TODO fix getActivity() checking
-        if(getActivity() == null) {
-            return null;
-        }
-
-        File fileDir = getActivity().getCacheDir();
-        String condensedUri = uri.replaceAll("\\W+","");
-        String fileName = condensedUri + "_cache.xml";
-        File file = new File(fileDir, fileName);
-        return file;
     }
     
 	@Override
@@ -210,11 +168,11 @@ public class RSSFragment extends Fragment
 	 */
 	private void loadFeed(boolean force, int loadConfig) {
 
-        Logger.log(String.format("There are %d items in the adapter", mAdapter.getCount()));
-
-		if(force || (mAdapter.getCount() == 0)) {
-            if(runningThreads() == 0) {
-                newThread(loadConfig).start();
+		if(force || (mItems.size() == 0)) {
+            if(!getLoaderManager().hasRunningLoaders()) {
+                mLoadConfig = loadConfig;
+                mLoading = true;
+                getLoaderManager().restartLoader(0, null, this);
             }
 		}
 	}
@@ -224,55 +182,37 @@ public class RSSFragment extends Fragment
 		loadFeed(true, RSSReader.CONFIG_ONLINE_PRIORITY);
 	}
 
-    /** Keep tabs on threads */
-
-    private static int threadCount = 0;
-    private List<Thread> mThreads = new ArrayList<Thread>();
-
-    /**
-     * Create a new thread from FeedLoader and add it to list
-     *
-     * @param loadConfig Define RSSReader loading behavior
-     * @return new thread from FeedLoader runnable
-     */
-    private Thread newThread(int loadConfig) {
-        threadCount++;
-        Thread thread =  new Thread(new FeedDownloader(this, mURL, loadConfig), "feed-loader-thread-" + threadCount);
-        mThreads.add(thread);
-        return thread;
+    @Override
+    public Loader<List<RSSAdapterItem>> onCreateLoader(int i, Bundle bundle) {
+        if(mSwipeLayout != null) {
+            mSwipeLayout.setRefreshing(true);
+        }
+        return new RSSListLoader(getActivity(), mURL, mLoadConfig);
     }
 
-    /**
-     * Iterate through list of threads.
-     * If thread is null or not alive,
-     * remove it from list.
-     * Otherwise, it is counted as running thread
-     * @return number of running threads
-     */
-    private int runningThreads() {
-        int running = 0;
-        for(Thread t : mThreads) {
-            if(t != null) {
-                if(t.isAlive()) {
-                    running++;
-                } else {
-                    mThreads.remove(t);
+    @Override
+    public void onLoadFinished(Loader<List<RSSAdapterItem>> listLoader, List<RSSAdapterItem> rssAdapterItems) {
+        if(mLoading) {
+            mLoading = false;
+            Logger.log("load finished");
+            if (mSwipeLayout != null) {
+                mSwipeLayout.setRefreshing(false);
+            }
+            if (rssAdapterItems != null) {
+                mItems.clear();
+                mAdapter.notifyDataSetChanged();
+                for (RSSAdapterItem adapterItem : rssAdapterItems) {
+                    mItems.add(adapterItem);
                 }
+                mAdapter.notifyDataSetChanged();
             } else {
-                mThreads.remove(t);
+                Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
             }
         }
-        return running;
     }
 
-    /**
-     * Interrupt all threads in list
-     */
-    private void interruptAll() {
-        for(Thread t : mThreads) {
-            if(t != null) {
-                t.interrupt();
-            }
-        }
+    @Override
+    public void onLoaderReset(Loader<List<RSSAdapterItem>> listLoader) {
+        // No reference to the list provided by the loader is held
     }
 }
