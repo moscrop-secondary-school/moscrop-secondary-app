@@ -22,16 +22,16 @@ import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.list.RSSAdapter;
 import com.ivon.moscropsecondary.list.RSSAdapter.RSSAdapterItem;
 import com.ivon.moscropsecondary.list.RSSListLoader;
+import com.ivon.moscropsecondary.list.RSSListLoader.RSSListResponse;
 import com.ivon.moscropsecondary.util.Logger;
 
 import org.mcsoxford.rss.RSSItem;
-import org.mcsoxford.rss.RSSReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFragment extends Fragment
-        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<List<RSSAdapterItem>> {
+        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<RSSListResponse> {
 
 
 	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
@@ -106,7 +106,6 @@ public class RSSFragment extends Fragment
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-        Logger.log("oncreateview");
         loadFeed(false, RSSListLoader.CONFIG_CACHED_PRIORITY);
 
     	return mContentView;
@@ -172,7 +171,6 @@ public class RSSFragment extends Fragment
             if(!getLoaderManager().hasRunningLoaders()) {
                 mLoadConfig = loadConfig;
                 mLoading = true;
-                Logger.log("Setting mloading " + mLoading);
                 getLoaderManager().restartLoader(0, null, this);
             }
 		}
@@ -180,42 +178,57 @@ public class RSSFragment extends Fragment
 
 	@Override
 	public void onRefresh() {
-        Logger.log("On refresh");
-		loadFeed(true, RSSReader.CONFIG_ONLINE_PRIORITY);
+		loadFeed(true, RSSListLoader.CONFIG_ONLINE_PRIORITY);
 	}
 
     @Override
-    public Loader<List<RSSAdapterItem>> onCreateLoader(int i, Bundle bundle) {
-        if(mSwipeLayout != null) {
-            mSwipeLayout.setRefreshing(true);
+    public Loader<RSSListResponse> onCreateLoader(int i, Bundle bundle) {
+        // Only display progress bar is loading online first
+        if(mLoadConfig == RSSListLoader.CONFIG_ONLINE_ONLY || mLoadConfig == RSSListLoader.CONFIG_ONLINE_PRIORITY) {
+            if (mSwipeLayout != null) {
+                mSwipeLayout.setRefreshing(true);
+            }
         }
         return new RSSListLoader(getActivity(), mURL, mLoadConfig);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<RSSAdapterItem>> listLoader, List<RSSAdapterItem> rssAdapterItems) {
-        Logger.log("mLoading is " + mLoading);
-        if(mLoading) {
+    public void onLoadFinished(Loader<RSSListResponse> listLoader, RSSListResponse response) {
+        if (mLoading) {
             mLoading = false;
-            Logger.log("load finished, mLoading is now " + mLoading);
+
             if (mSwipeLayout != null) {
                 mSwipeLayout.setRefreshing(false);
             }
-            if (rssAdapterItems != null) {
-                mItems.clear();
-                mAdapter.notifyDataSetChanged();
-                for (RSSAdapterItem adapterItem : rssAdapterItems) {
-                    mItems.add(adapterItem);
+
+            Logger.log("Response code: " + response.RESPONSE_CODE);
+
+            if (response.RESPONSE_CODE == RSSListLoader.RESPONSE_SUCCESS) {
+
+                List<RSSAdapterItem> list = response.list;
+                if (list != null) {
+                    mItems.clear();
+                    mAdapter.notifyDataSetChanged();
+                    for (RSSAdapterItem adapterItem : list) {
+                        mItems.add(adapterItem);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
                 }
-                mAdapter.notifyDataSetChanged();
-            } else {
-                Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
+
+            } else if (response.RESPONSE_CODE == RSSListLoader.RESPONSE_RETRY_ONLINE) {
+                getLoaderManager().destroyLoader(0);
+                loadFeed(true, RSSListLoader.CONFIG_ONLINE_ONLY);
+            } else if (response.RESPONSE_CODE == RSSListLoader.RESPONSE_RETRY_CACHE) {
+                getLoaderManager().destroyLoader(0);
+                loadFeed(true, RSSListLoader.CONFIG_CACHED_ONLY);
             }
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<RSSAdapterItem>> listLoader) {
+    public void onLoaderReset(Loader<RSSListResponse> listLoader) {
         // No reference to the list provided by the loader is held
     }
 }

@@ -19,16 +19,32 @@ import java.util.List;
 /**
  * Created by ivon on 24/08/14.
  */
-public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> implements RSSReader.RSSReaderCallbacks {
+public class RSSListLoader extends AsyncTaskLoader<RSSListLoader.RSSListResponse> implements RSSReader.RSSReaderCallbacks {
 
     public static final int CONFIG_ONLINE_PRIORITY = 0;
     public static final int CONFIG_CACHED_PRIORITY = 1;
     public static final int CONFIG_ONLINE_ONLY = 2;
     public static final int CONFIG_CACHED_ONLY = 3;
 
-    private List<RSSAdapterItem> mList;
+    public static final int RESPONSE_SUCCESS = 0;
+    public static final int RESPONSE_RETRY_ONLINE = 1;
+    public static final int RESPONSE_RETRY_CACHE = 2;
+    public static final int RESPONSE_FAILURE_DO_NOT_RETRY = 3;
+
+    private RSSListResponse mResponse;
     private String mUri;
     private int mLoadConfig;
+
+    public static class RSSListResponse {
+
+        public final List<RSSAdapterItem> list;
+        public final int RESPONSE_CODE;
+
+        public RSSListResponse(List<RSSAdapterItem> list, int response) {
+            this.list = list;
+            this.RESPONSE_CODE = response;
+        }
+    }
 
     public RSSListLoader(Context context, String uri, int loadConfig) {
         super(context);
@@ -50,7 +66,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
 
     /* Runs on a worker thread */
     @Override
-    public List<RSSAdapterItem> loadInBackground() {
+    public RSSListResponse loadInBackground() {
 
         RSSReader reader = new RSSReader();
         RSSFeed feed = null;
@@ -58,7 +74,22 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
         reader.setCallbacks(this);
 
         try {
-            feed = reader.load(mUri, mLoadConfig);
+            switch (mLoadConfig) {
+
+                case CONFIG_ONLINE_ONLY:
+                case CONFIG_ONLINE_PRIORITY:
+                    feed = reader.load(mUri, RSSReader.CONFIG_ONLINE_ONLY);
+                    break;
+
+                case CONFIG_CACHED_ONLY:
+                case CONFIG_CACHED_PRIORITY:
+                    feed = reader.load(mUri, RSSReader.CONFIG_CACHED_ONLY);
+                    break;
+
+                default:
+                    feed = reader.load(mUri, mLoadConfig);
+                    break;
+            }
         } catch (RSSReaderException e) {
             e.printStackTrace();
         } finally {
@@ -66,6 +97,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
         }
 
         if(feed != null) {
+
             // Get a list of items from the feed
             List<RSSItem> items = feed.getItems();
             List<RSSAdapterItem> list = new ArrayList<RSSAdapterItem>();
@@ -78,20 +110,36 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
                     list.add(adapterItem);
                 }
             }
-            return list;
+            return new RSSListResponse(list, RESPONSE_SUCCESS);
+
         } else {
-            return null;
+
+            switch (mLoadConfig) {
+
+                case CONFIG_ONLINE_ONLY:
+                case CONFIG_CACHED_ONLY:
+                    return new RSSListResponse(null, RESPONSE_FAILURE_DO_NOT_RETRY);
+
+                case CONFIG_ONLINE_PRIORITY:
+                    return new RSSListResponse(null, RESPONSE_RETRY_CACHE);
+
+                case CONFIG_CACHED_PRIORITY:
+                    return new RSSListResponse(null, RESPONSE_RETRY_ONLINE);
+
+                default:
+                    return new RSSListResponse(null, RESPONSE_FAILURE_DO_NOT_RETRY);
+            }
         }
     }
 
     /* Runs on the UI thread */
     @Override
-    public void deliverResult(List<RSSAdapterItem> list) {
+    public void deliverResult(RSSListResponse response) {
 
-        mList = list;
+        mResponse = response;
 
         if(isStarted()) {
-            super.deliverResult(list);
+            super.deliverResult(response);
         }
     }
 
@@ -104,10 +152,10 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
      */
     @Override
     protected void onStartLoading() {
-        if(mList != null) {
-            deliverResult(mList);
+        if(mResponse != null) {
+            deliverResult(mResponse);
         }
-        if(takeContentChanged() || mList == null) {
+        if(takeContentChanged() || mResponse == null) {
             forceLoad();
         }
     }
@@ -122,7 +170,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
     }
 
     @Override
-    public void onCanceled(List<RSSAdapterItem> mList) {
+    public void onCanceled(RSSListResponse mList) {
         // No need to close lists here
     }
 
@@ -133,7 +181,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSAdapterItem>> impleme
         // Ensure the loader is stopped
         onStopLoading();
 
-        mList = null;
+        mResponse = null;
     }
 
     @Override
