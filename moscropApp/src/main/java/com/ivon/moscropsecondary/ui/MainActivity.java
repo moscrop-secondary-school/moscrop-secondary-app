@@ -47,39 +47,45 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState) {
 
-        // determine which fragment to load
-        Fragment mNextFragment = null;
-        switch(position) {
+        if(!fromSavedInstanceState) {
+            // determine which fragment to load
+            Fragment mNextFragment = null;
+            switch (position) {
 
-            case 0:
-                if(mNewsFragment == null) mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_ALL);
-                mNextFragment = mNewsFragment;
-                break;
-            case 1:
-                if(mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS);
-                mNextFragment = mEmailFragment;
-                break;
-            case 2:
-                if(mStudentSubsFragment == null) mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS);
-                mNextFragment = mStudentSubsFragment;
-                break;
-            case 3:
-                if(mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(3);
-                mNextFragment = mEventsFragment;
-                break;
-            case 4:
-                if(mTeachersFragment == null) mTeachersFragment = TeachersFragment.newInstance(4);
-                mNextFragment = mTeachersFragment;
-                break;
+                case 0:
+                    if (mNewsFragment == null)
+                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_ALL);
+                    mNextFragment = mNewsFragment;
+                    break;
+                case 1:
+                    if (mEmailFragment == null)
+                        mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS);
+                    mNextFragment = mEmailFragment;
+                    break;
+                case 2:
+                    if (mStudentSubsFragment == null)
+                        mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS);
+                    mNextFragment = mStudentSubsFragment;
+                    break;
+                case 3:
+                    if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(3);
+                    mNextFragment = mEventsFragment;
+                    break;
+                case 4:
+                    if (mTeachersFragment == null)
+                        mTeachersFragment = TeachersFragment.newInstance(4);
+                    mNextFragment = mTeachersFragment;
+                    break;
+            }
+
+            // update the main content by replacing fragments
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, mNextFragment)
+                    .commit();
         }
-
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, mNextFragment)
-                .commit();
     }
 
     public void onSectionAttached(int position) {

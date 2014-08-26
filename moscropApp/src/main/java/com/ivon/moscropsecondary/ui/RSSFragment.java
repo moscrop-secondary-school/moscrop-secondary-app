@@ -1,6 +1,5 @@
 package com.ivon.moscropsecondary.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -107,6 +106,7 @@ public class RSSFragment extends Fragment
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
+        Logger.log("oncreateview");
         loadFeed(false, RSSListLoader.CONFIG_CACHED_PRIORITY);
 
     	return mContentView;
@@ -119,9 +119,9 @@ public class RSSFragment extends Fragment
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(mPosition);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity) getActivity()).onSectionAttached(mPosition);
     }
 
     @Override
@@ -172,6 +172,7 @@ public class RSSFragment extends Fragment
             if(!getLoaderManager().hasRunningLoaders()) {
                 mLoadConfig = loadConfig;
                 mLoading = true;
+                Logger.log("Setting mloading " + mLoading);
                 getLoaderManager().restartLoader(0, null, this);
             }
 		}
@@ -179,6 +180,7 @@ public class RSSFragment extends Fragment
 
 	@Override
 	public void onRefresh() {
+        Logger.log("On refresh");
 		loadFeed(true, RSSReader.CONFIG_ONLINE_PRIORITY);
 	}
 
@@ -192,9 +194,10 @@ public class RSSFragment extends Fragment
 
     @Override
     public void onLoadFinished(Loader<List<RSSAdapterItem>> listLoader, List<RSSAdapterItem> rssAdapterItems) {
+        Logger.log("mLoading is " + mLoading);
         if(mLoading) {
             mLoading = false;
-            Logger.log("load finished");
+            Logger.log("load finished, mLoading is now " + mLoading);
             if (mSwipeLayout != null) {
                 mSwipeLayout.setRefreshing(false);
             }
