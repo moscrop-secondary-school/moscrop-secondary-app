@@ -10,30 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.calendar.CalendarParser;
+import com.ivon.moscropsecondary.calendar.CalendarParser.GCalEvent;
 import com.ivon.moscropsecondary.util.Logger;
 import com.tyczj.extendedcalendarview.CalendarProvider;
 import com.tyczj.extendedcalendarview.Event;
 import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class CalendarFragment extends Fragment {
 
-    public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscroppanthers@gmail.com/public/full?alt=json&max-results=10&orderby=starttime&sortorder=descending";
+    public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscroppanthers@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
 
     private int mPosition;
     private View mContentView;
@@ -54,10 +51,15 @@ public class CalendarFragment extends Fragment {
     	
     	mContentView = inflater.inflate(R.layout.fragment_events, container, false);
 
-        insertDays();
+        //insertDays();
 
         mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
+
+        mCalendarView.previousMonth();
+        mCalendarView.previousMonth();
+        mCalendarView.previousMonth();
+        mCalendarView.previousMonth();
 
         // JSON Testing stuff
         new Thread(new Runnable() {
@@ -93,7 +95,7 @@ public class CalendarFragment extends Fragment {
 
         // Insert updated data
         ContentValues values = new ContentValues();
-        values.put(CalendarProvider.COLOR, Event.COLOR_RED);
+        values.put(CalendarProvider.COLOR, Event.DEFAULT_EVENT_ICON);
         values.put(CalendarProvider.DESCRIPTION, "Eat moon cakes :D");
         values.put(CalendarProvider.LOCATION, "Home");
         values.put(CalendarProvider.EVENT, "Mid-Autumn Festival");
@@ -118,73 +120,80 @@ public class CalendarFragment extends Fragment {
 
     private void doJsonStuff() {
 
-        JSONObject main = getJsonObject(MOSCROP_CALENDAR_JSON_URL);
-        if(main == null) {
+        // temporary for testing
+        Cursor c = getActivity().getContentResolver().query(CalendarProvider.CONTENT_URI, null, null, null, null);
+        int count = c.getCount();
+        c.close();
+        if(count > 0) {
             return;
         }
 
+        Logger.log("Trying to receive events list");
         try {
-            JSONObject feed = main.getJSONObject("feed");
-            JSONObject updated = feed.getJSONObject("updated");
-            String time = updated.getString("$t");
-            Logger.log("Updated time", time);
+            List<GCalEvent> events = CalendarParser.getCalendarFeed(MOSCROP_CALENDAR_JSON_URL).events;
+            Logger.log("Received events list");
+
+            if (events != null) {
+                Logger.log("Events list is not null");
+                ContentValues[] valueArray = new ContentValues[events.size()];
+                int i = 0;
+                for (GCalEvent event : events) {
+                    Logger.log("doJsonStuff: iterating through lists; Event number " + (i+1));
+
+                    ContentValues values = new ContentValues();
+                    values.put(CalendarProvider.COLOR, Event.DEFAULT_EVENT_ICON);
+                    values.put(CalendarProvider.DESCRIPTION, event.content);
+                    values.put(CalendarProvider.LOCATION, event.where);
+                    values.put(CalendarProvider.EVENT, event.title);
+
+                    Calendar cal = new GregorianCalendar();
+                    Date date = parseRCF339Date(event.startTimeRCF);
+                    cal.setTime(date);
+
+                    values.put(CalendarProvider.START, cal.getTimeInMillis());
+                    values.put(CalendarProvider.START_DAY, getJulianDayFromCalendar(cal));
+
+                    date = parseRCF339Date(event.endTimeRCF);
+                    cal.setTime(date);
+
+                    values.put(CalendarProvider.END, cal.getTimeInMillis());
+                    values.put(CalendarProvider.END_DAY, getJulianDayFromCalendar(cal));
+
+                    valueArray[i++] = values;
+                    Logger.log("Adding contentvalue to array");
+                }
+                getActivity().getContentResolver().bulkInsert(CalendarProvider.CONTENT_URI, valueArray);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCalendarView.refreshCalendar();
+                        Logger.log("done loading");
+                    }
+                });
+            }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Logger.error("CalendarFragment.doJsonStuff()", e);
         }
     }
 
-    private JSONObject getJsonObject(String url) {
-
-        JSONObject resultObj = null;
-
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-
-        InputStream inputStream = null;
-        String resultStr = null;
+    private Date parseRCF339Date(String dateStr) {
         try {
-
-            // Make sure status is OK
-            HttpResponse response = httpclient.execute(httpGet);
-            StatusLine status = response.getStatusLine();
-            if (status.getStatusCode() != HttpStatus.SC_OK) {
-                Logger.log("Status code", status.getStatusCode());
-                Logger.log("Reason", status.getReasonPhrase());
-                return null;
-            }
-
-            // Read response
-            HttpEntity entity = response.getEntity();
-            inputStream = entity.getContent();
-            // json is UTF-8 by default
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-            StringBuilder sb = new StringBuilder();
-
-            // Build input stream into response string
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-                sb.append(line).append("\n");
-            }
-            resultStr = sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try{
-                if(inputStream != null) {
-                    inputStream.close();
+            if (dateStr.endsWith("Z")) {         // End in Z means no time zone
+                SimpleDateFormat noTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                return noTimeZoneFormat.parse(dateStr);
+            } else {
+                if(dateStr.length() >= 28) {     // Proper RCF 3339 format with time zone
+                    SimpleDateFormat withTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
+                    return withTimeZoneFormat.parse(dateStr);
+                } else {                        // Format uncertain, only take common substring
+                    SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String substring = dateStr.substring(0, 10);
+                    return shortDateFormat.parse(substring);
                 }
-            }catch(Exception e){
-                e.printStackTrace();
             }
+        } catch (ParseException e) {
+            Logger.error("CalendarFragment.parseRCF3339Date() with dateStr = " + dateStr, e);
         }
-
-        try {
-            resultObj = new JSONObject(resultStr);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return resultObj;
+        return null;
     }
 }
