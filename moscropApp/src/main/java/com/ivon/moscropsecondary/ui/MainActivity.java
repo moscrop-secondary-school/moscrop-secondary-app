@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity
 
                 case 0:
                     if (mNewsFragment == null)
-                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_ALL);
+                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS);
                     mNextFragment = mNewsFragment;
                     break;
                 case 1:

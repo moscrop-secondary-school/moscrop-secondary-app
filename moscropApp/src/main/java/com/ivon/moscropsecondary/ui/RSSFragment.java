@@ -52,7 +52,7 @@ public class RSSFragment extends Fragment
 
     private static final String KEY_URL = "url";
 	
-	private String mURL = FEED_ALL;
+	private String mURL = FEED_NEWS;
     private int mLoadConfig = RSSListLoader.CONFIG_CACHED_PRIORITY;
     private boolean mLoading = false;
 
