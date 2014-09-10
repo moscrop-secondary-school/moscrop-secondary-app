@@ -8,12 +8,15 @@ import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.calendar.CalendarParser;
 import com.ivon.moscropsecondary.calendar.CalendarParser.GCalEvent;
+import com.ivon.moscropsecondary.calendar.EventListAdapter;
 import com.ivon.moscropsecondary.util.Logger;
 import com.tyczj.extendedcalendarview.CalendarProvider;
+import com.tyczj.extendedcalendarview.Day;
 import com.tyczj.extendedcalendarview.Event;
 import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
@@ -21,6 +24,7 @@ import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -28,14 +32,19 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements ExtendedCalendarView.OnDaySelectListener {
 
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscroppanthers@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
 
     private int mPosition;
     private View mContentView;
+    private Day mSelectedDay;
 
     private ExtendedCalendarView mCalendarView;
+    private ListView mListView;
+
+    private List<Event> mEvents = new ArrayList<Event>();
+    private EventListAdapter mAdapter;
     
     public static CalendarFragment newInstance(int position) {
     	CalendarFragment fragment = new CalendarFragment();
@@ -53,13 +62,13 @@ public class CalendarFragment extends Fragment {
 
         //insertDays();
 
+        mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
+        mAdapter = new EventListAdapter(getActivity(), mEvents);
+        mListView.setAdapter(mAdapter);
+
         mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
-
-        mCalendarView.previousMonth();
-        mCalendarView.previousMonth();
-        mCalendarView.previousMonth();
-        mCalendarView.previousMonth();
+        mCalendarView.setOnDaySelectListener(this);
 
         // JSON Testing stuff
         new Thread(new Runnable() {
@@ -78,12 +87,49 @@ public class CalendarFragment extends Fragment {
         ((MainActivity) getActivity()).onSectionAttached(mPosition);
     }
 
-    private void insertDays() {
+    @Override
+    public void onDaySelected(Day day) {
+        if (day != null) {
+            Logger.log("Selected day " + day.getDay());
+            // Check if day is valid (>0) and is not the same as the already selected day
+            // If the already selected day is null then nothing has been set yet, proceed
+            if (mSelectedDay == null
+                    || (day.getDay() > 0 &&
+                        !(day.getDay() == mSelectedDay.getDay() && day.getMonth() == mSelectedDay.getMonth() && day.getYear() == mSelectedDay.getYear())
+                        )
+                    ) {
+                mSelectedDay = day;
+                updateEventsList(day);
+            }
+        } else {
+           Logger.log("Selected day is null");
+        }
+    }
 
-        /*
-        // Delete all rows and replace with updated data
-        getActivity().getContentResolver().delete(CalendarProvider.CONTENT_URI, null, null);
-        */
+    private void updateEventsList(Day day) {
+
+        Logger.log("Updating events list");
+        mEvents.clear();
+
+        /*Event e = new Event(5, 2354353453L, 234232543L);
+        e.setName("Event 1");
+        mEvents.add(e);
+
+        Event e2 = new Event(6, 23432252352L, 234234234L);
+        e.setName("Event 2");
+        mEvents.add(e2);*/
+
+
+        List<Event> dayEvents = day.getEvents();
+        for (Event event : dayEvents) {
+            mEvents.add(event);
+        }
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+    /*
+    private void insertDays() {
 
         // temporary for testing
         Cursor c = getActivity().getContentResolver().query(CalendarProvider.CONTENT_URI, null, null, null, null);
@@ -112,6 +158,7 @@ public class CalendarFragment extends Fragment {
 
         getActivity().getContentResolver().insert(CalendarProvider.CONTENT_URI, values);
     }
+    */
 
     private int getJulianDayFromCalendar(Calendar calendar) {
         TimeZone tz = TimeZone.getDefault();
