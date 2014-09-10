@@ -6,4 +6,6 @@
     <color name="card_light_text">#ffb5b5b5</color>
     
     <color name="card_selected_color">#dddddddd</color>
+
+    <color name="divider">#ff9e9e9e</color>
 </resources>

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.calendar.CalendarParser;
@@ -42,6 +43,7 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
 
     private ExtendedCalendarView mCalendarView;
     private ListView mListView;
+    private TextView mHeaderView;
 
     private List<Event> mEvents = new ArrayList<Event>();
     private EventListAdapter mAdapter;
@@ -65,6 +67,10 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), mEvents);
         mListView.setAdapter(mAdapter);
+
+        mHeaderView = new TextView(getActivity());
+        mHeaderView.setTextSize(20);
+        mListView.addHeaderView(mHeaderView);
 
         mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
@@ -111,21 +117,76 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         Logger.log("Updating events list");
         mEvents.clear();
 
-        /*Event e = new Event(5, 2354353453L, 234232543L);
-        e.setName("Event 1");
-        mEvents.add(e);
-
-        Event e2 = new Event(6, 23432252352L, 234234234L);
-        e.setName("Event 2");
-        mEvents.add(e2);*/
-
-
         List<Event> dayEvents = day.getEvents();
         for (Event event : dayEvents) {
             mEvents.add(event);
         }
 
+        if(mHeaderView != null) {
+            String date = String.format("%s %d", getMonthName(day.getMonth(), true), day.getDay());
+            mHeaderView.setText(date);
+        }
+
         mAdapter.notifyDataSetChanged();
+    }
+
+    private String getMonthName(int month, boolean shortened) {
+        if (shortened) {
+            switch (month) {
+                case Calendar.JANUARY:
+                    return "Jan";
+                case Calendar.FEBRUARY:
+                    return "Feb";
+                case Calendar.MARCH:
+                    return "Mar";
+                case Calendar.APRIL:
+                    return "Apr";
+                case Calendar.MAY:
+                    return "May";
+                case Calendar.JUNE:
+                    return "Jun";
+                case Calendar.JULY:
+                    return "Jul";
+                case Calendar.AUGUST:
+                    return "Aug";
+                case Calendar.SEPTEMBER:
+                    return "Sep";
+                case Calendar.OCTOBER:
+                    return "Oct";
+                case Calendar.NOVEMBER:
+                    return "Nov";
+                case Calendar.DECEMBER:
+                    return "Dec";
+            }
+        } else {
+            switch (month) {
+                case Calendar.JANUARY:
+                    return "January";
+                case Calendar.FEBRUARY:
+                    return "February";
+                case Calendar.MARCH:
+                    return "March";
+                case Calendar.APRIL:
+                    return "April";
+                case Calendar.MAY:
+                    return "May";
+                case Calendar.JUNE:
+                    return "June";
+                case Calendar.JULY:
+                    return "July";
+                case Calendar.AUGUST:
+                    return "August";
+                case Calendar.SEPTEMBER:
+                    return "September";
+                case Calendar.OCTOBER:
+                    return "October";
+                case Calendar.NOVEMBER:
+                    return "November";
+                case Calendar.DECEMBER:
+                    return "December";
+            }
+        }
+        return "";
     }
 
     /*
