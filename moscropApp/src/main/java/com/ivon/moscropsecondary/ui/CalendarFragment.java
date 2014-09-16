@@ -44,6 +44,7 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
     private ExtendedCalendarView mCalendarView;
     private ListView mListView;
     private TextView mHeaderView;
+    private TextView mFooterView;
 
     private List<Event> mEvents = new ArrayList<Event>();
     private EventListAdapter mAdapter;
@@ -71,6 +72,8 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         mHeaderView = new TextView(getActivity());
         mHeaderView.setTextSize(20);
         mListView.addHeaderView(mHeaderView);
+        mFooterView = new TextView(getActivity());
+        mFooterView.setText("No events planned for today");
 
         mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
@@ -120,6 +123,11 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         List<Event> dayEvents = day.getEvents();
         for (Event event : dayEvents) {
             mEvents.add(event);
+        }
+
+        mListView.removeFooterView(mFooterView);
+        if (mEvents.size() == 0) {
+            mListView.addFooterView(mFooterView);
         }
 
         if(mHeaderView != null) {
