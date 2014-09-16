@@ -131,7 +131,13 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         }
 
         if(mHeaderView != null) {
-            String date = String.format("%s %d", getMonthName(day.getMonth(), true), day.getDay());
+            String date;
+
+            if (day.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
+                date = String.format("%s %d", getMonthName(day.getMonth(), true), day.getDay());
+            } else {
+                date = String.format("%s %d, %d", getMonthName(day.getMonth(), true), day.getDay(), day.getYear());
+            }
             mHeaderView.setText(date);
         }
 
