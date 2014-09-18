@@ -1,5 +1,9 @@
 package com.ivon.moscropsecondary.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -19,53 +23,66 @@ import java.io.InputStreamReader;
  */
 public class JsonUtil {
 
-    public static JSONObject getJsonObjectFromUrl(String url) throws JSONException {
+    public static boolean isConnected(Context context) {
+        if(context == null)
+            return false;
+
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    public static JSONObject getJsonObjectFromUrl(Context context, String url) throws JSONException {
 
         JSONObject resultObj = null;
 
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
+        if (isConnected(context)) {
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
 
-        InputStream inputStream = null;
-        String resultStr = null;
-        try {
+            InputStream inputStream = null;
+            String resultStr = null;
+            try {
 
-            // Make sure status is OK
-            HttpResponse response = httpclient.execute(httpGet);
-            StatusLine status = response.getStatusLine();
-            if (status.getStatusCode() != HttpStatus.SC_OK) {
-                Logger.log("Status code", status.getStatusCode());
-                Logger.log("Reason", status.getReasonPhrase());
-                return null;
-            }
-
-            // Read response
-            HttpEntity entity = response.getEntity();
-            inputStream = entity.getContent();
-            // json is UTF-8 by default
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-            StringBuilder sb = new StringBuilder();
-
-            // Build input stream into response string
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-                sb.append(line).append("\n");
-            }
-            resultStr = sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try{
-                if(inputStream != null) {
-                    inputStream.close();
+                // Make sure status is OK
+                HttpResponse response = httpclient.execute(httpGet);
+                StatusLine status = response.getStatusLine();
+                if (status.getStatusCode() != HttpStatus.SC_OK) {
+                    Logger.log("Status code", status.getStatusCode());
+                    Logger.log("Reason", status.getReasonPhrase());
+                    return null;
                 }
-            }catch(Exception e){
+
+                // Read response
+                HttpEntity entity = response.getEntity();
+                inputStream = entity.getContent();
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+
+                // Build input stream into response string
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                resultStr = sb.toString();
+            } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+
+            resultObj = new JSONObject(resultStr);
         }
 
-        resultObj = new JSONObject(resultStr);
         return resultObj;
     }
 

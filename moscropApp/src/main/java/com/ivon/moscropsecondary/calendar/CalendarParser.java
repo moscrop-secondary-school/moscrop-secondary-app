@@ -61,12 +61,15 @@ public class CalendarParser {
         return new GCalEvent(title, content, where, startTimeRCF, endTimeRCF);
     }
 
-    public static CalendarFeed getCalendarFeed(String url) throws JSONException {
-        JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(url);
-        String timestamp = getUpdatedTimeFromJsonObject(jsonObject);
-        List<GCalEvent> events = getEventsListFromJsonObject(jsonObject);
-
-        return new CalendarFeed(timestamp, events);
+    public static CalendarFeed getCalendarFeed(Context context, String url) throws JSONException {
+        JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
+        if (jsonObject != null) {
+            String timestamp = getUpdatedTimeFromJsonObject(jsonObject);
+            List<GCalEvent> events = getEventsListFromJsonObject(jsonObject);
+            return new CalendarFeed(timestamp, events);
+        } else {
+            return null;
+        }
     }
 
     private static String getCalendarUrlFromId(String id) {
@@ -101,7 +104,7 @@ public class CalendarParser {
         CalendarFeed feed = null;
         try {
             String url = getCalendarUrlFromId(id);
-            feed = getCalendarFeed(url);
+            feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
             Logger.error("CalendarParser.processAll()", e);
         }
@@ -139,7 +142,7 @@ public class CalendarParser {
             String startMinStr = sdf.format(new Date(startMin));
             url = url + "&start-min=" + startMinStr;
 
-            feed = getCalendarFeed(url);
+            feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
             Logger.error("CalendarParser.process()", e);
         }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.calendar.CalendarParser;
 import com.ivon.moscropsecondary.calendar.EventListAdapter;
+import com.ivon.moscropsecondary.util.DateUtil;
 import com.ivon.moscropsecondary.util.Logger;
 import com.ivon.moscropsecondary.util.Preferences;
 import com.tyczj.extendedcalendarview.CalendarProvider;
@@ -72,7 +73,7 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
         mCalendarView.setOnDaySelectListener(this);
 
-        // JSON Testing stuff
+        // Refresh calendar
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -127,73 +128,14 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
             String date;
 
             if (day.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
-                date = String.format("%s %d", getMonthName(day.getMonth(), true), day.getDay());
+                date = String.format("%s %d", DateUtil.getMonthName(day.getMonth(), true), day.getDay());
             } else {
-                date = String.format("%s %d, %d", getMonthName(day.getMonth(), true), day.getDay(), day.getYear());
+                date = String.format("%s %d, %d", DateUtil.getMonthName(day.getMonth(), true), day.getDay(), day.getYear());
             }
             mHeaderView.setText(date);
         }
 
         mAdapter.notifyDataSetChanged();
-    }
-
-    private String getMonthName(int month, boolean shortened) {
-        if (shortened) {
-            switch (month) {
-                case Calendar.JANUARY:
-                    return "Jan";
-                case Calendar.FEBRUARY:
-                    return "Feb";
-                case Calendar.MARCH:
-                    return "Mar";
-                case Calendar.APRIL:
-                    return "Apr";
-                case Calendar.MAY:
-                    return "May";
-                case Calendar.JUNE:
-                    return "Jun";
-                case Calendar.JULY:
-                    return "Jul";
-                case Calendar.AUGUST:
-                    return "Aug";
-                case Calendar.SEPTEMBER:
-                    return "Sep";
-                case Calendar.OCTOBER:
-                    return "Oct";
-                case Calendar.NOVEMBER:
-                    return "Nov";
-                case Calendar.DECEMBER:
-                    return "Dec";
-            }
-        } else {
-            switch (month) {
-                case Calendar.JANUARY:
-                    return "January";
-                case Calendar.FEBRUARY:
-                    return "February";
-                case Calendar.MARCH:
-                    return "March";
-                case Calendar.APRIL:
-                    return "April";
-                case Calendar.MAY:
-                    return "May";
-                case Calendar.JUNE:
-                    return "June";
-                case Calendar.JULY:
-                    return "July";
-                case Calendar.AUGUST:
-                    return "August";
-                case Calendar.SEPTEMBER:
-                    return "September";
-                case Calendar.OCTOBER:
-                    return "October";
-                case Calendar.NOVEMBER:
-                    return "November";
-                case Calendar.DECEMBER:
-                    return "December";
-            }
-        }
-        return "";
     }
 
     private void doJsonStuff() {
