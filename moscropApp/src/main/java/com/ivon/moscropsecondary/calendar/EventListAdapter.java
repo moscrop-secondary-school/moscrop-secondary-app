@@ -78,13 +78,24 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                 ) {
 
             if (durationMillis == millisInADay) {
+
+                // All day event. Self explanatory.
                 duration = "All day";
+
             } else {
+
+                // Complete days events, but span multiple days
+
                 String startStr;
                 String endStr;
 
                 DateFormat dfNoYear = new SimpleDateFormat("MMM dd", Locale.getDefault());
                 DateFormat dfWithYear = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+
+                // Subtract 1 to prevent events ending at 12AM the day
+                // after its "real" end date from being counted as an
+                // event on that next day
+                endDate.setTime(endDate.getTime() - 1);
 
                 if (startCal.get(Calendar.YEAR) == currentYear) {
                     startStr = dfNoYear.format(startDate);
@@ -99,9 +110,13 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                 }
 
                 duration = startStr + " - " +  endStr;
+
             }
 
         } else {
+
+            // Events that have specific hour/minute start/ends.
+
             String startStr;
             String endStr;
 

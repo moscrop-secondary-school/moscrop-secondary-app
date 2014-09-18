@@ -1,10 +1,10 @@
 package com.ivon.moscropsecondary.ui;
 
-import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,28 +13,21 @@ import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.calendar.CalendarParser;
-import com.ivon.moscropsecondary.calendar.CalendarParser.GCalEvent;
 import com.ivon.moscropsecondary.calendar.EventListAdapter;
 import com.ivon.moscropsecondary.util.Logger;
+import com.ivon.moscropsecondary.util.Preferences;
 import com.tyczj.extendedcalendarview.CalendarProvider;
 import com.tyczj.extendedcalendarview.Day;
 import com.tyczj.extendedcalendarview.Event;
 import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
-import org.json.JSONException;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 public class CalendarFragment extends Fragment implements ExtendedCalendarView.OnDaySelectListener {
 
+    public static final String MOSCROP_CALENDAR_ID = "moscroppanthers@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscroppanthers@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
 
     private int mPosition;
@@ -203,119 +196,49 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         return "";
     }
 
-    /*
-    private void insertDays() {
-
-        // temporary for testing
-        Cursor c = getActivity().getContentResolver().query(CalendarProvider.CONTENT_URI, null, null, null, null);
-        int count = c.getCount();
-        c.close();
-        if(count > 0) {
-            return;
-        }
-
-        // Insert updated data
-        ContentValues values = new ContentValues();
-        values.put(CalendarProvider.COLOR, Event.DEFAULT_EVENT_ICON);
-        values.put(CalendarProvider.DESCRIPTION, "Eat moon cakes :D");
-        values.put(CalendarProvider.LOCATION, "Home");
-        values.put(CalendarProvider.EVENT, "Mid-Autumn Festival");
-
-        Calendar cal = Calendar.getInstance();
-
-        cal.set(2014, Calendar.SEPTEMBER, 6, 8, 0);
-        values.put(CalendarProvider.START, cal.getTimeInMillis());
-        values.put(CalendarProvider.START_DAY, getJulianDayFromCalendar(cal));
-
-        cal.set(2014, Calendar.SEPTEMBER, 8, 20, 5);
-        values.put(CalendarProvider.END, cal.getTimeInMillis());
-        values.put(CalendarProvider.END_DAY, getJulianDayFromCalendar(cal));
-
-        getActivity().getContentResolver().insert(CalendarProvider.CONTENT_URI, values);
-    }
-    */
-
-    private int getJulianDayFromCalendar(Calendar calendar) {
-        TimeZone tz = TimeZone.getDefault();
-        return Time.getJulianDay(calendar.getTimeInMillis(), TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(calendar.getTimeInMillis())));
-    }
-
     private void doJsonStuff() {
 
-        // temporary for testing
+        // Check if provider is empty
         Cursor c = getActivity().getContentResolver().query(CalendarProvider.CONTENT_URI, null, null, null, null);
         int count = c.getCount();
         c.close();
-        if(count > 0) {
-            return;
-        }
 
-        Logger.log("Trying to receive events list");
-        try {
-            List<GCalEvent> events = CalendarParser.getCalendarFeed(MOSCROP_CALENDAR_JSON_URL).events;
-            Logger.log("Received events list");
+        SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.Calendar.NAME, Context.MODE_MULTI_PROCESS);
+        long lastUpdateMillis = prefs.getLong(Preferences.Calendar.Keys.LAST_UPDATED, Preferences.Calendar.Default.LAST_UPDATED);
+        String lastGcalVersion = prefs.getString(Preferences.Calendar.Keys.GCAL_VERSION, Preferences.Calendar.Default.GCAL_VERSION);
 
-            if (events != null) {
-                Logger.log("Events list is not null");
-                ContentValues[] valueArray = new ContentValues[events.size()];
-                int i = 0;
-                for (GCalEvent event : events) {
-                    Logger.log("doJsonStuff: iterating through lists; Event number " + (i+1));
+        if((count == 0)
+                || (lastUpdateMillis == Preferences.Calendar.Default.LAST_UPDATED)
+                || (lastGcalVersion.equals(Preferences.Calendar.Default.GCAL_VERSION))
+                ) {
 
-                    ContentValues values = new ContentValues();
-                    values.put(CalendarProvider.COLOR, Event.DEFAULT_EVENT_ICON);
-                    values.put(CalendarProvider.DESCRIPTION, event.content);
-                    values.put(CalendarProvider.LOCATION, event.where);
-                    values.put(CalendarProvider.EVENT, event.title);
+            // Provider is empty
+            // Or, if last update info is missing, to be safe,
+            // we will reload everything. Make sure data is up to date.
+            CalendarParser.processAll(getActivity(), MOSCROP_CALENDAR_ID);
 
-                    Calendar cal = new GregorianCalendar();
-                    Date date = parseRCF339Date(event.startTimeRCF);
-                    cal.setTime(date);
+        } else {
 
-                    values.put(CalendarProvider.START, cal.getTimeInMillis());
-                    values.put(CalendarProvider.START_DAY, getJulianDayFromCalendar(cal));
+            // Everything good to go! Functioning normally.
 
-                    date = parseRCF339Date(event.endTimeRCF);
-                    cal.setTime(date);
-
-                    values.put(CalendarProvider.END, cal.getTimeInMillis());
-                    values.put(CalendarProvider.END_DAY, getJulianDayFromCalendar(cal));
-
-                    valueArray[i++] = values;
-                    Logger.log("Adding contentvalue to array");
-                }
-                getActivity().getContentResolver().bulkInsert(CalendarProvider.CONTENT_URI, valueArray);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCalendarView.refreshCalendar();
-                        Logger.log("done loading");
-                    }
-                });
+            // If last update time is in the future for some reason,
+            // assume last update time is now so we can recheck everything
+            // between now and the last updated time, which is somehow
+            // in the future. Probably aliens. (Actually, very likely due to timezones)
+            if(lastUpdateMillis > System.currentTimeMillis()) {
+                lastUpdateMillis = System.currentTimeMillis();
             }
-        } catch (JSONException e) {
-            Logger.error("CalendarFragment.doJsonStuff()", e);
-        }
-    }
 
-    private Date parseRCF339Date(String dateStr) {
-        try {
-            if (dateStr.endsWith("Z")) {         // End in Z means no time zone
-                SimpleDateFormat noTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                return noTimeZoneFormat.parse(dateStr);
-            } else {
-                if(dateStr.length() >= 28) {     // Proper RCF 3339 format with time zone
-                    SimpleDateFormat withTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
-                    return withTimeZoneFormat.parse(dateStr);
-                } else {                        // Format uncertain, only take common substring
-                    SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    String substring = dateStr.substring(0, 10);
-                    return shortDateFormat.parse(substring);
-                }
-            }
-        } catch (ParseException e) {
-            Logger.error("CalendarFragment.parseRCF3339Date() with dateStr = " + dateStr, e);
+            CalendarParser.process(getActivity(), MOSCROP_CALENDAR_ID, lastUpdateMillis, lastGcalVersion);
         }
-        return null;
+
+        // Update UI when done loading
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mCalendarView.refreshCalendar();
+                Logger.log("done loading");
+            }
+        });
     }
 }
