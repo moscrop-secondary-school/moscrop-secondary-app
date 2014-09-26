@@ -11,6 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.calendar.CalendarFragment;
+import com.ivon.moscropsecondary.rss.RSSFragment;
+import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
 import com.ivon.moscropsecondary.util.Logger;
 
 public class MainActivity extends FragmentActivity
@@ -21,7 +24,7 @@ public class MainActivity extends FragmentActivity
 	protected RSSFragment mEmailFragment;
 	protected RSSFragment mStudentSubsFragment;
 	protected CalendarFragment mEventsFragment;
-	protected TeachersFragment mTeachersFragment;
+	protected StaffInfoFragment mTeachersFragment;
     
 	//protected static int currentFragment;
 
@@ -75,7 +78,7 @@ public class MainActivity extends FragmentActivity
                     break;
                 case 4:
                     if (mTeachersFragment == null)
-                        mTeachersFragment = TeachersFragment.newInstance(4);
+                        mTeachersFragment = StaffInfoFragment.newInstance(4);
                     mNextFragment = mTeachersFragment;
                     break;
             }

@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.list;
+package com.ivon.moscropsecondary.rss;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.list.CardUtil.CardProcessor;
+import com.ivon.moscropsecondary.rss.CardUtil.CardProcessor;
 
 import org.mcsoxford.rss.RSSItem;
 

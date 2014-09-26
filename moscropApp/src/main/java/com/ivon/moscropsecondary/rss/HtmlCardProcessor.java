@@ -1,6 +1,6 @@
-package com.ivon.moscropsecondary.list;
+package com.ivon.moscropsecondary.rss;
 
-import com.ivon.moscropsecondary.list.CardUtil.CardProcessor;
+import com.ivon.moscropsecondary.rss.CardUtil.CardProcessor;
 import com.ivon.moscropsecondary.util.StringUtil;
 
 public class HtmlCardProcessor implements CardProcessor {

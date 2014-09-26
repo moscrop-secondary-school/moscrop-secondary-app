@@ -32,19 +32,20 @@ public class Preferences {
         // Nothing here yet
     }
 
-    public static class Calendar {
+    public static class App {
 
-        public static final String NAME = "calendar";
+        public static final String NAME = "moscrop_secondary";
 
         public static class Default {
             public static final long LAST_UPDATED = 0;
             public static final String GCAL_VERSION = "no version info";
+            public static final String STAFF_DB_VERSION = "no version info";
         }
 
         public static class Keys {
             public static final String LAST_UPDATED = "last_updated";
             public static final String GCAL_VERSION = "gcal_version";
+            public static final String STAFF_DB_VERSION = "staff_db_version";
         }
     }
-
 }

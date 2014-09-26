@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.ui;
+package com.ivon.moscropsecondary.rss;
 
 import java.io.BufferedWriter;
 import java.io.File;

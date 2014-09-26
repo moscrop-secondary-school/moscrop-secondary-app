@@ -1,11 +1,11 @@
-package com.ivon.moscropsecondary.list;
+package com.ivon.moscropsecondary.rss;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.ivon.moscropsecondary.list.RSSAdapter.RSSAdapterItem;
+import com.ivon.moscropsecondary.rss.RSSAdapter.RSSAdapterItem;
 
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;

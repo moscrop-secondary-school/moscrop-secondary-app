@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.list;
+package com.ivon.moscropsecondary.rss;
 
 /**
  * Created by ivon on 30/06/14.

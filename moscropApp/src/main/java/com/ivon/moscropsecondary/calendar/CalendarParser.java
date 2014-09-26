@@ -77,9 +77,9 @@ public class CalendarParser {
     }
 
     private static void saveUpdateInfo(Context context, String gcalVersion) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(Preferences.Calendar.NAME, Context.MODE_MULTI_PROCESS).edit();
-        prefs.putLong(Preferences.Calendar.Keys.LAST_UPDATED, System.currentTimeMillis());
-        prefs.putString(Preferences.Calendar.Keys.GCAL_VERSION, gcalVersion);
+        SharedPreferences.Editor prefs = context.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+        prefs.putLong(Preferences.App.Keys.LAST_UPDATED, System.currentTimeMillis());
+        prefs.putString(Preferences.App.Keys.GCAL_VERSION, gcalVersion);
         prefs.commit();
     }
 

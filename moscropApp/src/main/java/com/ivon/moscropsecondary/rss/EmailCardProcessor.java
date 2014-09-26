@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.list;
+package com.ivon.moscropsecondary.rss;
 
 import com.ivon.moscropsecondary.util.StringUtil;
 

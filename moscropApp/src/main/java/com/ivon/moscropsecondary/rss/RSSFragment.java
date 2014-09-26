@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.ui;
+package com.ivon.moscropsecondary.rss;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.list.RSSAdapter;
-import com.ivon.moscropsecondary.list.RSSAdapter.RSSAdapterItem;
-import com.ivon.moscropsecondary.list.RSSListLoader;
-import com.ivon.moscropsecondary.list.RSSListLoader.RSSListResponse;
+import com.ivon.moscropsecondary.rss.RSSAdapter.RSSAdapterItem;
+import com.ivon.moscropsecondary.rss.RSSListLoader.RSSListResponse;
+import com.ivon.moscropsecondary.ui.MainActivity;
 import com.ivon.moscropsecondary.util.Logger;
 
 import org.mcsoxford.rss.RSSItem;

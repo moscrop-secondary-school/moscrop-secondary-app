@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.ui;
+package com.ivon.moscropsecondary.calendar;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,8 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.calendar.CalendarParser;
-import com.ivon.moscropsecondary.calendar.EventListAdapter;
+import com.ivon.moscropsecondary.ui.MainActivity;
 import com.ivon.moscropsecondary.util.DateUtil;
 import com.ivon.moscropsecondary.util.Logger;
 import com.ivon.moscropsecondary.util.Preferences;
@@ -145,13 +144,13 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         int count = c.getCount();
         c.close();
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.Calendar.NAME, Context.MODE_MULTI_PROCESS);
-        long lastUpdateMillis = prefs.getLong(Preferences.Calendar.Keys.LAST_UPDATED, Preferences.Calendar.Default.LAST_UPDATED);
-        String lastGcalVersion = prefs.getString(Preferences.Calendar.Keys.GCAL_VERSION, Preferences.Calendar.Default.GCAL_VERSION);
+        SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.LAST_UPDATED, Preferences.App.Default.LAST_UPDATED);
+        String lastGcalVersion = prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
 
         if((count == 0)
-                || (lastUpdateMillis == Preferences.Calendar.Default.LAST_UPDATED)
-                || (lastGcalVersion.equals(Preferences.Calendar.Default.GCAL_VERSION))
+                || (lastUpdateMillis == Preferences.App.Default.LAST_UPDATED)
+                || (lastGcalVersion.equals(Preferences.App.Default.GCAL_VERSION))
                 ) {
 
             // Provider is empty
