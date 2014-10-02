@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.rss.RSSAdapter.RSSAdapterItem;
 import com.ivon.moscropsecondary.rss.RSSListLoader.RSSListResponse;
-import com.ivon.moscropsecondary.ui.MainActivity;
+import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.util.Logger;
 
 import org.mcsoxford.rss.RSSItem;

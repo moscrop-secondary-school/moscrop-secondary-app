@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.ivon.moscropsecondary.ui.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,16 +28,16 @@
         <activity
             android:name=".rss.NewsDisplayActivity"
             android:label="@string/activity_displaynews"
-            android:parentActivityName="com.ivon.moscropsecondary.ui.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ivon.moscropsecondary.ui.MainActivity" />
         </activity>
 
         <activity
-            android:name="com.ivon.moscropsecondary.ui.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/activity_settings"
-            android:parentActivityName="com.ivon.moscropsecondary.ui.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ivon.moscropsecondary.ui.MainActivity" />

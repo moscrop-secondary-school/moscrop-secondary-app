@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.ui;
+package com.ivon.moscropsecondary;
 
 
 import android.app.ActionBar;

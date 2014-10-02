@@ -1,6 +1,8 @@
 package com.ivon.moscropsecondary.calendar;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,11 +10,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.ui.MainActivity;
+import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.util.DateUtil;
 import com.ivon.moscropsecondary.util.Logger;
 import com.ivon.moscropsecondary.util.Preferences;
@@ -25,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CalendarFragment extends Fragment implements ExtendedCalendarView.OnDaySelectListener {
+public class CalendarFragment extends Fragment
+        implements ExtendedCalendarView.OnDaySelectListener, AdapterView.OnItemClickListener {
 
     public static final String MOSCROP_CALENDAR_ID = "moscroppanthers@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscroppanthers@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
@@ -61,6 +65,7 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
         mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), mEvents);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
         mHeaderView = new TextView(getActivity());
         mHeaderView.setTextSize(20);
@@ -181,5 +186,59 @@ public class CalendarFragment extends Fragment implements ExtendedCalendarView.O
                 Logger.log("done loading");
             }
         });
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.event_dialog, null);
+
+        Event event = mEvents.get(position-1);  // -1 to account for header view
+        String title = event.getTitle();
+        String duration = DateUtil.formatEventDuration(event);
+        String description = event.getDescription();
+        String location = event.getLocation();
+
+        if (duration != null && !duration.equals("")) {
+            View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
+            durationGroup.setVisibility(View.VISIBLE);
+            TextView durationText = (TextView) dialogView.findViewById(R.id.view_event_duration);
+            durationText.setText(duration);
+        } else {
+            View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
+            durationGroup.setVisibility(View.GONE);
+        }
+        
+        if (description != null && !description.equals("")) {
+            View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
+            descriptionGroup.setVisibility(View.VISIBLE);
+            TextView descriptionText = (TextView) dialogView.findViewById(R.id.view_event_description);
+            descriptionText.setText(description);
+        } else {
+            View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
+            descriptionGroup.setVisibility(View.GONE);
+        }
+        
+        if (location != null && !location.equals("")) {
+            View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
+            locationGroup.setVisibility(View.VISIBLE);
+            TextView locationText = (TextView) dialogView.findViewById(R.id.view_event_location);
+            locationText.setText(location);
+        } else {
+            View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
+            locationGroup.setVisibility(View.GONE);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setView(dialogView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

@@ -131,15 +131,47 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
         super.close();
     }
 
-    // Stuff
+    /******************** Helper methods ********************/
 
-    public List<String> listAllByLastName() {
-        Cursor c = mDB.query(TABLE_NAME, new String[] {"email"}, null, null, null, null, "name_last asc");
-        List<String> list = new ArrayList<String>();
+    public List<StaffInfoModel> listAllByLastName() {
+        Cursor c = mDB.query(TABLE_NAME, null, null, null, null, null, "name_last asc");
+        List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
         c.moveToPosition(-1);
         while(c.moveToNext()) {
-            String s = c.getString(c.getColumnIndex("email"));
-            list.add(s);
+
+            // Extract the values from database
+            String prefix = c.getString(c.getColumnIndex("name_prefix"));
+            String firstName = c.getString(c.getColumnIndex("name_first"));
+            String lastName = c.getString(c.getColumnIndex("name_last"));
+            String email = c.getString(c.getColumnIndex("email"));
+            String subject = c.getString(c.getColumnIndex("subject"));
+            String room = c.getString(c.getColumnIndex("room"));
+            String site = c.getString(c.getColumnIndex("sites"));
+            boolean isDH = c.getInt(c.getColumnIndex("is_department_head"))==1;
+            int teacherID = c.getInt(c.getColumnIndex("teacher_id"));
+
+            // Process name
+            String firstInitial = firstName.substring(0, 1).toUpperCase();
+            String name = String.format("%s. %s. %s", prefix, firstInitial, lastName);
+
+            // Split subjects
+            String[] subjects = subject.split("\\s*,\\s*");
+
+            // Split rooms
+            String[] roomStrs = room.split("\\s*,\\s*");
+            int[] rooms = new int[roomStrs.length];
+            for (int i=0; i<roomStrs.length; i++) {
+                try {
+                    rooms[i] = Integer.parseInt(roomStrs[i]);
+                } catch (NumberFormatException e) {
+                    Logger.error("Parsing room number from String to int", e);
+                }
+            }
+
+            // Create and add
+            StaffInfoModel model = new StaffInfoModel(name, email, subjects, rooms, site, isDH, teacherID);
+            list.add(model);
+            Logger.log("Added " + name + " to list with room array of " + rooms.length + " length");
         }
         c.close();
         return list;
