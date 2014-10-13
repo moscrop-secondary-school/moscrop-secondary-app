@@ -9,7 +9,15 @@
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="ifRoom"
         android:visible="false"/>
-    
+
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="Search"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:visible="false"
+        android:actionViewClass="android.widget.SearchView"/>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

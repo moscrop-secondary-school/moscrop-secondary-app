@@ -133,8 +133,7 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
 
     /******************** Helper methods ********************/
 
-    public List<StaffInfoModel> listAllByLastName() {
-        Cursor c = mDB.query(TABLE_NAME, null, null, null, null, null, "name_last asc");
+    private List<StaffInfoModel> getListFromCursor(Cursor c) {
         List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
         c.moveToPosition(-1);
         while(c.moveToNext()) {
@@ -176,4 +175,28 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
         c.close();
         return list;
     }
+
+    public List<StaffInfoModel> getList(String query) {
+
+        String selection;
+        if (query == null) {
+            selection = null;
+        } else {
+
+            query = "\'%" + query + "%\'";
+
+            selection = "name_first" + " LIKE " + query
+                    + " OR " + "name_last" + " LIKE " + query
+                    + " OR " + "subject" + " LIKE " + query
+                    + " OR " + "room" + " LIKE " + query;
+            //selection = "staff_info MATCH " + query;
+        }
+
+        Cursor c = mDB.query(TABLE_NAME, null, selection, null, null, null, "name_last asc");
+        List<StaffInfoModel> list = getListFromCursor(c);
+
+        return list;
+
+    }
+
 }

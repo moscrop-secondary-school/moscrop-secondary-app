@@ -5,11 +5,16 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
@@ -42,7 +47,12 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     	mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-        testDB();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                refreshList(null);
+            }
+        }).start();
 
         return rootView;
     }
@@ -53,32 +63,32 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         ((MainActivity) getActivity()).onSectionAttached(mPosition);
     }
 
-    private void testDB() {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem search = menu.findItem(R.id.action_search);
+        if(search != null) {
+            search.setVisible(true);
+            SearchView searchView = (SearchView) search.getActionView();
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Toast.makeText(getActivity(), "Searching for " + query, Toast.LENGTH_SHORT).show();
+                    refreshList(query);
+                    return true;
+                }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                doTestDB();
-            }
-        }).start();
-    }
-
-    private void doTestDB() {
-
-        // This line does all the copying (if needed)
-        StaffInfoDatabase db = new StaffInfoDatabase(getActivity());
-
-        // This line is the normal database stuff
-        final List<StaffInfoModel> models = db.listAllByLastName();
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.clear();
-                mAdapter.addAll(models);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (newText == null || newText.equals("")) {
+                        refreshList(null);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -166,5 +176,24 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
             }
         });
         builder.create().show();
+    }
+
+
+    private void refreshList(String query) {
+
+        // This line does all the copying (if needed)
+        StaffInfoDatabase db = new StaffInfoDatabase(getActivity());
+
+        // This line is the normal database stuff
+        final List<StaffInfoModel> models = db.getList(query);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.clear();
+                mAdapter.addAll(models);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }
