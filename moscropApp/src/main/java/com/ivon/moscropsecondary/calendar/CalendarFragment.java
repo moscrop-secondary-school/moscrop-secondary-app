@@ -31,8 +31,8 @@ import java.util.List;
 public class CalendarFragment extends Fragment
         implements ExtendedCalendarView.OnDaySelectListener, AdapterView.OnItemClickListener {
 
-    public static final String MOSCROP_CALENDAR_ID = "moscroppanthers@gmail.com";
-    public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscroppanthers@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
+    public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
+    public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
 
     private int mPosition;
     private View mContentView;
