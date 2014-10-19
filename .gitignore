@@ -87,4 +87,3 @@ proguard/
 .idea/
 gradle.properties
 *.iml
-settings.gradle
