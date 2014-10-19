@@ -1,1 +1,1 @@
-include ':moscropApp', ':android-rss', ':extended-calendar-view:ExtendedCalendarViewLibrary')
+include ':moscropApp', ':android-rss', ':extended-calendar-view:ExtendedCalendarViewLibrary'
