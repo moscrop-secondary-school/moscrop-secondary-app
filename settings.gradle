@@ -1,3 +1,1 @@
-include ':moscropApp', ':android-rss', ':ExtendedCalendarViewLibrary'
-project(':android-rss').projectDir = new File('../android-rss')
-project(':ExtendedCalendarViewLibrary').projectDir = new File('../../MadeByOthers/ExtendedCalendarView/ExtendedCalendarViewLibrary')
+include ':moscropApp', ':android-rss', ':extended-calendar-view:ExtendedCalendarViewLibrary')
