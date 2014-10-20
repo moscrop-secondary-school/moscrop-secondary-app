@@ -157,14 +157,20 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
             String[] subjects = subject.split("\\s*,\\s*");
 
             // Split rooms
-            String[] roomStrs = room.split("\\s*,\\s*");
-            int[] rooms = new int[roomStrs.length];
-            for (int i=0; i<roomStrs.length; i++) {
-                try {
-                    rooms[i] = Integer.parseInt(roomStrs[i]);
-                } catch (NumberFormatException e) {
-                    Logger.error("Parsing room number from String to int", e);
+            // TODO temporary solution is to those pesky "todo" tags in the database
+            int[] rooms;
+            if (!room.contains("TODO")) {
+                String[] roomStrs = room.split("\\s*,\\s*");
+                rooms = new int[roomStrs.length];
+                for (int i = 0; i < roomStrs.length; i++) {
+                    try {
+                        rooms[i] = Integer.parseInt(roomStrs[i]);
+                    } catch (NumberFormatException e) {
+                        Logger.error("Parsing room number from String to int", e);
+                    }
                 }
+            } else {
+                rooms = new int[] { 3, 1, 4 };
             }
 
             // Create and add

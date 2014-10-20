@@ -17,7 +17,7 @@ public class SettingsActivity extends FragmentActivity {
         		.replace(android.R.id.content, new SettingsFragment())
         		.commit();
 	}
-	
+
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

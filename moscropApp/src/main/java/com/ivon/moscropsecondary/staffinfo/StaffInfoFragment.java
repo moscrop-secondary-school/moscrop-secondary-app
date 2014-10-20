@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
@@ -69,7 +67,7 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         MenuItem search = menu.findItem(R.id.action_search);
         if(search != null) {
             search.setVisible(true);
-            SearchView searchView = (SearchView) search.getActionView();
+            /*SearchView searchView = (SearchView) search.getActionView();
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -87,7 +85,7 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
                         return false;
                     }
                 }
-            });
+            });*/
         }
     }
 
