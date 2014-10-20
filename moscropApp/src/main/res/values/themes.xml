@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:targetApi="19">
-    
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/primary_indigo</item>
+        <item name="colorPrimaryDark">@color/primary_dark_indigo</item>
+        <item name="colorAccent">@color/accent_indigo</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="AppTheme" parent="AppTheme.Base">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     

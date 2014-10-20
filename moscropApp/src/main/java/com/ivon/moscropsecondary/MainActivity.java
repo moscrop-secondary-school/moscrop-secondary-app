@@ -1,24 +1,22 @@
 package com.ivon.moscropsecondary;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ivon.moscropsecondary.calendar.CalendarFragment;
 import com.ivon.moscropsecondary.rss.RSSFragment;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
-import com.ivon.moscropsecondary.util.Logger;
 
-public class MainActivity extends FragmentActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends ToolbarActivity
+        implements NavigationDrawerBase.NavigationDrawerCallbacks {
 
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private DrawerLayout mDrawerLayout;
 	protected RSSFragment mNewsFragment;
 	protected RSSFragment mEmailFragment;
 	protected RSSFragment mStudentSubsFragment;
@@ -27,25 +25,25 @@ public class MainActivity extends FragmentActivity
     
 	//protected static int currentFragment;
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
     private CharSequence mTitle;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-    	Logger.log("oncreate activity");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        super.onCreate(savedInstanceState);
+        setActionBarIcon(R.drawable.ic_ab_drawer);
+
+        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        navigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
     }
 
     @Override
@@ -94,25 +92,10 @@ public class MainActivity extends FragmentActivity
         mTitle = getResources().getStringArray(R.array.navigation_items)[position];
     }
 
-    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
 	}
 
 	@Override
@@ -123,7 +106,11 @@ public class MainActivity extends FragmentActivity
     	// If drawr toggle was selected
     	
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+
+        if (id == android.R.id.home) {
+            mDrawerLayout.openDrawer(Gravity.START);
+            return true;
+        } else if (id == R.id.action_settings) {
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			return true;
