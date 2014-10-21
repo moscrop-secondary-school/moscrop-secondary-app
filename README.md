@@ -39,7 +39,7 @@ That's it! Now you can import the project to Android Studio and everything shoul
 
 ********** Updating **********
 
-Again, there are a few extra steps due to submodules. Again, totally worth it.
+Again, there are a few extra steps due to submodules. Again, totally worth it
 
 Update main repository:
 
