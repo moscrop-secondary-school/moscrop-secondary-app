@@ -6,15 +6,16 @@
     <string name="action_settings">Settings</string>
     <string name="action_openbrowser">Open in browser</string>
     <string name="action_refresh">Refresh</string>
-    
+
     <string name="activity_displaynews"></string>
     <string name="activity_settings">Settings</string>
-    
+    <string name="search">Search</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    
+
     <string name="rli_thumbnail_desc">Thumbnail</string>
-    
+
     <string name="error">Error</string>
     <string name="error_format">[Error] %s</string>
     <string name="load_error_text">Error loading feed</string>

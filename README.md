@@ -6,6 +6,10 @@ All dependencies are configured correctly already. Some dependencies are in git 
 
 Also, be sure to have build tools v21 or higher installed and have SDK and support repositories updated to version 21 or newer.
 
+********** Useful links **********
+
+https://github.com/google/material-design-icons/releases/tag/1.0.0
+
 ********** Cloning repository to local **********
 
 This requires a few extra steps due to git submodules. Rest assured, these are very simple steps, and will save you/me a lot of work in the long run.
@@ -39,7 +43,7 @@ That's it! Now you can import the project to Android Studio and everything shoul
 
 ********** Updating **********
 
-Again, there are a few extra steps due to submodules. Again, totally worth it
+Again, there are a few extra steps due to submodules. Again, totally worth it.
 
 Update main repository:
 
