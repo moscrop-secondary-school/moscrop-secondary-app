@@ -86,5 +86,5 @@ proguard/
 #############################################################################
 
 .idea/
-gradle.properties
+#gradle.properties
 *.iml
