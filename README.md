@@ -4,6 +4,8 @@ All dependencies are configured correctly already. Some dependencies are in git 
 
 [android-support-v7-appcompat](https://developer.android.com/tools/support-library/setup.html)
 
+Also, be sure to have build tools v21 or higher installed and have SDK and support repositories updated to version 21 or newer.
+
 ********** Cloning repository to local **********
 
 This requires a few extra steps due to git submodules. Rest assured, these are very simple steps, and will save you/me a lot of work in the long run.
