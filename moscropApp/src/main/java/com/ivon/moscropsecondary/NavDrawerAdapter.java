@@ -1,4 +1,4 @@
-package com.ivon.moscropsecondary.adapter;
+package com.ivon.moscropsecondary;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.pitchedapps.icons.glass.R;
+import com.ivon.moscropsecondary.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,13 @@ public class NavDrawerAdapter extends BaseAdapter
 	{
 		mDrawerItems.add(drawerItem);
 	}
+
+    public void addItems(String[] drawerItems)
+    {
+        for (String drawerItem : drawerItems) {
+            addItem(drawerItem);
+        }
+    }
 	
 	public void setCurrentPage(int currentPage)
 	{

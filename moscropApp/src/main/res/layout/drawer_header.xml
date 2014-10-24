@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_drawer_header_banner"
         android:scaleType="centerCrop"
-        android:src="@drawable/banner" />
+        android:src="@drawable/avatar" /> <!--was @drawable/banner-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
         android:background="@drawable/shadow_drawer_header"
         android:orientation="horizontal" >
 
-        <view.CircularImageView
+        <!--<view.CircularImageView
             android:layout_width="@dimen/nav_drawer_header_avatar"
             android:layout_height="@dimen/nav_drawer_header_avatar"
             android:layout_margin="@dimen/nav_drawer_header_spacing"
@@ -29,7 +29,7 @@
             app:border="true"
             app:border_color="@color/text"
             app:border_width="1.5dp"
-            app:shadow="true" />
+            app:shadow="true" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
