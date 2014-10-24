@@ -3,8 +3,8 @@
 
     <gradient
         android:angle="90.0"
-        android:endColor="#00000000"
-        android:centerColor="#17ffffff"
-        android:startColor="#33ffffff" />
+        android:endColor="@color/transparent"
+        android:centerColor="@color/nav_drawer_shadow_1"
+        android:startColor="@color/nav_drawer_shadow_2" />
 
 </shape>

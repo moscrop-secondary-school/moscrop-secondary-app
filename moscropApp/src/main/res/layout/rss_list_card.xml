@@ -41,7 +41,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="#33b5e5" />
+                android:background="@color/holo" />
 
             <TextView
                 android:id="@+id/rlc_description"

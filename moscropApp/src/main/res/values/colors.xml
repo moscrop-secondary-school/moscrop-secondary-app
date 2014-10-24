@@ -18,6 +18,8 @@
     <color name="nav_drawer_footer_pressed">#44000000</color>
     <color name="nav_drawer_item_text">@color/text</color>
     <color name="nav_drawer_footer_text">@color/text</color>
+    <color name="nav_drawer_shadow_1">#17000000</color>
+    <color name="nav_drawer_shadow_2">#33000000</color>
 
 
     <!--dark-->
@@ -85,5 +87,7 @@
     <color name="primary_red">#e51c23</color>
     <color name="primary_dark_red">#d01716</color>
     <color name="accent_red">#e040fb</color>
+
+    <color name="holo">#33b5e5</color>
 
 </resources>
