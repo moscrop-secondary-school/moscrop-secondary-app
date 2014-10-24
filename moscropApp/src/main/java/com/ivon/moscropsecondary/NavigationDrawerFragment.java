@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 /**
@@ -21,6 +20,7 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
     public static final int TEACHERS = 4;
     public static final int SETTINGS = 5;
     public static final int ABOUT = 6;
+    public static final int CONTACT = 7;
 
     private NavDrawerAdapter mDrawerAdapter;
     private ListView mDrawerList;
@@ -65,22 +65,28 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
                 selectItem(position - mDrawerList.getHeaderViewsCount());
             }
         });
-        ((Button) footerView.findViewById(R.id.btnSettings)).setOnClickListener(new View.OnClickListener() {
+        footerView.findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectItem(SETTINGS);
             }
         });
-        ((Button) footerView.findViewById(R.id.btnAbout)).setOnClickListener(new View.OnClickListener() {
+        footerView.findViewById(R.id.btnAbout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectItem(ABOUT);
+            }
+        });
+        footerView.findViewById(R.id.btnContact).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectItem(CONTACT);
             }
         });
 
         // Load banner using Picasso to initialize its singleton ahead of time
         //Picasso.with(this).load(R.drawable.banner).into((ImageView) headerView.findViewById(R.id.imgBanner));
 
-        mDrawerList.setItemChecked(getCurrentSelectedPosition() /*+ mDrawerList.getHeaderViewsCount()*/, true);
+        mDrawerList.setItemChecked(getCurrentSelectedPosition(), true);
     }
 }

@@ -4,12 +4,6 @@
     tools:context="com.ivon.moscropsecondary.MainActivity" >
 
     <item
-        android:id="@+id/share"
-        android:actionProviderClass="view.CustomShareActionProvider"
-        android:icon="@drawable/ic_action_share"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/share"/>
-    <item
         android:id="@+id/action_refresh"
         android:orderInCategory="100"
         android:title="@string/action_refresh"
@@ -24,17 +18,5 @@
         app:showAsAction="ifRoom|collapseActionView"
         android:visible="false"
         android:actionViewClass="android.widget.SearchView"/>
-
-    <!--<item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>-->
-
-    <item
-        android:id="@+id/contact"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/contact"/>
 
 </menu>

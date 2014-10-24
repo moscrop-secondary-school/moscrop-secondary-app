@@ -1,6 +1,7 @@
 package com.ivon.moscropsecondary;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ivon.moscropsecondary.calendar.CalendarFragment;
 import com.ivon.moscropsecondary.rss.RSSFragment;
@@ -54,30 +56,43 @@ public class MainActivity extends ToolbarActivity
             Fragment mNextFragment = null;
             switch (position) {
 
-                case 0:
+                case NavigationDrawerFragment.NEWS:
                     if (mNewsFragment == null)
                         mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS);
                     mNextFragment = mNewsFragment;
                     break;
-                case 1:
+                case NavigationDrawerFragment.EMAIL:
                     if (mEmailFragment == null)
                         mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS);
                     mNextFragment = mEmailFragment;
                     break;
-                case 2:
+                case NavigationDrawerFragment.STUDENT:
                     if (mStudentSubsFragment == null)
                         mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS);
                     mNextFragment = mStudentSubsFragment;
                     break;
-                case 3:
+                case NavigationDrawerFragment.EVENTS:
                     if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(3);
                     mNextFragment = mEventsFragment;
                     break;
-                case 4:
+                case NavigationDrawerFragment.TEACHERS:
                     if (mTeachersFragment == null)
                         mTeachersFragment = StaffInfoFragment.newInstance(4);
                     mNextFragment = mTeachersFragment;
                     break;
+                case NavigationDrawerFragment.SETTINGS:
+                    Intent intent = new Intent(this, SettingsActivity.class);
+                    startActivity(intent);
+                    return;
+                case NavigationDrawerFragment.ABOUT:
+                    Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
+                    return;
+                case NavigationDrawerFragment.CONTACT:
+                    Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "moscropsecondaryschool@gmail.com", null)); // TODO Replace with email string
+                    contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_subject));
+                    contactIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(Intent.createChooser(contactIntent, getString(R.string.send_email)));
+                    return;
             }
 
             // update the main content by replacing fragments
@@ -110,11 +125,7 @@ public class MainActivity extends ToolbarActivity
         if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(Gravity.START);
             return true;
-        } else if (id == R.id.action_settings) {
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
-			return true;
-		}
+        }
 		return super.onOptionsItemSelected(item);
 	}
 }

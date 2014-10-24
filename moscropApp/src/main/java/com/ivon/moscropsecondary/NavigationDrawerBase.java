@@ -91,7 +91,7 @@ public abstract class NavigationDrawerBase extends Fragment {
 
     private void selectItem(final int position, final boolean fromSavedInstanceState) {
         mCurrentSelectedPosition = position;
-        if (getNavigationItemsList() != null) {
+        if (getNavigationItemsList() != null && position < getNavigationItemsList().getCount()) {
             getNavigationItemsList().setItemChecked(position, true);
         }
         if (mDrawerLayout != null) {

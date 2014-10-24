@@ -47,16 +47,19 @@
         android:layout_height="1dp"
         android:background="@color/backgroundd" />
 
-    <!--<Button
-        android:id="@+id/btnCommunity"
+    <!-- Great! Now that you're looking here: This will be the new
+         home of the contact button. Fix strings as appropriate :) -->
+
+    <Button
+        android:id="@+id/btnContact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_nav_drawer_footer"
-        android:drawableLeft="@drawable/ic_action_xda"
+        android:drawableLeft="@drawable/avatar"
         android:drawablePadding="8dp"
         android:gravity="left|center_vertical"
         android:paddingLeft="12dp"
-        android:text="@string/community"
+        android:text="Allan look here"
         android:textAllCaps="true"
         android:textColor="@color/nav_drawer_footer_text"
         android:textSize="@dimen/nav_drawer_footer_text" />
@@ -64,6 +67,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/backgroundd" />-->
+        android:background="@color/backgroundd" />
 
 </LinearLayout>
