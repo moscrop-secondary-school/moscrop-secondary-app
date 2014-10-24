@@ -9,6 +9,8 @@
     <color name="backgroundd">#ffefefef</color>
     <color name="backgrounddd">#ffdddddd</color>
 
+    <color name="nav_drawer_footer_pressed">#44000000</color>
+
     <!--dark-->
     <color name="dtext">#ffffffff</color>
     <color name="dtextt">#ddffffff</color>
@@ -30,6 +32,7 @@
 
     <color name="text_color_primary">#de000000</color>
     <color name="text_color_secondary">#8a000000</color>
+    <color name="transparent">#00000000</color>
 
     <!--
         Primary colors: 500

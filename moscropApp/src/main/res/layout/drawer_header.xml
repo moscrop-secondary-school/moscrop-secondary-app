@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foreground="@drawable/selector_nav_drawer_header"
+    tools:ignore="ContentDescription" >
+
+    <ImageView
+        android:id="@+id/imgBanner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_drawer_header_banner"
+        android:scaleType="centerCrop"
+        android:src="@drawable/banner" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/shadow_drawer_header"
+        android:orientation="horizontal" >
+
+        <view.CircularImageView
+            android:layout_width="@dimen/nav_drawer_header_avatar"
+            android:layout_height="@dimen/nav_drawer_header_avatar"
+            android:layout_margin="@dimen/nav_drawer_header_spacing"
+            android:src="@drawable/avatar"
+            app:border="true"
+            app:border_color="@color/text"
+            app:border_width="1.5dp"
+            app:shadow="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:paddingRight="@dimen/nav_drawer_header_spacing"
+                android:text="@string/app_name"
+                android:textColor="@color/text"
+                android:textSize="@dimen/nav_drawer_header_name"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-light"
+                android:gravity="top"
+                android:maxLines="1"
+                android:paddingRight="@dimen/nav_drawer_header_spacing"
+                android:text="@string/moscrop_desc"
+                android:textColor="@color/text"
+                android:textSize="@dimen/nav_drawer_header_email" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

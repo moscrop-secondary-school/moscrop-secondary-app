@@ -9,6 +9,7 @@ Also, be sure to have build tools v21 or higher installed and have SDK and suppo
 ********** Useful links **********
 
 https://github.com/google/material-design-icons/releases/tag/1.0.0
+http://thomasreynders.com/google-material-design-plugin/
 
 ********** Cloning repository to local **********
 

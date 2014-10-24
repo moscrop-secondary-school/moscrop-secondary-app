@@ -21,4 +21,15 @@
 
     <dimen name="divider">1dp</dimen>
 
+    <!-- Navigation Drawer -->
+    <dimen name="nav_drawer_width">280dp</dimen>
+    <dimen name="nav_drawer_header_banner">144dp</dimen>
+    <dimen name="nav_drawer_header_avatar">56dp</dimen>
+    <dimen name="nav_drawer_header_name">18sp</dimen>
+    <dimen name="nav_drawer_header_email">16sp</dimen>
+    <dimen name="nav_drawer_header_spacing">12dp</dimen>
+    <dimen name="nav_drawer_left_padding">16dp</dimen>
+    <dimen name="nav_drawer_item_padding">12dp</dimen>
+    <dimen name="nav_drawer_item_text">22sp</dimen>
+    <dimen name="nav_drawer_footer_text">14sp</dimen>
 </resources>
