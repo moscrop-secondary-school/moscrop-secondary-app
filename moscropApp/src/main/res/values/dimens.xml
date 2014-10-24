@@ -21,6 +21,12 @@
 
     <dimen name="divider">1dp</dimen>
 
+    <!-- ActionBar -->
+    <dimen name="ab_height">56dp</dimen>
+    <dimen name="navbar_height">48dp</dimen>
+    <dimen name="statusbar_height">24dp</dimen>
+    <dimen name="ab_statusbar_height">72dp</dimen>
+
     <!-- Navigation Drawer -->
     <dimen name="nav_drawer_width">280dp</dimen>
     <dimen name="nav_drawer_header_banner">144dp</dimen>

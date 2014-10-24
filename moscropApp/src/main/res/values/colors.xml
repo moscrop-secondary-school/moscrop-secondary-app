@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--light-->
-    <color name="text">#ff000000</color>
-    <color name="textt">#dd000000</color>
-    <color name="texttt">#bb000000</color>
+    <color name="text">@color/dbackground</color>
+    <color name="textt">@color/dbackgroundd</color>
+    <color name="texttt">@color/dbackgrounddd</color>
 
     <color name="background">#ffffffff</color>
     <color name="backgroundd">#ffefefef</color>
-    <color name="backgrounddd">#ffdddddd</color>
+    <color name="backgrounddd">#ffdfdfdf</color>
+    <color name="black_transparent">#55000000</color>
+    <color name="black_transparent_ex">#22000000</color>
 
+    <!-- Nav Drawer (light) -->
+    <color name="nav_drawer_background">@color/background</color>
+    <color name="nav_drawer_divider">#11000000</color>
+    <color name="nav_drawer_item_pressed">#44000000</color>
     <color name="nav_drawer_footer_pressed">#44000000</color>
+    <color name="nav_drawer_item_text">@color/text</color>
+    <color name="nav_drawer_footer_text">@color/text</color>
+
 
     <!--dark-->
-    <color name="dtext">#ffffffff</color>
-    <color name="dtextt">#ddffffff</color>
-    <color name="dtexttt">#bbffffff</color>
+    <color name="dtext">@color/background</color>
+    <color name="dtextt">@color/backgroundd</color>
+    <color name="dtexttt">@color/backgrounddd</color>
 
     <color name="dbackground">#ff000000</color>
-    <color name="dbackgroundd">#ff0c0c0c</color>
+    <color name="dbackgroundd">#ff101010</color>
+    <color name="dbackgrounddd">#ff202020</color>
+
+    <color name="white_transparent">#55FFFFFF</color>
+    <color name="white_transparent_ex">#22FFFFFF</color>
+
+    <!-- Nav Drawer (dark) -->
+    <color name="dnav_drawer_background">@color/dbackground</color>
+    <color name="dnav_drawer_divider">#11ffffff</color>
+    <color name="dnav_drawer_item_pressed">#44ffffff</color>
+    <color name="dnav_drawer_footer_pressed">#44ffffff</color>
+    <color name="dnav_drawer_item_text">@color/dtext</color>
+    <color name="dnav_drawer_footer_text">@color/dtext</color>
 
     <color name="background_holo_light">#fff3f3f3</color>
     <color name="card_text">#ff8d8d8d</color>
@@ -25,6 +46,7 @@
     <color name="card_light_text">#ffb5b5b5</color>
     
     <color name="card_selected_color">#dddddddd</color>
+
 
     <!-- stuff from pedometer -->
     <color name="window_background">#fffafafa</color>
