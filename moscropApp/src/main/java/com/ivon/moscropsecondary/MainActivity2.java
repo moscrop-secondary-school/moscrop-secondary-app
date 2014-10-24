@@ -35,17 +35,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.pitchedapps.icons.glass.adapter.NavDrawerAdapter;
-import com.pitchedapps.icons.glass.fragment.AboutFragment;
-import com.pitchedapps.icons.glass.fragment.Home2Fragment;
-import com.pitchedapps.icons.glass.fragment.IconFragment;
-import com.pitchedapps.icons.glass.fragment.RequestFragment;
-import com.pitchedapps.icons.glass.fragment.WallpaperFragment;
-import com.pitchedapps.icons.glass.fragment.WallpaperFullFragment;
-import com.pk.wallpapermanager.PkWallpaperManager;
-import com.pk.wallpapermanager.WallpaperSettings;
-import com.pkmmte.requestmanager.PkRequestManager;
-import com.pkmmte.requestmanager.RequestSettings;
+import com.ivon.moscropsecondary.adapter.NavDrawerAdapter;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.squareup.picasso.Picasso;
 
