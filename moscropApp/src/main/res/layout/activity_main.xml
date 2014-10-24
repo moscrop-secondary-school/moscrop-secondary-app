@@ -23,10 +23,12 @@
     </RelativeLayout>
 
     <fragment android:id="@+id/navigation_drawer"
+        android:layout_below="@+id/toolbar"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:name="com.ivon.moscropsecondary.NavigationDrawerFragment"
+        android:drawSelectorOnTop="false"
         tools:layout="@layout/fragment_navigation_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
