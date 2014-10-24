@@ -18,7 +18,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import com.pitchedapps.icons.glass.R;
+import com.ivon.moscropsecondary.R;
 
 public class CircularImageView extends ImageView
 {
