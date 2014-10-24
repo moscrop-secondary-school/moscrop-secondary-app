@@ -281,10 +281,11 @@ public class MainActivity2 extends FragmentActivity
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 		mDrawerAdapter = new NavDrawerAdapter(MainActivity.this);
-		mDrawerAdapter.addItem(getResources().getString(R.string.home));
-		///mDrawerAdapter.addItem(getResources().getString(R.string.theme_info));
-		mDrawerAdapter.addItem(getResources().getString(R.string.theme_icons));
-		mDrawerAdapter.addItem(getResources().getString(R.string.request_icons));
+		mDrawerAdapter.addItem(getResources().getString(R.string.news));
+		mDrawerAdapter.addItem(getResources().getString(R.string.newsletters));
+		mDrawerAdapter.addItem(getResources().getString(R.string.student));
+		mDrawerAdapter.addItem(getResources().getString(R.string.events));
+		mDrawerAdapter.addItem(getResources().getString(R.string.teachers));
 
 		// Add header
 		View headerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.drawer_header, mDrawerList, false);
