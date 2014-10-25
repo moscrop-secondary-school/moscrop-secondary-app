@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="background_card" format="reference" />
+    <attr name="background_card_pressed" format="reference" />
+    <attr name="title_card" format="reference" />
+    <attr name="text_card" format="reference" />
+
     <!-- RelativeLayout with foreground capability -->
     <declare-styleable name="FRelativeLayout">
         <attr name="foreground" format="reference|color" />

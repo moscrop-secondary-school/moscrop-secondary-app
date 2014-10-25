@@ -15,4 +15,16 @@
         <item>@drawable/ic_action_event_light</item>
         <item>@drawable/ic_action_teacher_light</item>
     </string-array>
+
+    <string-array name="theme_texts" translatable="false">
+        <item>@string/theme_light</item>
+        <item>@string/theme_black</item>
+        <item>@string/theme_tblack</item>
+    </string-array>
+
+    <string-array name="theme_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

@@ -22,7 +22,7 @@
         android:layout_marginBottom="@dimen/card_spacing"
         android:layout_marginLeft="@dimen/card_side_padding"
         android:layout_marginRight="@dimen/card_side_padding"
-        android:background="@drawable/card_background_selector"
+        android:background="?attr/background_card"
         android:descendantFocusability="afterDescendants">
 
         <RelativeLayout
@@ -40,7 +40,7 @@
                 android:paddingRight="10dp"
                 android:paddingTop="5dp"
                 android:textStyle="italic"
-                android:textColor="@android:color/black"/>
+                android:textColor="?attr/title_card"/>
 
             <View
                 android:id="@+id/rlc_divider"
@@ -62,7 +62,8 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
                 android:ellipsize="end"
-                android:textStyle="italic"/>
+                android:textStyle="italic"
+                android:textColor="?attr/title_card"/>
 
         </RelativeLayout>
     </LinearLayout>

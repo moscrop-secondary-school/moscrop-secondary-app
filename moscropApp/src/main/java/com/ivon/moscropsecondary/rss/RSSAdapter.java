@@ -42,6 +42,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.rss_list_card, null);
+
         }
 
         RSSItem item = mItems.get(position);

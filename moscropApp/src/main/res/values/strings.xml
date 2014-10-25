@@ -32,7 +32,7 @@
     <string name="load_error_text">Error loading feed</string>
 
 <!--Nav drawer-->
-    <string name="moscrop_desc">Home of the panthers</string>
+    <string name="moscrop_desc">Home of the Panthers</string>
     <string name="about">About</string>
     <string name="settings">Settings</string>
 
@@ -42,4 +42,10 @@
     <string name="link_share">Sharing Moscrop\'s official app!
     https://play.google.com/store/apps/details?id=com.ivon.moscropsecondary</string>
     <string name="contact_subject">Moscrop App Support</string>
+
+<!--Themes-->
+    <string name="theme_category">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_black">Black</string>
+    <string name="theme_tblack">Transparent Black</string>
 </resources>
