@@ -1,11 +1,16 @@
 package com.ivon.moscropsecondary;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by ivon on 19/10/14.
@@ -43,9 +48,17 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
     private void initList(LayoutInflater inflater) {
 
         // Initialize the adapter
-        mDrawerAdapter = new NavDrawerAdapter(getActivity());   // TODO: use getSupportActionBar().getThemedContext()
         String[] drawerItems = getActivity().getResources().getStringArray(R.array.navigation_items);
-        mDrawerAdapter.addItems(drawerItems);
+        TypedArray images = getResources().obtainTypedArray(R.array.drawer_icons);
+        List<Integer> drawerIcons = new ArrayList<Integer>();
+        for (int i=0; i<images.length(); i++) {
+            drawerIcons.add(images.getResourceId(i, 0));
+        }
+        mDrawerAdapter = new NavDrawerAdapter(
+                getActivity(),
+                new ArrayList<String>(Arrays.asList(drawerItems)),
+                drawerIcons
+        );   // TODO: use getSupportActionBar().getThemedContext()
 
         // Add header
         View headerView = inflater.inflate(R.layout.drawer_header, mDrawerList, false);

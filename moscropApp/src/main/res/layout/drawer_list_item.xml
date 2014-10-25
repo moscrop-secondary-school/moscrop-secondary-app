@@ -14,7 +14,7 @@
   limitations under the License.
   -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,4 +24,19 @@
     android:paddingRight="16dp"
     android:textColor="@color/text"
     android:background="?android:attr/activatedBackgroundIndicator"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"/>-->
+
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_nav_drawer_footer"
+    android:drawableLeft="@drawable/ic_action_about_dev_light"
+    android:drawablePadding="8dp"
+    android:gravity="left|center_vertical"
+    android:paddingLeft="12dp"
+    android:text="@string/about"
+    android:textAllCaps="true"
+    android:textColor="@color/textt"
+    android:textSize="@dimen/nav_drawer_footer_text" />

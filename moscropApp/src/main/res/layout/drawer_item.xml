@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/txtTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,4 +12,18 @@
     android:paddingRight="@dimen/nav_drawer_item_padding"
     android:paddingTop="@dimen/nav_drawer_item_padding"
     android:textColor="@color/text"
-    android:textSize="@dimen/nav_drawer_item_text" />
+    android:textSize="@dimen/nav_drawer_item_text" />-->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_nav_drawer_footer"
+    android:drawableLeft="@drawable/ic_action_about_dev_light"
+    android:drawablePadding="8dp"
+    android:gravity="left|center_vertical"
+    android:paddingLeft="12dp"
+    android:text="@string/about"
+    android:textAllCaps="true"
+    android:textColor="@color/textt"
+    android:textSize="@dimen/nav_drawer_footer_text" />

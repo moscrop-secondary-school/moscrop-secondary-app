@@ -7,4 +7,12 @@
         <item>Events</item>
         <item>Teachers</item>
     </string-array>
+
+    <string-array name="drawer_icons">
+        <item>@drawable/ic_action_news_light</item>
+        <item>@drawable/ic_action_newsletters_light</item>
+        <item>@drawable/ic_action_student_light</item>
+        <item>@drawable/ic_action_event_light</item>
+        <item>@drawable/ic_action_teacher_light</item>
+    </string-array>
 </resources>

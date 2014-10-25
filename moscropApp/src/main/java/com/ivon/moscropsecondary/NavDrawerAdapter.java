@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.ivon.moscropsecondary.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +15,7 @@ public class NavDrawerAdapter extends BaseAdapter
 {
 	// Essential Resources
 	private List<String> mDrawerItems;
+    private List<Integer> mDrawerIcons;
 	private Context mContext;
 	
 	// Current index and custom fonts
@@ -33,9 +32,10 @@ public class NavDrawerAdapter extends BaseAdapter
 		this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
 	}
 	
-	public NavDrawerAdapter(Context context, List<String> drawerItems)
+	public NavDrawerAdapter(Context context, List<String> drawerItems, List<Integer> drawerIcons)
 	{
 		this.mDrawerItems = drawerItems;
+        this.mDrawerIcons = drawerIcons;
 		this.mContext = context;
 		
 		this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
@@ -89,8 +89,9 @@ public class NavDrawerAdapter extends BaseAdapter
 			convertView = mInflater.inflate(R.layout.drawer_item, parent, false);
 			
 			holder = new ViewHolder();
-			holder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
-			
+			//holder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
+            holder.listItem = (TextView) convertView.findViewById(R.id.list_button);
+
 			convertView.setTag(holder);
 		}
 		else {
@@ -98,16 +99,22 @@ public class NavDrawerAdapter extends BaseAdapter
 		}
 		
 		// Set text
-		holder.txtTitle.setText(mDrawerItems.get(position));
+		//holder.txtTitle.setText(mDrawerItems.get(position));
+        holder.listItem.setText(mDrawerItems.get(position));
 		
 		// Set bold if selected
-		holder.txtTitle.setTypeface((currentPage == position) ? fontSelected : fontNormal);
-		
-		return convertView;
+		//holder.txtTitle.setTypeface((currentPage == position) ? fontSelected : fontNormal);
+        //holder.listButton.setTypeface((currentPage == position) ? fontSelected : fontNormal);
+
+        // Set icon
+        holder.listItem.setCompoundDrawablesWithIntrinsicBounds(mDrawerIcons.get(position).intValue(), 0, 0, 0);
+
+        return convertView;
 	}
 	
 	private class ViewHolder
 	{
-		public TextView txtTitle;
+		//public TextView txtTitle;
+        public TextView listItem;
 	}
 }
