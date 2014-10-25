@@ -6,6 +6,7 @@
     <TextView
         android:id="@+id/teacher_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_teacher_list"/>
 
 </LinearLayout>
