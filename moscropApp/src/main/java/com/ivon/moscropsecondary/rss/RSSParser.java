@@ -74,10 +74,16 @@ public class RSSParser {
         } else if (url.contains("moscropstudents.blogspot.ca")) {
             return new String[] { STUDENT_SUBS_TAG };
         } else {
-            JSONObject[] categories = JsonUtil.extractJsonArray(entryObject.getJSONArray("category"));
-            String[] tags = new String[categories.length];
-            for (int i = 0; i < categories.length; i++) {
-                tags[i] = categories[i].getString("term");
+            String[] tags;
+            try {
+                JSONObject[] categories = JsonUtil.extractJsonArray(entryObject.getJSONArray("category"));
+                 tags = new String[categories.length];
+                for (int i = 0; i < categories.length; i++) {
+                    tags[i] = categories[i].getString("term");
+                }
+            } catch (JSONException e) {
+                Logger.error("RSSParser.extractTags(): caught JSONException ", e);
+                tags = new String[] { "" };
             }
             return tags;
         }
@@ -110,10 +116,13 @@ public class RSSParser {
         }
 
         if (feed != null) {
+            Logger.log("parseAndSaveAll(): feed is not null!");
             // TODO saveUpdateInfo(context, feed.version);
             RSSDatabase database = new RSSDatabase(context);
             database.deleteAll();
             database.save(feed.items);
+        } else {
+            Logger.log("parseAndSaveAll(): feed is null!!!!!!!");
         }
     }
 }
