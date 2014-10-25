@@ -161,7 +161,7 @@ public class CalendarFragment extends Fragment
             // Provider is empty
             // Or, if last update info is missing, to be safe,
             // we will reload everything. Make sure data is up to date.
-            CalendarParser.processAll(getActivity(), MOSCROP_CALENDAR_ID);
+            CalendarParser.parseAndSaveAll(getActivity(), MOSCROP_CALENDAR_ID);
 
         } else {
 
@@ -175,7 +175,7 @@ public class CalendarFragment extends Fragment
                 lastUpdateMillis = System.currentTimeMillis();
             }
 
-            CalendarParser.process(getActivity(), MOSCROP_CALENDAR_ID, lastUpdateMillis, lastGcalVersion);
+            CalendarParser.parseAndSave(getActivity(), MOSCROP_CALENDAR_ID, lastUpdateMillis, lastGcalVersion);
         }
 
         // Update UI when done loading

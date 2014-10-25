@@ -61,7 +61,7 @@ public class CalendarParser {
         return new GCalEvent(title, content, where, startTimeRCF, endTimeRCF);
     }
 
-    public static CalendarFeed getCalendarFeed(Context context, String url) throws JSONException {
+    private static CalendarFeed getCalendarFeed(Context context, String url) throws JSONException {
         JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
         if (jsonObject != null) {
             String timestamp = getUpdatedTimeFromJsonObject(jsonObject);
@@ -96,7 +96,7 @@ public class CalendarParser {
      * @param id
      *      ID of the Google Calendar
      */
-    public static void processAll(Context context, String id) {
+    public static void parseAndSaveAll(Context context, String id) {
 
         Logger.log("Processing all");
 
@@ -131,7 +131,7 @@ public class CalendarParser {
      *      After all, if it's the same version, no need to do all that work again!
      *      Usually of the format "2014-09-09T12:21:08.000Z"
      */
-    public static void process(Context context, String id, long startMin, String lastGcalVersion) {
+    public static void parseAndSave(Context context, String id, long startMin, String lastGcalVersion) {
 
         Logger.log("Processing selectively");
 

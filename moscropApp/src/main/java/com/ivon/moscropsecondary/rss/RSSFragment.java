@@ -15,52 +15,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivon.moscropsecondary.R;
-import com.ivon.moscropsecondary.rss.RSSAdapter.RSSAdapterItem;
-import com.ivon.moscropsecondary.rss.RSSListLoader.RSSListResponse;
 import com.ivon.moscropsecondary.MainActivity;
-import com.ivon.moscropsecondary.util.Logger;
-
-import org.mcsoxford.rss.RSSItem;
+import com.ivon.moscropsecondary.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFragment extends Fragment
-        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<RSSListResponse> {
+        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<List<RSSItem>> {
 
-
-	public static final String MOSCROP_CHEMISTRY_URL = "http://moscropchemistry.wordpress.com/feed/";
-	public static final String REDDIT_URL = "http://www.reddit.com/r/aww/.rss";
-	public static final String HUGO_BARA_URL = "http://gplus-to-rss.appspot.com/rss/+HugoBarra";
-	public static final String MOSCROP_PAGE_URL = "http://gplus-to-rss.appspot.com/rss/108865428316172309900";
-	public static final String TEST_EMAIL_URL = "http://emails2rss.appspot.com/rss?id=1af3a2260113d04b2c0b99e0f751921b9365";
-	public static final String BLOGGER_URL = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
-	public static final String BLOGGER_NEWS_URL = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
-	public static final String BLOGGER_SUBS_URL = "http://moscropstudents.blogspot.ca/feeds/posts/default?alt=rss";
-	public static final String BLOGGER_NEWSLETTER_URL = "http://moscropnewsletters.blogspot.ca/feeds/posts/default?alt=rss";
-
-
-    public static final String FEED_ALL = "http://www.feedcombine.com/rss/2122/moscrop-feeds-all.xml";
-    public static final String FEED_NEWS = "http://moscropschool.blogspot.ca/feeds/posts/default?alt=rss";
-    public static final String FEED_NEWSLETTERS = "http://moscropnewsletters.blogspot.ca/feeds/posts/default?alt=rss";
-    public static final String FEED_SUBS = "http://moscropstudents.blogspot.ca/feeds/posts/default?alt=rss";
+    public static final String FEED_NEWS = "moscropschool";
+    public static final String FEED_NEWSLETTERS = "moscropnewsletters";
+    public static final String FEED_SUBS = "moscropstudents";
 
     private static final String KEY_URL = "url";
 	
 	private String mURL = FEED_NEWS;
-    private int mLoadConfig = RSSListLoader.CONFIG_CACHED_PRIORITY;
-    private boolean mLoading = false;
 
     private int mPosition;
 
     public SwipeRefreshLayout mSwipeLayout = null;
     public ListView mListView = null;
     public RSSAdapter mAdapter = null;
-    public List<RSSAdapterItem> mItems = new ArrayList<RSSAdapterItem>();
 
 	/**
 	 * Create and return a new instance of RSSFragment with given parameters
@@ -101,11 +79,11 @@ public class RSSFragment extends Fragment
         mListView = (ListView) mContentView.findViewById(R.id.rlf_list);
 
         // Set the adapter for the recycler view
-        mAdapter = new RSSAdapter(getActivity(), mItems);
+        mAdapter = new RSSAdapter(getActivity(), new ArrayList<RSSItem>());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-        loadFeed(false, RSSListLoader.CONFIG_CACHED_PRIORITY);
+        loadFeedOnline(false);
 
     	return mContentView;
     }
@@ -144,14 +122,13 @@ public class RSSFragment extends Fragment
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-		RSSItem r = mItems.get(position).item;
-        String title = ((TextView) view.findViewById(R.id.rlc_title)).getText().toString();
+		RSSItem r = mAdapter.getItem(position);
 
 		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
 
-		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.getLink().toString());
-		intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.getDescription());
-		intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, title);
+		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
+		intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
+		intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
 
         getActivity().startActivity(intent);
 	}
@@ -162,72 +139,54 @@ public class RSSFragment extends Fragment
 	 * an AsyncTask to download and parse
 	 * a RSS feed and load it to a ListView
 	 * 
-	 * @param force Refresh even if feed is not null when true. Only refresh when feed is null if false.
+	 * @param force
+     *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
 	 */
-	private void loadFeed(boolean force, int loadConfig) {
-
-		if(force || (mItems.size() == 0)) {
+	private void loadFeedOnline(boolean force) {
+		if(force || (mAdapter.getCount() == 0)) {
             if(!getLoaderManager().hasRunningLoaders()) {
-                mLoadConfig = loadConfig;
-                mLoading = true;
-                getLoaderManager().restartLoader(0, null, this);
+                getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
 		}
 	}
 
 	@Override
 	public void onRefresh() {
-		loadFeed(true, RSSListLoader.CONFIG_ONLINE_PRIORITY);
+		loadFeedOnline(true);
 	}
 
     @Override
-    public Loader<RSSListResponse> onCreateLoader(int i, Bundle bundle) {
-        // Only display progress bar is loading online first
-        if(mLoadConfig == RSSListLoader.CONFIG_ONLINE_ONLY || mLoadConfig == RSSListLoader.CONFIG_ONLINE_PRIORITY) {
-            if (mSwipeLayout != null) {
-                mSwipeLayout.setRefreshing(true);
-            }
+    public Loader<List<RSSItem>> onCreateLoader(int i, Bundle bundle) {
+        if (mSwipeLayout != null) {
+            mSwipeLayout.setRefreshing(true);
         }
-        return new RSSListLoader(getActivity(), mURL, mLoadConfig);
+        return new RSSListLoader2(getActivity(), mURL);
     }
 
     @Override
-    public void onLoadFinished(Loader<RSSListResponse> listLoader, RSSListResponse response) {
-        if (mLoading) {
-            mLoading = false;
+    public void onLoadFinished(Loader<List<RSSItem>> listLoader, List<RSSItem> items) {
+        if (mSwipeLayout != null) {
+            mSwipeLayout.setRefreshing(false);
+        }
 
-            if (mSwipeLayout != null) {
-                mSwipeLayout.setRefreshing(false);
-            }
-
-            Logger.log("Response code: " + response.RESPONSE_CODE);
-
-            if (response.RESPONSE_CODE == RSSListLoader.RESPONSE_SUCCESS) {
-
-                List<RSSAdapterItem> list = response.list;
-                if (list != null) {
-                    mItems.clear();
-                    mAdapter.notifyDataSetChanged();
-                    for (RSSAdapterItem adapterItem : list) {
-                        mItems.add(adapterItem);
-                    }
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
+        if (items != null) {
+            mAdapter.clear();
+            if (items.size() == 0) {
+                Toast.makeText(getActivity(), "No items returned", Toast.LENGTH_SHORT).show();
+                // TODO replace with text view
+            } else {
+                for (RSSItem item : items) {
+                    mAdapter.add(item);
                 }
-
-            } else if (response.RESPONSE_CODE == RSSListLoader.RESPONSE_RETRY_ONLINE) {
-                getLoaderManager().destroyLoader(0);
-                loadFeed(true, RSSListLoader.CONFIG_ONLINE_ONLY);
-            } else if (response.RESPONSE_CODE == RSSListLoader.RESPONSE_RETRY_CACHE) {
-                getLoaderManager().destroyLoader(0);
-                loadFeed(true, RSSListLoader.CONFIG_CACHED_ONLY);
+                mAdapter.notifyDataSetChanged();
             }
+        } else {
+            Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<RSSListResponse> listLoader) {
+    public void onLoaderReset(Loader<List<RSSItem>> listLoader) {
         // No reference to the list provided by the loader is held
     }
 }
