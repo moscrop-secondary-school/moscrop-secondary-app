@@ -45,6 +45,9 @@
         <item name="android:background">@drawable/ic_actionbar_bg</item>
         <item name="background">@drawable/ic_actionbar_bg</item>
     </style>
+    <style name="Toolbar.Title" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/dtext</item>
+    </style>
 
     <!-- This is your Dialog Window popups. Changing the bg color will change the color of the window. -->
     <style name="the1dynasty.Dialog" parent="@android:style/Theme.Holo.Dialog">

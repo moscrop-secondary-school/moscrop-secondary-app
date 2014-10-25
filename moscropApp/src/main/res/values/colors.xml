@@ -25,8 +25,8 @@
     <color name="nav_drawer_divider">#11000000</color>
     <color name="nav_drawer_item_pressed">#44000000</color>
     <color name="nav_drawer_footer_pressed">#44000000</color>
-    <color name="nav_drawer_item_text">@color/text</color>
-    <color name="nav_drawer_footer_text">@color/text</color>
+    <color name="nav_drawer_item_text">@color/textt</color>
+    <color name="nav_drawer_footer_text">@color/textt</color>
     <color name="nav_drawer_shadow_1">#17000000</color>
     <color name="nav_drawer_shadow_2">#33000000</color>
 
