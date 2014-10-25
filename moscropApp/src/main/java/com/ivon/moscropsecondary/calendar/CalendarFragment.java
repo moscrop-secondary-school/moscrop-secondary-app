@@ -150,11 +150,11 @@ public class CalendarFragment extends Fragment
         c.close();
 
         SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
-        long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.LAST_UPDATED, Preferences.App.Default.LAST_UPDATED);
+        long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.GCAL_LAST_UPDATED, Preferences.App.Default.GCAL_LAST_UPDATED);
         String lastGcalVersion = prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
 
         if((count == 0)
-                || (lastUpdateMillis == Preferences.App.Default.LAST_UPDATED)
+                || (lastUpdateMillis == Preferences.App.Default.GCAL_LAST_UPDATED)
                 || (lastGcalVersion.equals(Preferences.App.Default.GCAL_VERSION))
                 ) {
 

@@ -97,6 +97,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
     public List<RSSItem> getItems(String tag) {
         String selection = null;
         if (tag != null) {
+            tag = "\'%" + tag + "%\'";
             selection = COLUMN_TAGS + " LIKE " + tag;
         }
         String orderBy = COLUMN_DATE + " desc";
@@ -134,6 +135,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
     public void deleteAll(String tag) {
         String where = null;
         if (tag != null) {
+            tag = "\'%" + tag + "%\'";
             where = COLUMN_TAGS + " LIKE " + tag;
         }
         mDB.delete(NAME, where, null);

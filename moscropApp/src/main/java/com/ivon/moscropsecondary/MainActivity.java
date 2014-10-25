@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.ivon.moscropsecondary.calendar.CalendarFragment;
 import com.ivon.moscropsecondary.rss.RSSFragment;
+import com.ivon.moscropsecondary.rss.RSSParser;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
 
 public class MainActivity extends ToolbarActivity
@@ -58,17 +59,17 @@ public class MainActivity extends ToolbarActivity
 
                 case NavigationDrawerFragment.NEWS:
                     if (mNewsFragment == null)
-                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS);
+                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, "beta");
                     mNextFragment = mNewsFragment;
                     break;
                 case NavigationDrawerFragment.EMAIL:
                     if (mEmailFragment == null)
-                        mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS);
+                        mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS, RSSParser.NEWSLETTER_TAG);
                     mNextFragment = mEmailFragment;
                     break;
                 case NavigationDrawerFragment.STUDENT:
                     if (mStudentSubsFragment == null)
-                        mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS);
+                        mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS, RSSParser.STUDENT_SUBS_TAG);
                     mNextFragment = mStudentSubsFragment;
                     break;
                 case NavigationDrawerFragment.EVENTS:

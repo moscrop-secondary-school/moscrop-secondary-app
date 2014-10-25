@@ -30,9 +30,11 @@ public class RSSFragment extends Fragment
     public static final String FEED_NEWSLETTERS = "moscropnewsletters";
     public static final String FEED_SUBS = "moscropstudents";
 
-    private static final String KEY_URL = "url";
+    private static final String KEY_BLOGID = "blog_id";
+    private static final String KEY_TAG = "tag";
 	
-	private String mURL = FEED_NEWS;
+	private String mBlogId = "";
+    private String mTag = "";
 
     private int mPosition;
 
@@ -43,13 +45,14 @@ public class RSSFragment extends Fragment
 	/**
 	 * Create and return a new instance of RSSFragment with given parameters
 	 * 
-	 * @param feed URL of the RSS feed to load and display
+	 * @param blogId URL of the RSS feed to load and display
 	 * @return New instance of RSSFragment
 	 */
-	public static RSSFragment newInstance(int position, String feed) {
+	public static RSSFragment newInstance(int position, String blogId, String tag) {
 		RSSFragment fragment = new RSSFragment();
         fragment.mPosition = position;
-		fragment.mURL = feed;
+		fragment.mBlogId = blogId;
+        fragment.mTag = tag;
 		return fragment;
 	}
 	
@@ -63,7 +66,8 @@ public class RSSFragment extends Fragment
         mContentView.setBackgroundColor(0xffe4e4e4);
 
         if(savedInstanceState != null) {
-            mURL = savedInstanceState.getString(KEY_URL, mURL);
+            mBlogId = savedInstanceState.getString(KEY_BLOGID, mBlogId);
+            mTag = savedInstanceState.getString(KEY_TAG, mTag);
         }
 
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
@@ -91,7 +95,8 @@ public class RSSFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_URL, mURL);
+        outState.putString(KEY_BLOGID, mBlogId);
+        outState.putString(KEY_TAG, mTag);
     }
 
     @Override
@@ -160,7 +165,7 @@ public class RSSFragment extends Fragment
         if (mSwipeLayout != null) {
             mSwipeLayout.setRefreshing(true);
         }
-        return new RSSListLoader2(getActivity(), mURL);
+        return new RSSListLoader2(getActivity(), mBlogId, mTag);
     }
 
     @Override

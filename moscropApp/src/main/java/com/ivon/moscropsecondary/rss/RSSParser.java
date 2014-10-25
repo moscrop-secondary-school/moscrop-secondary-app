@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class RSSParser {
 
-    private static final String NEWSLETTER_TAG = "newsletter";
-    private static final String STUDENT_SUBS_TAG = "studentsubs";
+    public static final String NEWSLETTER_TAG = "newsletter";
+    public static final String STUDENT_SUBS_TAG = "studentsubs";
 
     private static String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
@@ -68,7 +68,7 @@ public class RSSParser {
         return new RSSItem(date, title, content, tags, url);
     }
 
-    private static String[] extractTags(JSONObject entryObject, String url) throws JSONException {
+    private static String[] extractTags(JSONObject entryObject, String url) {
         if (url.contains("moscropnewsletters.blogspot.ca")) {
             return new String[] { NEWSLETTER_TAG };
         } else if (url.contains("moscropstudents.blogspot.ca")) {
@@ -100,29 +100,32 @@ public class RSSParser {
         }
     }
 
-    private static String getFeedUrlFromId(String blogId) {
-        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
+    private static String getFeedUrlFromId(String blogId, String tag) {
+        if (blogId.equals("moscropnewsletters") || blogId.equals("moscropstudents")) {
+            return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
+        } else {
+            return "http://" + blogId + ".blogspot.ca/feeds/posts/default/-/" + tag + "?alt=json";
+        }
     }
 
-    public static void parseAndSaveAll(Context context, String blogId) {
+    public static void parseAndSaveAll(Context context, String blogId, String tag) {
 
         // Get the list of events from the URL
         RSSFeed feed = null;
         try {
-            String url = getFeedUrlFromId(blogId);
+            Logger.log("Generating url with " + blogId + " and " + tag);
+            String url = getFeedUrlFromId(blogId, tag);
+            Logger.log("parsing JSON from " + url);
             feed = getRssFeed(context, url);
         } catch (JSONException e) {
             Logger.error("RSSParser.parseAndSave()", e);
         }
 
         if (feed != null) {
-            Logger.log("parseAndSaveAll(): feed is not null!");
             // TODO saveUpdateInfo(context, feed.version);
             RSSDatabase database = new RSSDatabase(context);
-            database.deleteAll();
+            database.deleteAll(tag);
             database.save(feed.items);
-        } else {
-            Logger.log("parseAndSaveAll(): feed is null!!!!!!!");
         }
     }
 }

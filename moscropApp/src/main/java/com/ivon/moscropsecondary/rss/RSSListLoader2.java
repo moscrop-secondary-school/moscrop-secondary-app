@@ -16,17 +16,19 @@ public class RSSListLoader2 extends AsyncTaskLoader<List<RSSItem>> {
 
     private List<RSSItem> mList;
     private String mBlogId;
+    private String mTag;
 
-    public RSSListLoader2(Context context, String blogId) {
+    public RSSListLoader2(Context context, String blogId, String tag) {
         super(context);
         mBlogId = blogId;
+        mTag = tag;
     }
 
     @Override
     public List<RSSItem> loadInBackground() {
         if (isConnected()) {
-            Logger.log("Loading from " + mBlogId);
-            RSSParser.parseAndSaveAll(getContext(), mBlogId);
+            Logger.log("RSSListLoader2 Loading from " + mBlogId + " and " + mTag);
+            RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
             RSSDatabase database = new RSSDatabase(getContext());
             return database.getItems();
         } else {
