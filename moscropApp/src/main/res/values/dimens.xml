@@ -40,4 +40,6 @@
     <dimen name="nav_drawer_footer_text">16sp</dimen>
     <dimen name="nav_drawer_topbottom_padding">10dp</dimen>
 
+    <dimen name="padding_teacher_list">5dp</dimen>
+
 </resources>
