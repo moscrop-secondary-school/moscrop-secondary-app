@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +18,8 @@ import com.ivon.moscropsecondary.rss.RSSFragment;
 import com.ivon.moscropsecondary.rss.RSSParser;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
 
+import java.util.prefs.Preferences;
+
 public class MainActivity extends ToolbarActivity
         implements NavigationDrawerBase.NavigationDrawerCallbacks {
 
@@ -25,9 +29,13 @@ public class MainActivity extends ToolbarActivity
 	protected RSSFragment mStudentSubsFragment;
 	protected CalendarFragment mEventsFragment;
 	protected StaffInfoFragment mTeachersFragment;
-    
-	//protected static int currentFragment;
+    private SharedPreferences mPref;
 
+    public static Preferences getPreferences() {
+        return null;
+    }
+
+    //protected static int currentFragment;
     private CharSequence mTitle;
 	
     @Override
@@ -129,4 +137,6 @@ public class MainActivity extends ToolbarActivity
         }
 		return super.onOptionsItemSelected(item);
 	}
+
+
 }

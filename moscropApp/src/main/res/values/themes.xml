@@ -9,6 +9,11 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="background_card">@drawable/background_card_light</item>
+        <item name="background_card_pressed">@drawable/background_card_pressed_light</item>
+        <item name="title_card">@color/text</item>
+        <item name="text_card">@color/card_light_text</item>
     </style>
 
     <style name="MyTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
