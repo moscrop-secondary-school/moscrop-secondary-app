@@ -10,22 +10,20 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="background_card">@drawable/background_card_light</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_light</item>
         <item name="title_card">@color/text</item>
         <item name="text_card">@color/card_light_text</item>
     </style>
 
     <style name="Theme.Base.Dark" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/primary_indigo</item>
-        <item name="colorPrimaryDark">@color/primary_dark_indigo</item>
-        <item name="colorAccent">@color/accent_indigo</item>
+        <item name="colorPrimary">@color/primary_indigo_d</item>
+        <item name="colorPrimaryDark">@color/primary_dark_indigo_d</item>
+        <item name="colorAccent">@color/accent_indigo_d</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowBackground">@color/background</item>
-        <item name="background_card">@drawable/background_card_light</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_light</item>
+        <item name="android:windowBackground">@color/dbackground</item>
+        <item name="background_card">@drawable/background_card_black</item>
         <item name="title_card">@color/text</item>
-        <item name="text_card">@color/card_light_text</item>
+        <item name="text_card">@color/card_black_text</item>
     </style>
 
     <!-- Don't touch these generally. They're only to allow for version
@@ -41,33 +39,104 @@
 
     <!-- Actual themes where stuff happens -->
     <style name="Theme.Light" parent="Theme.Base.Light.Versioned">
-        <item name="android:windowBackground">@color/background</item>  <!-- I recommend using #fffafafa instead -->
+        <item name="android:windowBackground">@color/backgroundd</item>  <!-- I recommend using #fffafafa instead -->
         <item name="background_card">@drawable/background_card_light</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_light</item>
         <item name="title_card">@color/text</item>
         <item name="text_card">@color/card_light_text</item>
+        <item name="drawer_divider">@color/backgroundd</item>
+        <item name="nav_drawer_press">@color/nav_drawer_pressed</item>
+
+        <item name="text">@color/text</item>
+        <item name="textt">@color/textt</item>
+        <item name="texttt">@color/texttt</item>
+        <item name="backgroundorig">@color/background</item>
+        <item name="backgroundd">@color/backgroundd</item>
+        <item name="backgrounddd">@color/backgrounddd</item>
+
+        <!--navdrawer-->
+        <item name="avatar">@drawable/avatar</item>
+        <item name="banner">@drawable/banner</item>
+        <item name="news">@drawable/ic_action_news_light</item>
+        <item name="newsletter">@drawable/ic_action_newsletters_light</item>
+        <item name="student">@drawable/ic_action_student_light</item>
+        <item name="events">@drawable/ic_action_event_light</item>
+        <item name="teachers">@drawable/ic_action_teacher_light</item>
+        <item name="settings">@drawable/ic_action_settings_light</item>
+        <item name="about">@drawable/ic_action_about_dev_light</item>
+        <item name="contact">@drawable/ic_action_contact_light</item>
+        <item name="nav_shadow_1">@color/nav_drawer_shadow_1</item>
+        <item name="nav_shadow_2">@color/nav_drawer_shadow_2</item>
+
     </style>
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
-        <item name="android:windowBackground">@color/dbackground</item>
+        <item name="android:windowBackground">@color/dbackgroundd</item>
         <item name="background_card">@drawable/background_card_black</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_black</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
+        <item name="drawer_divider">@color/dbackgroundd</item>
+        <item name="nav_drawer_press">@color/nav_drawer_pressed_dark</item>
+
+        <item name="text">@color/dtext</item>
+        <item name="textt">@color/dtextt</item>
+        <item name="texttt">@color/dtexttt</item>
+        <item name="backgroundorig">@color/dbackground</item>
+        <item name="backgroundd">@color/dbackgroundd</item>
+        <item name="backgrounddd">@color/dbackgrounddd</item>
+
+        <!--navdrawer-->
+        <item name="avatar">@drawable/avatar_dark</item>
+        <item name="banner">@drawable/banner_dark</item>
+        <item name="news">@drawable/ic_action_news_dark</item>
+        <item name="newsletter">@drawable/ic_action_newsletters_dark</item>
+        <item name="student">@drawable/ic_action_student_dark</item>
+        <item name="events">@drawable/ic_action_event_dark</item>
+        <item name="teachers">@drawable/ic_action_teacher_dark</item>
+        <item name="settings">@drawable/ic_action_settings_dark</item>
+        <item name="about">@drawable/ic_action_about_dev_dark</item>
+        <item name="contact">@drawable/ic_action_contact_dark</item>
+        <item name="nav_shadow_1">@color/dnav_drawer_shadow_1</item>
+        <item name="nav_shadow_2">@color/dnav_drawer_shadow_2</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
 
         <!-- These attributes are what makes a "wallpaper" theme "wallpaper". -->
-        <item name="android:windowBackground">@color/tdbackground</item>
+        <item name="android:windowBackground">@color/tdbackgroundd</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
 
         <!-- Other stuff -->
         <item name="background_card">@drawable/background_card_tblack</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_tblack</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
+        <item name="drawer_divider">@color/tdbackgroundd</item>
+        <item name="nav_drawer_press">@color/nav_drawer_pressed_dark</item>
+
+        <item name="colorPrimary">@color/primary_indigo_t</item>
+        <item name="colorPrimaryDark">@color/primary_dark_indigo_t</item>
+        <item name="colorAccent">@color/accent_indigo_t</item>
+
+        <item name="text">@color/dtext</item>
+        <item name="textt">@color/dtextt</item>
+        <item name="texttt">@color/dtexttt</item>
+        <item name="backgroundorig">@color/tdbackground</item>
+        <item name="backgroundd">@color/tdbackgroundd</item>
+        <item name="backgrounddd">@color/tdbackgrounddd</item>
+
+        <!--navdrawer-->
+        <item name="avatar">@drawable/avatar_dark</item>
+        <item name="banner">@drawable/banner_dark</item>
+        <item name="news">@drawable/ic_action_news_dark</item>
+        <item name="newsletter">@drawable/ic_action_newsletters_dark</item>
+        <item name="student">@drawable/ic_action_student_dark</item>
+        <item name="events">@drawable/ic_action_event_dark</item>
+        <item name="teachers">@drawable/ic_action_teacher_dark</item>
+        <item name="settings">@drawable/ic_action_settings_dark</item>
+        <item name="about">@drawable/ic_action_about_dev_dark</item>
+        <item name="contact">@drawable/ic_action_contact_dark</item>
+        <item name="nav_shadow_1">@color/dnav_drawer_shadow_1</item>
+        <item name="nav_shadow_2">@color/dnav_drawer_shadow_2</item>
     </style>
 
 </resources>

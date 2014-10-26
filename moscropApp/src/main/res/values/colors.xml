@@ -7,7 +7,7 @@
 
     <color name="background">#ffffffff</color>
     <color name="backgroundd">#ffefefef</color>
-    <color name="backgrounddd">#ffdfdfdf</color>
+    <color name="backgrounddd">#ffafafaf</color>
     <color name="tbackground">#80ffffff</color>
     <color name="tbackgroundd">#80efefef</color>
     <color name="tbackgrounddd">#80dfdfdf</color>
@@ -21,8 +21,7 @@
     <!-- Nav Drawer (light) -->
     <color name="nav_drawer_background">@color/background</color>
     <color name="nav_drawer_divider">#11000000</color>
-    <color name="nav_drawer_item_pressed">#44000000</color>
-    <color name="nav_drawer_footer_pressed">#44000000</color>
+    <color name="nav_drawer_pressed">#44000000</color>
     <color name="nav_drawer_item_text">@color/textt</color>
     <color name="nav_drawer_footer_text">@color/textt</color>
     <color name="nav_drawer_shadow_1">#17000000</color>
@@ -35,16 +34,26 @@
 
     <color name="dbackground">#ff000000</color>
     <color name="dbackgroundd">#ff101010</color>
-    <color name="dbackgrounddd">#ff202020</color>
-    <color name="tdbackground">#80000000</color>
+    <color name="dbackgrounddd">#ff505050</color>
+    <color name="tdbackground">#50000000</color>
     <color name="tdbackgroundd">#80101010</color>
-    <color name="tdbackgrounddd">#80202020</color>
+    <color name="tdbackgrounddd">#50505050</color>
 
     <color name="dwindow_background">@color/dbackgroundd</color>
     <color name="ddivider">#ff616161</color>
+    <color name="nav_drawer_pressed_dark">#44ffffff</color>
 
     <color name="white_transparent">#55FFFFFF</color>
     <color name="white_transparent_ex">#22FFFFFF</color>
+
+    <!-- Nav Drawer (dark) -->
+    <color name="dnav_drawer_background">@color/dbackground</color>
+    <color name="dnav_drawer_divider">#11ffffff</color>
+    <color name="dnav_drawer_footer_pressed">#44ffffff</color>
+    <color name="dnav_drawer_item_text">@color/dtext</color>
+    <color name="dnav_drawer_footer_text">@color/dtext</color>
+    <color name="dnav_drawer_shadow_1">#17ffffff</color>
+    <color name="dnav_drawer_shadow_2">#33ffffff</color>
 
     <!--cards-->
     <!-- light theme-->
@@ -54,7 +63,7 @@
     <color name="card_light_text">#ff8d8d8d</color>
     <color name="card_light_selected_color">#44000000</color>
     <!-- transparent black theme -->
-    <color name="card_background_tblack">@color/tdbackground</color>
+    <color name="card_background_tblack">#40000000</color>
     <color name="card_background_pressed_tblack">@color/tdbackgrounddd</color>
     <color name="card_shadow_tblack">@color/tdbackgrounddd</color>
     <!-- black theme -->
@@ -65,13 +74,7 @@
     <color name="card_black_selected_color">#44ffffff</color>
 
 
-    <!-- Nav Drawer (dark) -->
-    <color name="dnav_drawer_background">@color/dbackground</color>
-    <color name="dnav_drawer_divider">#11ffffff</color>
-    <color name="dnav_drawer_item_pressed">#44ffffff</color>
-    <color name="dnav_drawer_footer_pressed">#44ffffff</color>
-    <color name="dnav_drawer_item_text">@color/dtext</color>
-    <color name="dnav_drawer_footer_text">@color/dtext</color>
+
 
     <!--others-->
     <color name="background_holo_light">#fff3f3f3</color>
@@ -92,6 +95,14 @@
     <color name="primary_indigo">#3f51b5</color>
     <color name="primary_dark_indigo">#303f9f</color>
     <color name="accent_indigo">#ff4081</color>
+
+    <color name="primary_indigo_d">#ff3f5197</color>
+    <color name="primary_dark_indigo_d">#ff303f81</color>
+    <color name="accent_indigo_d">#ffff4081</color>
+
+    <color name="primary_indigo_t">#803f51b5</color>
+    <color name="primary_dark_indigo_t">#80303f9f</color>
+    <color name="accent_indigo_t">#80ff4081</color>
 
     <color name="primary_green">#259b24</color>
     <color name="primary_dark_green">#0a7e07</color>

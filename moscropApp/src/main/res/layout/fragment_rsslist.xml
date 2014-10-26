@@ -10,7 +10,7 @@
 	    android:id="@+id/rlf_list"
 	    android:layout_height="match_parent"
 	    android:layout_width="match_parent"
-        android:listSelector="@android:color/transparent"
+        android:listSelector="@color/transparent"
         android:divider="@null"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>

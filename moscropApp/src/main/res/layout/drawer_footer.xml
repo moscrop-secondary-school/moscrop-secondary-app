@@ -7,14 +7,14 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/backgroundd" />
+        android:background="?attr/backgroundd" />
 
     <TextView
         android:id="@+id/btnSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_nav_drawer_footer"
-        android:drawableLeft="@drawable/ic_action_settings_light"
+        android:drawableLeft="?attr/settings"
         android:drawablePadding="8dp"
         android:gravity="left|center_vertical"
         android:paddingTop="@dimen/nav_drawer_topbottom_padding"
@@ -22,20 +22,20 @@
         android:paddingLeft="12dp"
         android:text="@string/settings"
         android:textAllCaps="true"
-        android:textColor="@color/textt"
+        android:textColor="?attr/textt"
         android:textSize="@dimen/nav_drawer_footer_text" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/backgroundd" />
+        android:background="?attr/backgroundd" />
 
     <TextView
         android:id="@+id/btnAbout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_nav_drawer_footer"
-        android:drawableLeft="@drawable/ic_action_about_dev_light"
+        android:drawableLeft="?attr/about"
         android:drawablePadding="8dp"
         android:gravity="left|center_vertical"
         android:paddingTop="@dimen/nav_drawer_topbottom_padding"
@@ -43,13 +43,13 @@
         android:paddingLeft="12dp"
         android:text="@string/about"
         android:textAllCaps="true"
-        android:textColor="@color/textt"
+        android:textColor="?attr/textt"
         android:textSize="@dimen/nav_drawer_footer_text" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/backgroundd" />
+        android:background="?attr/backgroundd" />
 
     <!-- Great! Now that you're looking here: This will be the new
          home of the contact button. Fix strings as appropriate :) -->
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_nav_drawer_footer"
-        android:drawableLeft="@drawable/ic_action_contact_light"
+        android:drawableLeft="?attr/contact"
         android:drawablePadding="8dp"
         android:gravity="left|center_vertical"
         android:paddingTop="@dimen/nav_drawer_topbottom_padding"
@@ -67,12 +67,12 @@
         android:paddingLeft="12dp"
         android:text="@string/contact"
         android:textAllCaps="true"
-        android:textColor="@color/nav_drawer_footer_text"
+        android:textColor="?attr/textt"
         android:textSize="@dimen/nav_drawer_footer_text" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/backgroundd" />
+        android:background="?attr/backgroundd" />
 
 </LinearLayout>

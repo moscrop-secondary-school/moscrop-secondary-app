@@ -6,90 +6,90 @@
     <style name="text_display_4">
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textSize">112sp</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_display_3">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">56sp</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_display_2">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">45sp</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_display_1">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">35sp</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_headline">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <style name="text_title">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <style name="text_subhead">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <style name="text_body_2">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <style name="text_body_1">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <style name="text_caption">
         <item name="android:fontFamily">sans-serif-regular</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_menu">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <style name="text_button">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <!-- Custom text styles -->
 
     <style name="text_subhead_custom" parent="@style/text_subhead">
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_display_2_custom" parent="@style/text_display_2">
         <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_display_1_custom" parent="@style/text_display_1">
         <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_title_custom" parent="@style/text_title">
@@ -98,7 +98,7 @@
 
     <style name="text_title_custom_decorative" parent="@style/text_title">
         <item name="android:fontFamily">sans-serif-regular</item>
-        <item name="android:textColor">@color/texttt</item>
+        <item name="android:textColor">?attr/texttt</item>
     </style>
 
     <style name="text_list_title" parent="@style/text_title_custom">
