@@ -43,8 +43,7 @@
         <item name="background_card">@drawable/background_card_light</item>
         <item name="title_card">@color/text</item>
         <item name="text_card">@color/card_light_text</item>
-        <item name="drawer_divider">@color/backgroundd</item>
-        <item name="nav_drawer_press">@color/nav_drawer_pressed</item>
+        <item name="drawer_divider">@drawable/divider_horizontal</item>
 
         <item name="text">@color/text</item>
         <item name="textt">@color/textt</item>
@@ -64,8 +63,8 @@
         <item name="settings">@drawable/ic_action_settings_light</item>
         <item name="about">@drawable/ic_action_about_dev_light</item>
         <item name="contact">@drawable/ic_action_contact_light</item>
-        <item name="nav_shadow_1">@color/nav_drawer_shadow_1</item>
-        <item name="nav_shadow_2">@color/nav_drawer_shadow_2</item>
+        <item name="nav_header_shadow">@drawable/shadow_drawer_header</item>
+        <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_light</item>
 
     </style>
 
@@ -74,8 +73,7 @@
         <item name="background_card">@drawable/background_card_black</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
-        <item name="drawer_divider">@color/dbackgroundd</item>
-        <item name="nav_drawer_press">@color/nav_drawer_pressed_dark</item>
+        <item name="drawer_divider">@drawable/divider_horizontal_dark</item>
 
         <item name="text">@color/dtext</item>
         <item name="textt">@color/dtextt</item>
@@ -95,8 +93,8 @@
         <item name="settings">@drawable/ic_action_settings_dark</item>
         <item name="about">@drawable/ic_action_about_dev_dark</item>
         <item name="contact">@drawable/ic_action_contact_dark</item>
-        <item name="nav_shadow_1">@color/dnav_drawer_shadow_1</item>
-        <item name="nav_shadow_2">@color/dnav_drawer_shadow_2</item>
+        <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
+        <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
@@ -110,8 +108,7 @@
         <item name="background_card">@drawable/background_card_tblack</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
-        <item name="drawer_divider">@color/tdbackgroundd</item>
-        <item name="nav_drawer_press">@color/nav_drawer_pressed_dark</item>
+        <item name="drawer_divider">@drawable/divider_horizontal_dark</item>
 
         <item name="colorPrimary">@color/primary_indigo_t</item>
         <item name="colorPrimaryDark">@color/primary_dark_indigo_t</item>
@@ -135,8 +132,8 @@
         <item name="settings">@drawable/ic_action_settings_dark</item>
         <item name="about">@drawable/ic_action_about_dev_dark</item>
         <item name="contact">@drawable/ic_action_contact_dark</item>
-        <item name="nav_shadow_1">@color/dnav_drawer_shadow_1</item>
-        <item name="nav_shadow_2">@color/dnav_drawer_shadow_2</item>
+        <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
+        <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
     </style>
 
 </resources>

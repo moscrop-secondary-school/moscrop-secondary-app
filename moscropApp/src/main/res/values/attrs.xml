@@ -6,7 +6,7 @@
         <attr name="title_card" format="reference" />
         <attr name="text_card" format="reference" />
         <attr name="drawer_divider" format="reference" />
-        <attr name="nav_drawer_press" format="reference" />
+        <attr name="nav_drawer_selector" format="reference" />
 
         <attr name="text" format="reference" />
         <attr name="textt" format="reference" />
@@ -26,8 +26,7 @@
         <attr name="settings" format="reference" />
         <attr name="about" format="reference" />
         <attr name="contact" format="reference" />
-        <attr name="nav_shadow_1" format="reference" />
-        <attr name="nav_shadow_2" format="reference" />
+        <attr name="nav_header_shadow" format="reference" />
     </declare-styleable>
 
     <!-- RelativeLayout with foreground capability -->
