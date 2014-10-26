@@ -52,7 +52,6 @@
         <item name="backgrounddd">@color/backgrounddd</item>
 
         <!--navdrawer-->
-        <item name="avatar">@drawable/avatar</item>
         <item name="banner">@drawable/banner</item>
         <item name="news">@drawable/ic_action_news_light</item>
         <item name="newsletter">@drawable/ic_action_newsletters_light</item>
@@ -87,7 +86,6 @@
         <item name="backgrounddd">@color/dbackgrounddd</item>
 
         <!--navdrawer-->
-        <item name="avatar">@drawable/avatar_dark</item>
         <item name="banner">@drawable/banner_dark</item>
         <item name="news">@drawable/ic_action_news_dark</item>
         <item name="newsletter">@drawable/ic_action_newsletters_dark</item>
@@ -131,7 +129,6 @@
         <item name="backgrounddd">@color/tdbackgrounddd</item>
 
         <!--navdrawer-->
-        <item name="avatar">@drawable/avatar_dark</item>
         <item name="banner">@drawable/banner_dark</item>
         <item name="news">@drawable/ic_action_news_dark</item>
         <item name="newsletter">@drawable/ic_action_newsletters_dark</item>
