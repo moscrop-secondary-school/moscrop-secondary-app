@@ -73,7 +73,7 @@
     </style>
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
-        <item name="android:windowBackground">@color/dbackgroundd</item>
+        <item name="android:windowBackground">@color/dbackground</item>
         <item name="background_card">@drawable/background_card_black</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
