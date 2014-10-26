@@ -16,7 +16,6 @@
         <attr name="backgrounddd" format="reference" />
 
         <!--navdrawer-->
-        <attr name="avatar" format="reference" />
         <attr name="banner" format="reference" />
         <attr name="news" format="reference" />
         <attr name="newsletter" format="reference" />
