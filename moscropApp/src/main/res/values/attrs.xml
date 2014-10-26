@@ -53,7 +53,8 @@
         <attr name="selector_stroke_width" format="dimension" />
         <!-- Specifies whether or not to draw a shadow around your circular image. -->
         <attr name="shadow" format="boolean" />
-    </declare-styleable>-->
+    </declare-styleable>
+
     <declare-styleable name="CustomCircularImageViewTheme">
         <attr name="circularImageViewStyle" format="reference" />
     </declare-styleable>
