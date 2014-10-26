@@ -35,6 +35,7 @@ public class RSSFragment extends Fragment
 	
 	private String mBlogId = "";
     private String mTag = "";
+    private boolean mOnlineEnabled = true;
 
     private int mPosition;
 
@@ -87,7 +88,7 @@ public class RSSFragment extends Fragment
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-        loadFeedOnline(false);
+        loadFeed(false, false);
 
     	return mContentView;
     }
@@ -147,9 +148,10 @@ public class RSSFragment extends Fragment
 	 * @param force
      *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
 	 */
-	private void loadFeedOnline(boolean force) {
+	private void loadFeed(boolean force, boolean onlineEnabled) {
 		if(force || (mAdapter.getCount() == 0)) {
             if(!getLoaderManager().hasRunningLoaders()) {
+                mOnlineEnabled = onlineEnabled;
                 getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
 		}
@@ -157,7 +159,7 @@ public class RSSFragment extends Fragment
 
 	@Override
 	public void onRefresh() {
-		loadFeedOnline(true);
+		loadFeed(true, true);
 	}
 
     @Override
@@ -165,7 +167,7 @@ public class RSSFragment extends Fragment
         if (mSwipeLayout != null) {
             mSwipeLayout.setRefreshing(true);
         }
-        return new RSSListLoader2(getActivity(), mBlogId, mTag);
+        return new RSSListLoader(getActivity(), mBlogId, mTag, mOnlineEnabled);
     }
 
     @Override

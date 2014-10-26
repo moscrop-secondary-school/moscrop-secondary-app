@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="background_temp">#fffafafa</color>
+
     <!--light-->
     <color name="text">@color/dbackground</color>
     <color name="textt">@color/dbackgroundd</color>

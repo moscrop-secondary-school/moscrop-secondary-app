@@ -5,35 +5,67 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.ivon.moscropsecondary.util.Logger;
-
 import java.util.List;
 
 /**
  * Created by ivon on 24/10/14.
  */
-public class RSSListLoader2 extends AsyncTaskLoader<List<RSSItem>> {
+public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
 
     private List<RSSItem> mList;
     private String mBlogId;
     private String mTag;
+    private boolean mOnlineEnabled;
 
-    public RSSListLoader2(Context context, String blogId, String tag) {
+    public RSSListLoader(Context context, String blogId, String tag, boolean onlineEnabled) {
         super(context);
         mBlogId = blogId;
         mTag = tag;
+        mOnlineEnabled = onlineEnabled;
     }
 
     @Override
     public List<RSSItem> loadInBackground() {
+/*        if (mOnlineEnable && isConnected()) {
+            Logger.log("RSSListLoader Loading from " + mBlogId + " and " + mTag);
+            RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
+        }
+        RSSDatabase database = new RSSDatabase(getContext());
+        return database.getItems(mTag);
+        */
+
+        if (mOnlineEnabled) {
+            List<RSSItem> list = downloadParseSaveGetList();
+            if (list == null) {
+                list = getListOnly();
+            }
+            return list;
+        } else {
+            List<RSSItem> list = getListOnly();
+            if (list.size() == 0) {
+                list = downloadParseSaveGetList();
+            }
+            return list;
+        }
+    }
+
+    private List<RSSItem> downloadParseSaveGetList() {
         if (isConnected()) {
-            Logger.log("RSSListLoader2 Loading from " + mBlogId + " and " + mTag);
             RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
             RSSDatabase database = new RSSDatabase(getContext());
-            return database.getItems(mTag);
+            List<RSSItem> list = database.getItems(mTag);
+            database.close();
+            return list;
         } else {
             return null;
         }
+    }
+
+    private List<RSSItem> getListOnly() {
+        RSSDatabase database = new RSSDatabase(getContext());
+        List<RSSItem> list = database.getItems(mTag);
+        database.close();
+        return list;
     }
 
     private boolean isConnected() {
