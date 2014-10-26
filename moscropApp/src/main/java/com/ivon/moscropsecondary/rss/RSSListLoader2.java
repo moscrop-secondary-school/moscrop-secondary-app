@@ -30,7 +30,7 @@ public class RSSListLoader2 extends AsyncTaskLoader<List<RSSItem>> {
             Logger.log("RSSListLoader2 Loading from " + mBlogId + " and " + mTag);
             RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
             RSSDatabase database = new RSSDatabase(getContext());
-            return database.getItems();
+            return database.getItems(mTag);
         } else {
             return null;
         }

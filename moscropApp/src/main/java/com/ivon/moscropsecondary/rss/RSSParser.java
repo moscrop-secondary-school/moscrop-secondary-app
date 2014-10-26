@@ -69,9 +69,9 @@ public class RSSParser {
     }
 
     private static String[] extractTags(JSONObject entryObject, String url) {
-        if (url.contains("moscropnewsletters.blogspot.ca")) {
+        if (url.contains("moscropnewsletters.blogspot")) {
             return new String[] { NEWSLETTER_TAG };
-        } else if (url.contains("moscropstudents.blogspot.ca")) {
+        } else if (url.contains("moscropstudents.blogspot")) {
             return new String[] { STUDENT_SUBS_TAG };
         } else {
             String[] tags;
