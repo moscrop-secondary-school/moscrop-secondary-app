@@ -25,4 +25,5 @@
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
         <item name="android:statusBarColor">@color/primary_dark_indigo_t</item>
     </style>
+
 </resources>
