@@ -27,6 +27,7 @@
         <attr name="about" format="reference" />
         <attr name="contact" format="reference" />
         <attr name="nav_header_shadow" format="reference" />
+        <attr name="background_nav" format="reference" />
     </declare-styleable>
 
     <!-- RelativeLayout with foreground capability -->
@@ -53,7 +54,7 @@
         <attr name="selector_stroke_width" format="dimension"></attr>
         <!-- Specifies whether or not to draw a shadow around your circular image. -->
         <attr name="shadow" format="boolean"></attr>
-    </declare-styleable>
+    </declare-styleable>-->
     <declare-styleable name="CustomCircularImageViewTheme">
         <attr name="circularImageViewStyle" format="reference" />
     </declare-styleable>

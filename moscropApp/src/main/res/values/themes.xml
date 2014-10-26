@@ -65,6 +65,7 @@
         <item name="drawer_divider">@drawable/divider_horizontal</item>
         <item name="nav_header_shadow">@drawable/shadow_drawer_header</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_light</item>
+        <item name="background_nav">@color/backgroundd</item>
 
     </style>
 
@@ -95,6 +96,7 @@
         <item name="drawer_divider">@drawable/divider_horizontal_dark</item>
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
+        <item name="background_nav">@color/dbackgroundd</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
@@ -134,6 +136,7 @@
         <item name="drawer_divider">@drawable/divider_horizontal_dark</item>
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
+        <item name="background_nav">@color/tdbackground_nav</item>
     </style>
 
 </resources>
