@@ -41,7 +41,7 @@
 
     <!-- Actual themes where stuff happens -->
     <style name="Theme.Light" parent="Theme.Base.Light.Versioned">
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>  <!-- I recommend using #fffafafa instead -->
         <item name="background_card">@drawable/background_card_light</item>
         <item name="background_card_pressed">@drawable/background_card_pressed_light</item>
         <item name="title_card">@color/text</item>
@@ -60,8 +60,8 @@
 
         <!-- These attributes are what makes a "wallpaper" theme "wallpaper". -->
         <item name="android:windowBackground">@color/tdbackground</item>
-        <item name="colorBackgroundCacheHint">@null</item>
-        <item name="windowShowWallpaper">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
 
         <!-- Other stuff -->
         <item name="background_card">@drawable/background_card_tblack</item>

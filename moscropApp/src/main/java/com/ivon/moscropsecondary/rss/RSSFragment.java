@@ -63,7 +63,7 @@ public class RSSFragment extends Fragment
     	setHasOptionsMenu(true);
 
     	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
-        mContentView.setBackgroundColor(0xffe4e4e4);
+        //mContentView.setBackgroundColor(0xffe4e4e4);
 
         if(savedInstanceState != null) {
             mBlogId = savedInstanceState.getString(KEY_BLOGID, mBlogId);
