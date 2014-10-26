@@ -5,7 +5,7 @@
 	    android:title="Useless preference"
 	    android:summary="Check me! I do nothing!"
 	    android:defaultValue="false" />
-    <PreferenceCategory
+    <!--<PreferenceCategory
         android:key="group_app"
         android:title="@string/theme_category">
         <com.ivon.moscropsecondary.widget.IntegerListPreference
@@ -15,6 +15,6 @@
             android:entries="@array/theme_texts"
             android:entryValues="@array/theme_values"
             android:defaultValue="0" />
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 </PreferenceScreen>
 
