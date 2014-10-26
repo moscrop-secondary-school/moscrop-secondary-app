@@ -101,7 +101,8 @@
     <color name="primary_dark_indigo_d">#ff303f81</color>
     <color name="accent_indigo_d">#ffff4081</color>
 
-    <color name="primary_indigo_t">#883f51b5</color>
+    <color name="primary_indigo_t">#ff3f51b5</color>
+    <color name="primary_indigo_t_toolbar">#883f51b5</color>
     <color name="primary_dark_indigo_t">#ff303f9f</color>
     <color name="accent_indigo_t">#80ff4081</color>
 
