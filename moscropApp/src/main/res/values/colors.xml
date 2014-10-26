@@ -71,7 +71,7 @@
     <color name="card_background_pressed_tblack">@color/tdbackgrounddd</color>
     <color name="card_shadow_tblack">@color/tdbackground</color>
     <!-- black theme -->
-    <color name="card_background_black">@color/dbackground</color>
+    <color name="card_background_black">@color/dbackgroundd</color>
     <color name="card_background_pressed_black">@color/dbackgrounddd</color>
     <color name="card_shadow_black">@color/dbackgroundd</color>
     <color name="card_black_text">#ff727272</color>

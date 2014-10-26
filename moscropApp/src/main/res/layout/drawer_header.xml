@@ -26,7 +26,7 @@
             android:layout_margin="@dimen/nav_drawer_header_spacing"
             android:src="@drawable/avatar"
             app:border="false"
-            app:border_color="?attr/background"
+            app:border_color="?attr/backgroundorig"
             app:border_width="1.5dp"
             app:shadow="false" />
 
