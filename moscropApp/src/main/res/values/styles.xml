@@ -3,29 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:targetApi="16">
 
-    <style name="CardLight" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:windowBackground">@color/background</item>
-        <item name="background_card">@drawable/background_card_light</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_light</item>
-        <item name="title_card">@color/text</item>
-        <item name="text_card">@color/card_light_text</item>
-    </style>
-    <style name="CardBlack" parent="android:Theme.Holo">
-        <item name="android:windowBackground">@color/dbackground</item>
-        <item name="background_card">@drawable/background_card_black</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_black</item>
-        <item name="title_card">@color/dtext</item>
-        <item name="text_card">@color/card_black_text</item>
-    </style>
-    <style name="CardTBlack" parent="android:Theme.Holo.Wallpaper">
-        <item name="android:windowBackground">@color/tdbackground</item>
-        <item name="background_card">@drawable/background_card_tblack</item>
-        <item name="background_card_pressed">@drawable/background_card_pressed_tblack</item>
-        <item name="title_card">@color/dtext</item>
-        <item name="text_card">@color/card_black_text</item>
-    </style>
-
-
     <style name="CardTitle" parent="@style/CardText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
