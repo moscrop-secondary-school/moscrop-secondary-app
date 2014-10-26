@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,26 +16,20 @@ import com.ivon.moscropsecondary.rss.RSSFragment;
 import com.ivon.moscropsecondary.rss.RSSParser;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
 
-import java.util.prefs.Preferences;
-
 public class MainActivity extends ToolbarActivity
         implements NavigationDrawerBase.NavigationDrawerCallbacks {
 
     private DrawerLayout mDrawerLayout;
-	protected RSSFragment mNewsFragment;
-	protected RSSFragment mEmailFragment;
-	protected RSSFragment mStudentSubsFragment;
-	protected CalendarFragment mEventsFragment;
-	protected StaffInfoFragment mTeachersFragment;
-    private SharedPreferences mPref;
-
-    public static Preferences getPreferences() {
-        return null;
-    }
+    protected RSSFragment mNewsFragment;
+    protected RSSFragment mEmailFragment;
+    protected RSSFragment mStudentSubsFragment;
+    protected CalendarFragment mEventsFragment;
+    protected StaffInfoFragment mTeachersFragment;
 
     //protected static int currentFragment;
+
     private CharSequence mTitle;
-	
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -116,27 +108,25 @@ public class MainActivity extends ToolbarActivity
         mTitle = getResources().getStringArray(R.array.navigation_items)[position];
     }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-    	// If drawr toggle was selected
-    	
-		int id = item.getItemId();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        // If drawr toggle was selected
+
+        int id = item.getItemId();
 
         if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(Gravity.START);
             return true;
         }
-		return super.onOptionsItemSelected(item);
-	}
-
-
+        return super.onOptionsItemSelected(item);
+    }
 }
