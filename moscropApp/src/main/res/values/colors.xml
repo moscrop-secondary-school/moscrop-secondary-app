@@ -40,6 +40,7 @@
     <color name="dbackgrounddd">#ff505050</color>
     <color name="tdbackground">#50000000</color>
     <color name="tdbackgroundd">#80101010</color>
+    <color name="tdbackground_nav">#cc000000</color>
     <color name="tdbackgrounddd">#50505050</color>
 
     <color name="dwindow_background">@color/dbackgroundd</color>
@@ -62,17 +63,17 @@
     <!-- light theme-->
     <color name="card_background_light">@color/background</color>
     <color name="card_background_pressed_light">@color/backgrounddd</color>
-    <color name="card_shadow_light">@color/backgrounddd</color>
+    <color name="card_shadow_light">@color/backgroundd</color>
     <color name="card_light_text">#ff8d8d8d</color>
     <color name="card_light_selected_color">#44000000</color>
     <!-- transparent black theme -->
     <color name="card_background_tblack">#40000000</color>
     <color name="card_background_pressed_tblack">@color/tdbackgrounddd</color>
-    <color name="card_shadow_tblack">@color/tdbackgrounddd</color>
+    <color name="card_shadow_tblack">@color/tdbackground</color>
     <!-- black theme -->
     <color name="card_background_black">@color/dbackground</color>
     <color name="card_background_pressed_black">@color/dbackgrounddd</color>
-    <color name="card_shadow_black">@color/dbackgrounddd</color>
+    <color name="card_shadow_black">@color/dbackgroundd</color>
     <color name="card_black_text">#ff727272</color>
     <color name="card_black_selected_color">#44ffffff</color>
 
@@ -101,6 +102,7 @@
     <color name="accent_indigo_d">#ffff4081</color>
 
     <color name="primary_indigo_t">#ff3f51b5</color>
+    <color name="primary_indigo_t_toolbar">#883f51b5</color>
     <color name="primary_dark_indigo_t">#ff303f9f</color>
     <color name="accent_indigo_t">#80ff4081</color>
 
