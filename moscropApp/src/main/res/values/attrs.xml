@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="background_card" format="reference" />
-    <attr name="title_card" format="reference" />
-    <attr name="text_card" format="reference" />
-    <attr name="drawer_divider" format="reference" />
-    <attr name="nav_drawer_press" format="reference" />
+    <declare-styleable name="MyAttributes">
+        <attr name="background_card" format="reference" />
+        <attr name="title_card" format="reference" />
+        <attr name="text_card" format="reference" />
+        <attr name="drawer_divider" format="reference" />
+        <attr name="nav_drawer_press" format="reference" />
 
-    <attr name="text" format="reference" />
-    <attr name="textt" format="reference" />
-    <attr name="texttt" format="reference" />
-    <attr name="backgroundorig" format="reference" />
-    <attr name="backgroundd" format="reference" />
-    <attr name="backgrounddd" format="reference" />
+        <attr name="text" format="reference" />
+        <attr name="textt" format="reference" />
+        <attr name="texttt" format="reference" />
+        <attr name="backgroundorig" format="reference" />
+        <attr name="backgroundd" format="reference" />
+        <attr name="backgrounddd" format="reference" />
 
-    <!--navdrawer-->
-    <attr name="avatar" format="reference" />
-    <attr name="banner" format="reference" />
-    <attr name="news" format="reference" />
-    <attr name="newsletter" format="reference" />
-    <attr name="student" format="reference" />
-    <attr name="events" format="reference" />
-    <attr name="teachers" format="reference" />
-    <attr name="settings" format="reference" />
-    <attr name="about" format="reference" />
-    <attr name="contact" format="reference" />
-    <attr name="nav_shadow_1" format="reference" />
-    <attr name="nav_shadow_2" format="reference" />
+        <!--navdrawer-->
+        <attr name="avatar" format="reference" />
+        <attr name="banner" format="reference" />
+        <attr name="news" format="reference" />
+        <attr name="newsletter" format="reference" />
+        <attr name="student" format="reference" />
+        <attr name="events" format="reference" />
+        <attr name="teachers" format="reference" />
+        <attr name="settings" format="reference" />
+        <attr name="about" format="reference" />
+        <attr name="contact" format="reference" />
+        <attr name="nav_shadow_1" format="reference" />
+        <attr name="nav_shadow_2" format="reference" />
+    </declare-styleable>
 
     <!-- RelativeLayout with foreground capability -->
     <declare-styleable name="FRelativeLayout">
