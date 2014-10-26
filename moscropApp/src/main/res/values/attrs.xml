@@ -2,6 +2,11 @@
 <resources>
 
     <declare-styleable name="MyAttributes">
+
+        <!-- I added this for the toolbar, feel free to move
+             it wherever you want. Then delete this comment -->
+        <attr name="toolbar_color" format="reference" />
+
         <attr name="background_card" format="reference" />
         <attr name="title_card" format="reference" />
         <attr name="text_card" format="reference" />

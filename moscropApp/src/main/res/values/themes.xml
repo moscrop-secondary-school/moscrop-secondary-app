@@ -67,6 +67,10 @@
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_light</item>
         <item name="background_nav">@color/backgroundd</item>
 
+        <!-- Toolbar stuff, move wherever you want
+             then delete this comment -->
+        <item name="toolbar_color">?attr/colorPrimary</item>
+
     </style>
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
@@ -97,6 +101,10 @@
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
         <item name="background_nav">@color/dbackgroundd</item>
+
+        <!-- Toolbar stuff, move wherever you want
+             then delete this comment -->
+        <item name="toolbar_color">?attr/colorPrimary</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
@@ -137,6 +145,10 @@
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
         <item name="background_nav">@color/tdbackground_nav</item>
+
+        <!-- Toolbar stuff, move wherever you want
+             then delete this comment -->
+        <item name="toolbar_color">@color/primary_indigo_t_toolbar</item>
     </style>
 
 </resources>
