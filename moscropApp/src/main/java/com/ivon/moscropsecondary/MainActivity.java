@@ -17,9 +17,10 @@ import com.ivon.moscropsecondary.rss.RSSFragment;
 import com.ivon.moscropsecondary.rss.RSSParser;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
 import com.ivon.moscropsecondary.util.Logger;
+import com.ivon.moscropsecondary.util.ThemesUtil;
 
 public class MainActivity extends ToolbarActivity
-        implements NavigationDrawerBase.NavigationDrawerCallbacks {
+        implements NavigationDrawerBase.NavigationDrawerCallbacks, ThemesUtil.ThemeChangedListener {
 
     private DrawerLayout mDrawerLayout;
     protected RSSFragment mNewsFragment;
@@ -32,8 +33,21 @@ public class MainActivity extends ToolbarActivity
 
     private CharSequence mTitle;
 
+    private boolean mThemeRequiresUpdate = false;
+
+    public interface BackPressListener {
+        public abstract boolean onBackPressed();
+    }
+
+    private BackPressListener mBackPressListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        int theme = ThemesUtil.getThemeResFromPreference(this);
+        setTheme(theme);
+        mThemeRequiresUpdate = false;   // We just set the latest theme
+        ThemesUtil.registerThemeChangedListener(this);
 
         super.onCreate(savedInstanceState);
         setActionBarIcon(R.drawable.ic_ab_drawer);
@@ -44,6 +58,15 @@ public class MainActivity extends ToolbarActivity
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mThemeRequiresUpdate) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
     }
 
     @Override
@@ -144,5 +167,10 @@ public class MainActivity extends ToolbarActivity
             }
         }
         return super.onKeyDown(keyCode, keyEvent);
+    }
+
+    @Override
+    public void onThemeChanged() {
+        mThemeRequiresUpdate = true;
     }
 }
