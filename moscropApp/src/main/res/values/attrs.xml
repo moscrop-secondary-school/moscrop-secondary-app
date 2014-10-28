@@ -3,6 +3,10 @@
 
     <declare-styleable name="MyAttributes">
 
+        <!-- I added this for the drawer icons, feel free to move
+             it wherever you want. Then delete this comment -->
+        <attr name="drawer_icon_array" format="reference" />
+
         <!-- I added this for the toolbar, feel free to move
              it wherever you want. Then delete this comment -->
         <attr name="toolbar_color" format="reference" />

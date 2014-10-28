@@ -49,11 +49,19 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
 
         // Initialize the adapter
         String[] drawerItems = getActivity().getResources().getStringArray(R.array.navigation_items);
-        TypedArray images = getResources().obtainTypedArray(R.array.drawer_icons);
+
+        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] {R.attr.drawer_icon_array});
+        int arrayResourceId = a.getResourceId(0, 0);
+        a.recycle();
+
+        TypedArray images = getResources().obtainTypedArray(arrayResourceId);
         List<Integer> drawerIcons = new ArrayList<Integer>();
+
         for (int i=0; i<images.length(); i++) {
             drawerIcons.add(images.getResourceId(i, 0));
         }
+        images.recycle();
+
         mDrawerAdapter = new NavDrawerAdapter(
                 getActivity(),
                 new ArrayList<String>(Arrays.asList(drawerItems)),
