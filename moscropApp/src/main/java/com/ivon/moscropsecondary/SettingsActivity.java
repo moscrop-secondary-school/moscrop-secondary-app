@@ -1,11 +1,10 @@
 package com.ivon.moscropsecondary;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
-public class SettingsActivity extends FragmentActivity {
+public class SettingsActivity extends ToolbarActivity {
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,11 +13,16 @@ public class SettingsActivity extends FragmentActivity {
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
-        		.replace(android.R.id.content, new SettingsFragment())
+        		.replace(R.id.content_frame, new SettingsFragment())
         		.commit();
 	}
 
-	@Override
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_toolbar;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();

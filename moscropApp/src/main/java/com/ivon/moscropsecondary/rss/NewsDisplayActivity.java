@@ -1,14 +1,14 @@
 package com.ivon.moscropsecondary.rss;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.ToolbarActivity;
 
-public class NewsDisplayActivity extends FragmentActivity {
+public class NewsDisplayActivity extends ToolbarActivity {
 	
 	public static final String EXTRA_URL = "url";
 	public static final String EXTRA_CONTENT = "content";
@@ -22,13 +22,18 @@ public class NewsDisplayActivity extends FragmentActivity {
 		String url = getIntent().getStringExtra(EXTRA_URL) + "?m=1";
 		String htmlContent = getIntent().getStringExtra(EXTRA_CONTENT);
 		String title = getIntent().getStringExtra(EXTRA_TITLE);
-		
+
         // Display the fragment as the main content.
         getSupportFragmentManager().beginTransaction()
-        		.replace(android.R.id.content, NewsDisplayFragment.newInstance(url, htmlContent, title))
+        		.replace(R.id.content_frame, NewsDisplayFragment.newInstance(url, htmlContent, title))
         		.commit();
 	}
-	
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_toolbar;
+    }
+
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_displaynews, menu);

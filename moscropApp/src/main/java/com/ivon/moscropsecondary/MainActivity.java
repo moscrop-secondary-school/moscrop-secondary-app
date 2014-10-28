@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.ivon.moscropsecondary.calendar.CalendarFragment;
 import com.ivon.moscropsecondary.rss.RSSFragment;
 import com.ivon.moscropsecondary.rss.RSSParser;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
+import com.ivon.moscropsecondary.util.Logger;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationDrawerBase.NavigationDrawerCallbacks {
@@ -97,6 +99,7 @@ public class MainActivity extends ToolbarActivity
             }
 
             // update the main content by replacing fragments
+            Logger.log("Choosing fragment: " + position);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, mNextFragment)
@@ -106,6 +109,8 @@ public class MainActivity extends ToolbarActivity
 
     public void onSectionAttached(int position) {
         mTitle = getResources().getStringArray(R.array.navigation_items)[position];
+        Logger.log("onSectionAttached: " + position + ", " + mTitle);
+        getSupportActionBar().setTitle(mTitle);
     }
 
     @Override
@@ -128,5 +133,16 @@ public class MainActivity extends ToolbarActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+                mDrawerLayout.closeDrawer(Gravity.START);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, keyEvent);
     }
 }

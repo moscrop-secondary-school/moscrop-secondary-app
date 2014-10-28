@@ -34,6 +34,7 @@ public class CalendarFragment extends Fragment
     public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
 
+    private static final String KEY_POSITION = "position";
     private int mPosition;
     private View mContentView;
     private Day mSelectedDay;
@@ -77,6 +78,10 @@ public class CalendarFragment extends Fragment
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
         mCalendarView.setOnDaySelectListener(this);
 
+        if(savedInstanceState != null) {
+            mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
+        }
+
         // Refresh calendar
         new Thread(new Runnable() {
             @Override
@@ -86,6 +91,12 @@ public class CalendarFragment extends Fragment
         }).start();
 
     	return mContentView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_POSITION, mPosition);
     }
 
     @Override

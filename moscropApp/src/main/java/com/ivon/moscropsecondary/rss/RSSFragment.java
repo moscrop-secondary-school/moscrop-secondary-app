@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +33,13 @@ public class RSSFragment extends Fragment
 
     private static final String KEY_BLOGID = "blog_id";
     private static final String KEY_TAG = "tag";
+    private static final String KEY_POSITION = "position";
 	
 	private String mBlogId = "";
     private String mTag = "";
     private boolean mOnlineEnabled = true;
 
-    private int mPosition;
+    private int mPosition = 0;
 
     public SwipeRefreshLayout mSwipeLayout = null;
     public ListView mListView = null;
@@ -69,6 +71,7 @@ public class RSSFragment extends Fragment
         if(savedInstanceState != null) {
             mBlogId = savedInstanceState.getString(KEY_BLOGID, mBlogId);
             mTag = savedInstanceState.getString(KEY_TAG, mTag);
+            mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
 
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
@@ -98,11 +101,13 @@ public class RSSFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putString(KEY_BLOGID, mBlogId);
         outState.putString(KEY_TAG, mTag);
+        outState.putInt(KEY_POSITION, mPosition);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Logger.log("onActivityCreated from fragment; position: " + mPosition);
         ((MainActivity) getActivity()).onSectionAttached(mPosition);
     }
 

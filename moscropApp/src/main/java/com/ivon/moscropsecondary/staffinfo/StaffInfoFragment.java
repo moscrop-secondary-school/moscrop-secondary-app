@@ -22,6 +22,7 @@ import java.util.List;
 
 public class StaffInfoFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    private static final String KEY_POSITION = "position";
     private int mPosition;
     private ListView mListView;
 
@@ -45,6 +46,10 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     	mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
+        if(savedInstanceState != null) {
+            mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -53,6 +58,12 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         }).start();
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_POSITION, mPosition);
     }
 
     @Override
