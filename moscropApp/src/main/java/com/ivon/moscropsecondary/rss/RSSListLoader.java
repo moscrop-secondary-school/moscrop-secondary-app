@@ -5,6 +5,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
+import com.ivon.moscropsecondary.util.JsonUtil;
+
+import org.json.JSONException;
+
 import java.util.List;
 
 /**
@@ -51,11 +55,36 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
 
     private List<RSSItem> downloadParseSaveGetList() {
         if (isConnected()) {
-            RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
-            RSSDatabase database = new RSSDatabase(getContext());
-            List<RSSItem> list = database.getItems(mTag);
-            database.close();
-            return list;
+            /*String resultStr = "";
+            try {
+                File file = new File("/sdcard/taglist.json");
+                BufferedReader reader = new BufferedReader(new FileReader("/sdcard/taglist.json"));
+                StringBuilder sb = new StringBuilder();
+
+                // Build input stream into response string
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                resultStr = sb.toString();
+            } catch (IOException e) {
+
+            }*/
+            RSSParser parser = null;
+            try {
+                parser = new RSSParser(JsonUtil.getJsonObjectFromUrl(getContext(), "http://pastebin.com/raw.php?i=dMePcZ9e"));
+            } catch (JSONException e) {
+
+            }
+            if (parser != null) {
+                parser.parseAndSaveAll(getContext(), mBlogId);
+                RSSDatabase database = new RSSDatabase(getContext());
+                List<RSSItem> list = database.getItems(mTag);
+                database.close();
+                return list;
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

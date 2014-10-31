@@ -18,16 +18,46 @@ import java.util.List;
  */
 public class RSSParser {
 
+    public static class RSSTagCriteria {
+
+        public final String name;
+        public final String author;
+        public final String category;
+
+        public RSSTagCriteria(String name, String author, String category) {
+            this.name = name;
+            this.author = (author.equals("@null")) ? null : author;
+            this.category = (category.equals("@null")) ? null : category;
+        }
+    }
+
     public static final String NEWSLETTER_TAG = "newsletter";
     public static final String STUDENT_SUBS_TAG = "studentsubs";
 
-    private static String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
+    private RSSTagCriteria[] mCriteria;
+
+    public RSSParser(String taglist_json) throws JSONException {
+        this(new JSONObject(taglist_json));
+    }
+
+    public RSSParser(JSONObject taglistJsonObject) throws JSONException {
+        JSONObject[] criteriaArray = JsonUtil.extractJsonArray(taglistJsonObject.getJSONArray("tags"));
+        mCriteria = new RSSTagCriteria[criteriaArray.length];
+        for (int i=0; i<criteriaArray.length; i++) {
+            mCriteria[i] = new RSSTagCriteria(
+                    criteriaArray[i].getString("name"),
+                    criteriaArray[i].getString("id_author"),
+                    criteriaArray[i].getString("id_category")
+            );
+        }
+    }
+    private String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
         JSONObject updated = feed.getJSONObject("updated");
         return updated.getString("$t");
     }
 
-    private static List<RSSItem> getEntriesListFromJsonObject(JSONObject jsonObject) throws JSONException {
+    private List<RSSItem> getEntriesListFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
         JSONObject updated = feed.getJSONObject("updated");
         JSONArray entry = feed.getJSONArray("entry");
@@ -46,7 +76,7 @@ public class RSSParser {
         return items;
     }
 
-    private static RSSItem entryObjectToRssItem(JSONObject entryObject) throws JSONException {
+    private RSSItem entryObjectToRssItem(JSONObject entryObject) throws JSONException {
 
         String dateStr = entryObject.getJSONObject("published").getString("$t");
         long date = DateUtil.parseRCF339Date(dateStr).getTime();
@@ -63,33 +93,65 @@ public class RSSParser {
             }
         }
 
-        String[] tags = extractTags(entryObject, url);
+        String[] tags = extractTags(entryObject, title);
 
         return new RSSItem(date, title, content, tags, url);
     }
 
-    private static String[] extractTags(JSONObject entryObject, String url) {
-        if (url.contains("moscropnewsletters.blogspot")) {
-            return new String[] { NEWSLETTER_TAG };
-        } else if (url.contains("moscropstudents.blogspot")) {
-            return new String[] { STUDENT_SUBS_TAG };
-        } else {
-            String[] tags;
-            try {
-                JSONObject[] categories = JsonUtil.extractJsonArray(entryObject.getJSONArray("category"));
-                 tags = new String[categories.length];
-                for (int i = 0; i < categories.length; i++) {
-                    tags[i] = categories[i].getString("term");
-                }
-            } catch (JSONException e) {
-                Logger.error("RSSParser.extractTags(): caught JSONException ", e);
-                tags = new String[] { "" };
+    // TODO All the tagging magic happens here.
+    private String[] extractTags(JSONObject entryObject, String title) {
+
+        // Get a list of categories
+        List<String> categories = new ArrayList<String>();
+        try {
+            JSONObject[] categoryObjects = JsonUtil.extractJsonArray(entryObject.getJSONArray("category"));
+            for (JSONObject o : categoryObjects) {
+                categories.add(o.getString("term"));
             }
-            return tags;
+        } catch (JSONException e) {
+            Logger.error("RSSParser.extractTags(): caught JSONException while parsing categories ", e);
         }
+
+        // Get a list of authors
+        List<String> authors = new ArrayList<String>();
+        try {
+            JSONObject[] categoryObjects = JsonUtil.extractJsonArray(entryObject.getJSONArray("author"));
+            for (JSONObject o : categoryObjects) {
+                authors.add(o.getJSONObject("name").getString("$t"));
+            }
+        } catch (JSONException e) {
+            Logger.error("RSSParser.extractTags(): caught JSONException while parsing authors ", e);
+        }
+
+        // Temporary outputs
+        for (String s : categories) {
+            Logger.log("Title: " + title + " Category: " + s);
+        }
+        for (String s : authors) {
+            Logger.log("Title: " + title + " Authors: " + s);
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        for (RSSTagCriteria criteria : mCriteria) {
+            Logger.log("Title: " + title + " Checking: " + criteria.name);
+            if ((criteria.category != null && categories.contains(criteria.category)) || (criteria.author != null && authors.contains(criteria.author))) {
+                tags.add(criteria.name);
+            }
+        }
+
+        String[] tagsArray = new String[tags.size()];
+        for (int i=0; i<tagsArray.length; i++) {
+            tagsArray[i] = tags.get(i);
+        }
+
+        for (String tag : tagsArray) {
+            Logger.log("Title: " + title + " Tags: " + tag);
+        }
+
+        return tagsArray;
     }
 
-    private static RSSFeed getRssFeed(Context context, String url) throws JSONException {
+    private RSSFeed getRssFeed(Context context, String url) throws JSONException {
         JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
         if (jsonObject != null) {
             String timestamp = getUpdatedTimeFromJsonObject(jsonObject);
@@ -100,22 +162,19 @@ public class RSSParser {
         }
     }
 
-    private static String getFeedUrlFromId(String blogId, String tag) {
-        if (blogId.equals("moscropnewsletters") || blogId.equals("moscropstudents")) {
-            return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
-        } else {
-            return "http://" + blogId + ".blogspot.ca/feeds/posts/default/-/" + tag + "?alt=json";
-        }
+    private String getFeedUrlFromId(String blogId) {
+        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
     }
 
-    public static void parseAndSaveAll(Context context, String blogId, String tag) {
+    public void parseAndSaveAll(Context context, String blogId) {
+
+        // TODO move this override somewhere else
+        blogId = "moscropschool";
 
         // Get the list of events from the URL
         RSSFeed feed = null;
         try {
-            Logger.log("Generating url with " + blogId + " and " + tag);
-            String url = getFeedUrlFromId(blogId, tag);
-            Logger.log("parsing JSON from " + url);
+            String url = getFeedUrlFromId(blogId);
             feed = getRssFeed(context, url);
         } catch (JSONException e) {
             Logger.error("RSSParser.parseAndSave()", e);
@@ -124,7 +183,7 @@ public class RSSParser {
         if (feed != null) {
             // TODO saveUpdateInfo(context, feed.version);
             RSSDatabase database = new RSSDatabase(context);
-            database.deleteAll(tag);
+            database.deleteAll();
             database.save(feed.items);
         }
     }
