@@ -88,7 +88,7 @@ public class MainActivity extends ToolbarActivity
                     break;
                 case NavigationDrawerFragment.EMAIL:
                     if (mEmailFragment == null)
-                        mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS, "Unicorns");
+                        mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS, "Autopost");
                     mNextFragment = mEmailFragment;
                     break;
                 case NavigationDrawerFragment.STUDENT:

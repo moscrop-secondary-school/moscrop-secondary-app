@@ -36,8 +36,8 @@ public class RSSParser {
 
     private RSSTagCriteria[] mCriteria;
 
-    public RSSParser(String taglist_json) throws JSONException {
-        this(new JSONObject(taglist_json));
+    public RSSParser(String taglistJsonString) throws JSONException {
+        this(new JSONObject(taglistJsonString));
     }
 
     public RSSParser(JSONObject taglistJsonObject) throws JSONException {
@@ -109,7 +109,7 @@ public class RSSParser {
                 categories.add(o.getString("term"));
             }
         } catch (JSONException e) {
-            Logger.error("RSSParser.extractTags(): caught JSONException while parsing categories ", e);
+            Logger.error("RSSParser.extractTags(): caught JSONException while parsing categories for " + title, e);
         }
 
         // Get a list of authors
@@ -120,32 +120,21 @@ public class RSSParser {
                 authors.add(o.getJSONObject("name").getString("$t"));
             }
         } catch (JSONException e) {
-            Logger.error("RSSParser.extractTags(): caught JSONException while parsing authors ", e);
+            Logger.error("RSSParser.extractTags(): caught JSONException while parsing authors for " + title, e);
         }
 
-        // Temporary outputs
-        for (String s : categories) {
-            Logger.log("Title: " + title + " Category: " + s);
-        }
-        for (String s : authors) {
-            Logger.log("Title: " + title + " Authors: " + s);
-        }
-
+        // Check if it matches criteria
         ArrayList<String> tags = new ArrayList<String>();
         for (RSSTagCriteria criteria : mCriteria) {
-            Logger.log("Title: " + title + " Checking: " + criteria.name);
             if ((criteria.category != null && categories.contains(criteria.category)) || (criteria.author != null && authors.contains(criteria.author))) {
                 tags.add(criteria.name);
             }
         }
 
+        // Convert list to array
         String[] tagsArray = new String[tags.size()];
         for (int i=0; i<tagsArray.length; i++) {
             tagsArray[i] = tags.get(i);
-        }
-
-        for (String tag : tagsArray) {
-            Logger.log("Title: " + title + " Tags: " + tag);
         }
 
         return tagsArray;
@@ -162,19 +151,20 @@ public class RSSParser {
         }
     }
 
-    private String getFeedUrlFromId(String blogId) {
-        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
+    private String getFeedUrlFromId(String blogId, boolean loadAll) {
+        String url =  "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
+        if (loadAll) {
+            url += "&max-results=1000";
+        }
+        return url;
     }
 
     public void parseAndSaveAll(Context context, String blogId) {
 
-        // TODO move this override somewhere else
-        blogId = "moscropschool";
-
         // Get the list of events from the URL
         RSSFeed feed = null;
         try {
-            String url = getFeedUrlFromId(blogId);
+            String url = getFeedUrlFromId(blogId, true);
             feed = getRssFeed(context, url);
         } catch (JSONException e) {
             Logger.error("RSSParser.parseAndSave()", e);
