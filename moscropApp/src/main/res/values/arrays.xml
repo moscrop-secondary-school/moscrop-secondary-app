@@ -2,8 +2,6 @@
 <resources>    
     <string-array name="navigation_items">
         <item>News</item>
-        <item>Newsletters</item>
-        <item>Student Submissions</item>
         <item>Events</item>
         <item>Teachers</item>
     </string-array>

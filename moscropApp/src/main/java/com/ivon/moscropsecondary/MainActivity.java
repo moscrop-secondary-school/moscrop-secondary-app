@@ -86,23 +86,13 @@ public class MainActivity extends ToolbarActivity
                         mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, "Unicorns");
                     mNextFragment = mNewsFragment;
                     break;
-                case NavigationDrawerFragment.EMAIL:
-                    if (mEmailFragment == null)
-                        mEmailFragment = RSSFragment.newInstance(1, RSSFragment.FEED_NEWSLETTERS, "Autopost");
-                    mNextFragment = mEmailFragment;
-                    break;
-                case NavigationDrawerFragment.STUDENT:
-                    if (mStudentSubsFragment == null)
-                        mStudentSubsFragment = RSSFragment.newInstance(2, RSSFragment.FEED_SUBS, "Unicorns");
-                    mNextFragment = mStudentSubsFragment;
-                    break;
                 case NavigationDrawerFragment.EVENTS:
-                    if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(3);
+                    if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(1);
                     mNextFragment = mEventsFragment;
                     break;
                 case NavigationDrawerFragment.TEACHERS:
                     if (mTeachersFragment == null)
-                        mTeachersFragment = StaffInfoFragment.newInstance(4);
+                        mTeachersFragment = StaffInfoFragment.newInstance(2);
                     mNextFragment = mTeachersFragment;
                     break;
                 case NavigationDrawerFragment.SETTINGS:
