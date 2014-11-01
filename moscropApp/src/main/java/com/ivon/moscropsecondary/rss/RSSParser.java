@@ -1,16 +1,20 @@
 package com.ivon.moscropsecondary.rss;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.ivon.moscropsecondary.util.DateUtil;
 import com.ivon.moscropsecondary.util.JsonUtil;
 import com.ivon.moscropsecondary.util.Logger;
+import com.ivon.moscropsecondary.util.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,13 +38,15 @@ public class RSSParser {
     public static final String NEWSLETTER_TAG = "newsletter";
     public static final String STUDENT_SUBS_TAG = "studentsubs";
 
+    private Context mContext;
     private RSSTagCriteria[] mCriteria;
 
-    public RSSParser(String taglistJsonString) throws JSONException {
-        this(new JSONObject(taglistJsonString));
+    public RSSParser(Context context, String taglistJsonString) throws JSONException {
+        this(context, new JSONObject(taglistJsonString));
     }
 
-    public RSSParser(JSONObject taglistJsonObject) throws JSONException {
+    public RSSParser(Context context, JSONObject taglistJsonObject) throws JSONException {
+        mContext = context;
         JSONObject[] criteriaArray = JsonUtil.extractJsonArray(taglistJsonObject.getJSONArray("tags"));
         mCriteria = new RSSTagCriteria[criteriaArray.length];
         for (int i=0; i<criteriaArray.length; i++) {
@@ -98,7 +104,6 @@ public class RSSParser {
         return new RSSItem(date, title, content, tags, url);
     }
 
-    // TODO All the tagging magic happens here.
     private String[] extractTags(JSONObject entryObject, String title) {
 
         // Get a list of categories
@@ -151,30 +156,123 @@ public class RSSParser {
         }
     }
 
-    private String getFeedUrlFromId(String blogId, boolean loadAll) {
-        String url =  "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json";
-        if (loadAll) {
-            url += "&max-results=1000";
-        }
-        return url;
+    private String getFeedUrlFromId(String blogId) {
+        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=1000";
     }
 
-    public void parseAndSaveAll(Context context, String blogId) {
+    private void saveUpdateInfo(String gcalVersion) {
+        SharedPreferences.Editor prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+        prefs.putLong(Preferences.App.Keys.RSS_LAST_UPDATED, System.currentTimeMillis());
+        prefs.putString(Preferences.App.Keys.RSS_VERSION, gcalVersion);
+        prefs.apply();
+    }
+
+    /**
+     * Download, parse, and store data from a Blogger RSS feed. This method
+     * will load all data from the whole calendar. Unlike parseAndSave(String, long, String),
+     * this method does not check for RSS version and will disregard any previously
+     * saved data. This method will delete all previously saved data and replace it
+     * with freshly downloaded data. Because this takes a long time
+     * and is often unnecessary, it is only recommended to use this method
+     * when loading for the first time. Afterwards it is recommeneded to keep
+     * track of updates and use parseAndSave(String, long, String).
+     *
+     * @param blogId
+     *      ID of the Blogger RSS feed
+     */
+    public void parseAndSaveAll(String blogId) {
+
+        Logger.log("Processing all");
 
         // Get the list of events from the URL
         RSSFeed feed = null;
         try {
-            String url = getFeedUrlFromId(blogId, true);
-            feed = getRssFeed(context, url);
+            String url = getFeedUrlFromId(blogId);
+            feed = getRssFeed(mContext, url);
         } catch (JSONException e) {
             Logger.error("RSSParser.parseAndSave()", e);
         }
 
         if (feed != null) {
-            // TODO saveUpdateInfo(context, feed.version);
-            RSSDatabase database = new RSSDatabase(context);
+            saveUpdateInfo(feed.version);
+            RSSDatabase database = new RSSDatabase(mContext);
             database.deleteAll();
             database.save(feed.items);
+        }
+    }
+
+    /**
+     * Selectively download, parse, and store data from a Blogger RSS feed
+     *
+     * @param blogId
+     *      ID of the Blogger RSS feed
+     * @param publishedMin
+     *      Matches published-min query parameter of Google Calendar API.
+     *      Only process RSS items with publish dates after this param.
+     *      Given in milliseconds.
+     * @param lastFeedVersion
+     *      "Updated" string from the last processed Blogger RSS feed. Used to version
+     *      Blogger RSS feed and determine if it is necessary to go through with processing.
+     *      After all, if it's the same version, no need to do all that work again!
+     *      Usually of the format "2014-09-09T12:21:08.000Z"
+     */
+    public void parseAndSave(String blogId, long publishedMin, String lastFeedVersion) {
+
+        Logger.log("Processing selectively");
+
+        RSSFeed feed = null;
+        try {
+            String url = getFeedUrlFromId(blogId);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            String publishedMinStr = sdf.format(new Date(publishedMin));
+            url = url + "&published-min=" + publishedMinStr;
+
+            feed = getRssFeed(mContext, url);
+        } catch (JSONException e) {
+            Logger.error("RSSParser.parseAndSave()", e);
+        }
+
+        if (feed != null) {
+
+            // We just updated, so update records
+            // with current time and the version we
+            // just downloaded regardless of whether
+            // updating the database was needed
+
+            saveUpdateInfo(feed.version);
+
+            String newFeedVersion = feed.version;
+            if (!newFeedVersion.equals(lastFeedVersion)) {
+
+                // There has been changes! We must update!
+                //
+                // The maintainer of the calendar probably
+                // won't make changes to events that have
+                // already past. Therefore we only need to
+                // update events that begin after the last
+                // update time.
+                //
+                // Begin by deleting those events
+
+                RSSDatabase database = new RSSDatabase(mContext);
+                int deleted = database.deleteIfPublishedAfter(publishedMin);
+
+                if (deleted != feed.items.size()) {
+                    Logger.warn("Processing calendar events: deleted "
+                                    + deleted + " events from database, but only inserting "
+                                    + feed.items.size() + " new events."
+                    );
+                }
+
+                // Our list of events will already only consist
+                // of events that begin after startMin, so no
+                // overlapping will occur. We can save normally.
+
+                database.save(feed.items);
+
+            } else {
+                Logger.log("Existing version is already up to date.");
+            }
         }
     }
 }

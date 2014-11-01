@@ -120,24 +120,11 @@ public class RSSDatabase extends SQLiteOpenHelper {
         return items;
     }
 
-    /**
-     * Delete everything in the database
-     */
-    public void deleteAll() {
-        deleteAll(null);
+    public int deleteAll() {
+        return mDB.delete(NAME, null, null);
     }
 
-    /**
-     * Delete everything with a certain tag
-     * @param tag
-     *          tag to filter by
-     */
-    public void deleteAll(String tag) {
-        String where = null;
-        if (tag != null) {
-            tag = "\'%" + tag + "%\'";
-            where = COLUMN_TAGS + " LIKE " + tag;
-        }
-        mDB.delete(NAME, where, null);
+    public int deleteIfPublishedAfter(long time) {
+        return mDB.delete(NAME, COLUMN_DATE + ">=?", new String[] { String.valueOf(time) });
     }
 }

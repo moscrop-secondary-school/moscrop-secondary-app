@@ -80,7 +80,7 @@ public class CalendarParser {
         SharedPreferences.Editor prefs = context.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
         prefs.putLong(Preferences.App.Keys.GCAL_LAST_UPDATED, System.currentTimeMillis());
         prefs.putString(Preferences.App.Keys.GCAL_VERSION, gcalVersion);
-        prefs.commit();
+        prefs.apply();
     }
 
     /**
@@ -106,7 +106,7 @@ public class CalendarParser {
             String url = getCalendarUrlFromId(id);
             feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
-            Logger.error("CalendarParser.processAll()", e);
+            Logger.error("CalendarParser.parseAndSaveAll()", e);
         }
 
         if (feed != null) {

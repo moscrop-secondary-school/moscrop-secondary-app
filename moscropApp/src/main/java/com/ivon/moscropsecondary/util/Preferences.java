@@ -30,8 +30,8 @@ public class Preferences {
             public static final String GCAL_LAST_UPDATED = "gcal_last_updated";
             public static final String GCAL_VERSION = "gcal_version";
             public static final String STAFF_DB_VERSION = "staff_db_version";
-            public static final String RSS_LAST_UPDATED_SUFFIX = "_last_updated";
-            public static final String RSS_VERSION_SUFFIX = "_version";
+            public static final String RSS_LAST_UPDATED = "rss_last_updated";
+            public static final String RSS_VERSION = "rss_version";
         }
     }
 }
