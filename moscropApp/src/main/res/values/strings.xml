@@ -45,8 +45,15 @@
 
 <!--Themes-->
     <string name="theme_category">Theme</string>
-    <string name="theme_title">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_black">Black</string>
     <string name="theme_tblack">Transparent Black</string>
+
+<!--Preferences-->
+    <string name="theme_selector_title">Theme</string>
+    <string name="theme_selector_summary">Choose one of 3 carefully crafted, all-natural, 100%% organic, non-GMO, wild-caught, grass-fed themes!</string>
+    <string name="tag_chooser_title">Select Categories</string>
+    <string name="tag_chooser_summary">Select categories to view in your news feed</string>
+    <string name="refresh_tag_list_title">Refresh Categories List</string>
+    <string name="refresh_tag_list_summary">We\'re always adding more new categories, so get them while they\'re hot!</string>
 </resources>
