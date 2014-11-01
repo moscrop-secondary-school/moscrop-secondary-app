@@ -12,5 +12,12 @@
         android:entries="@array/theme_texts"
         android:entryValues="@array/theme_values"
         android:defaultValue="0"/>
+    <MultiSelectListPreference
+        android:key="tag_chooser"
+        android:title="Tag Chooser"
+        android:summary="More foo more bar"
+        android:entries="@array/theme_texts"
+        android:entryValues="@array/tag_values"
+        android:defaultValue="@array/default_tags"/>
 </PreferenceScreen>
 

@@ -12,6 +12,7 @@ public class Preferences {
     public static class Keys {
         // Default shared preferences
         public static final String THEME = "theme_selector";
+        public static final String TAGS = "tag_chooser";
     }
 
     public static class App {

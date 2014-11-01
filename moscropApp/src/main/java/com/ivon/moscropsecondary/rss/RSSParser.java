@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,21 +29,9 @@ public class RSSParser {
     private Context mContext;
     private RSSTagCriteria[] mCriteria;
 
-    public RSSParser(Context context, String taglistJsonString) throws JSONException {
-        this(context, new JSONObject(taglistJsonString));
-    }
-
-    public RSSParser(Context context, JSONObject taglistJsonObject) throws JSONException {
+    public RSSParser(Context context) throws JSONException, IOException {
         mContext = context;
-        JSONObject[] criteriaArray = JsonUtil.extractJsonArray(taglistJsonObject.getJSONArray("tags"));
-        mCriteria = new RSSTagCriteria[criteriaArray.length];
-        for (int i=0; i<criteriaArray.length; i++) {
-            mCriteria[i] = new RSSTagCriteria(
-                    criteriaArray[i].getString("name"),
-                    criteriaArray[i].getString("id_author"),
-                    criteriaArray[i].getString("id_category")
-            );
-        }
+        mCriteria = RSSTagCriteria.getCriteriaList(context);
     }
     private String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");

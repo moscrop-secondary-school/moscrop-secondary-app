@@ -2,6 +2,7 @@ package com.ivon.moscropsecondary.rss;
 
 import android.content.Context;
 
+import com.ivon.moscropsecondary.util.JsonUtil;
 import com.ivon.moscropsecondary.util.Logger;
 import com.ivon.moscropsecondary.util.Util;
 
@@ -11,6 +12,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,6 +41,40 @@ public class RSSTagCriteria {
 
     public static File getTagListFile(Context context) {
         return new File(context.getFilesDir(), TAG_LIST_JSON);
+    }
+
+    public static JSONObject getTagListJsonObject(Context context) throws JSONException, IOException {
+
+        File file = getTagListFile(context);
+        if (!file.exists()) {
+            RSSTagCriteria.copyTagListFromAssetsToStorage(context);
+        }
+
+        return JsonUtil.getJsonObjectFromFile(file);
+    }
+
+    public static RSSTagCriteria[] getCriteriaList(Context context) throws JSONException, IOException {
+        JSONObject tagListJsonObject = getTagListJsonObject(context);
+        JSONObject[] criteriaJSONArray = JsonUtil.extractJsonArray(tagListJsonObject.getJSONArray("tags"));
+        RSSTagCriteria[] criteriaList = new RSSTagCriteria[criteriaJSONArray.length];
+        for (int i=0; i<criteriaJSONArray.length; i++) {
+            criteriaList[i] = new RSSTagCriteria(
+                    criteriaJSONArray[i].getString("name"),
+                    criteriaJSONArray[i].getString("id_author"),
+                    criteriaJSONArray[i].getString("id_category")
+            );
+        }
+        return criteriaList;
+    }
+
+    public static String[] getTagNames(Context context) throws IOException, JSONException {
+        JSONObject tagListJsonObject = getTagListJsonObject(context);
+        JSONObject[] criteriaJSONArray = JsonUtil.extractJsonArray(tagListJsonObject.getJSONArray("tags"));
+        String[] names = new String[criteriaJSONArray.length];
+        for (int i=0; i<criteriaJSONArray.length; i++) {
+            names[i] = criteriaJSONArray[i].getString("name");
+        }
+        return names;
     }
 
     public static void copyTagListFromAssetsToStorage(Context context) throws IOException {

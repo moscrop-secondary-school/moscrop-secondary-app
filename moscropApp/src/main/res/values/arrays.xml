@@ -35,4 +35,15 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="tag_values">
+        <item>test</item>
+        <item>foo</item>
+        <item>bar</item>
+    </string-array>
+
+    <string-array name="default_tags">
+        <item>test</item>
+        <item>bar</item>
+    </string-array>
 </resources>
