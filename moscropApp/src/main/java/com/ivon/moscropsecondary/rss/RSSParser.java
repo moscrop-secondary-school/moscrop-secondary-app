@@ -22,19 +22,6 @@ import java.util.List;
  */
 public class RSSParser {
 
-    public static class RSSTagCriteria {
-
-        public final String name;
-        public final String author;
-        public final String category;
-
-        public RSSTagCriteria(String name, String author, String category) {
-            this.name = name;
-            this.author = (author.equals("@null")) ? null : author;
-            this.category = (category.equals("@null")) ? null : category;
-        }
-    }
-
     public static final String NEWSLETTER_TAG = "newsletter";
     public static final String STUDENT_SUBS_TAG = "studentsubs";
 

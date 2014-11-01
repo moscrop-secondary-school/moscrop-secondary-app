@@ -3,16 +3,18 @@ package com.ivon.moscropsecondary.rss;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.ivon.moscropsecondary.util.JsonUtil;
 import com.ivon.moscropsecondary.util.Preferences;
+import com.ivon.moscropsecondary.util.Util;
 import com.tyczj.extendedcalendarview.CalendarProvider;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -58,7 +60,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
     }
 
     private List<RSSItem> downloadParseSaveGetList() {
-        if (isConnected()) {
+        if (Util.isConnected(getContext())) {
 
             /*String resultStr = "";
             try {
@@ -77,8 +79,10 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
             }*/
             RSSParser parser = null;
             try {
-                parser = new RSSParser(getContext(), JsonUtil.getJsonObjectFromUrl(getContext(), "http://pastebin.com/raw.php?i=dMePcZ9e"));
+                parser = new RSSParser(getContext(), getTagListJsonObject());
             } catch (JSONException e) {
+
+            } catch (IOException e) {
 
             }
 
@@ -134,22 +138,21 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
         }
     }
 
+    private JSONObject getTagListJsonObject() throws JSONException, IOException {
+
+        File file = RSSTagCriteria.getTagListFile(getContext());
+        if (!file.exists()) {
+            RSSTagCriteria.copyTagListFromAssetsToStorage(getContext());
+        }
+
+        return JsonUtil.getJsonObjectFromFile(file);
+    }
+
     private List<RSSItem> getListOnly() {
         RSSDatabase database = new RSSDatabase(getContext());
         List<RSSItem> list = database.getItems(mTag);
         database.close();
         return list;
-    }
-
-    private boolean isConnected() {
-        if(getContext() == null)
-            return false;
-
-        ConnectivityManager cm =
-                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
     }
 
     /* Runs on the UI thread */

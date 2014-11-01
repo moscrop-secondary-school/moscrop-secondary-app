@@ -2,17 +2,16 @@
 	{
 		"name":"Unicorns",
 		"id_author":"Allan W",
-		"id_category":"unicorn"
+		"id_category":"nonexistanttag"
 	},
 	{
 		"name":"Other mythical beings",
 		"id_author":"Ivon Liu",
-		"id_category":"nonexistantcategory"
+		"id_category":"beta"
 	},
 	{
 		"name":"Autopost",
-		"id_author":"Moscrop Secondary",
+		"id_author":"Moscrop School",
 		"id_category":"@null"
 	}
 ]}
-	

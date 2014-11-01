@@ -1,8 +1,6 @@
 package com.ivon.moscropsecondary.util;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -23,22 +23,13 @@ import java.io.InputStreamReader;
  */
 public class JsonUtil {
 
-    public static boolean isConnected(Context context) {
-        if(context == null)
-            return false;
 
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
-    }
 
     public static JSONObject getJsonObjectFromUrl(Context context, String url) throws JSONException {
 
         JSONObject resultObj = null;
 
-        if (isConnected(context)) {
+        if (Util.isConnected(context)) {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(url);
 
@@ -84,6 +75,11 @@ public class JsonUtil {
         }
 
         return resultObj;
+    }
+
+    public static JSONObject getJsonObjectFromFile(File file) throws JSONException, IOException {
+        String s = Util.readFile(file);
+        return new JSONObject(s);
     }
 
     public static JSONObject[] extractJsonArray(JSONArray jsonArray) throws JSONException {
