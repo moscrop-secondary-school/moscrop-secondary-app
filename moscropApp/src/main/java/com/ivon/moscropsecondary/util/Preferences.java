@@ -30,7 +30,8 @@ public class Preferences {
             public static final String STAFF_DB_VERSION = "no version info";
             public static final long RSS_LAST_UPDATED = 0;
             public static final String RSS_VERSION = "no rss version info";
-            public static final String RSS_LAST_TAG = "all";
+            public static final String RSS_LAST_TAG = "Subscribed";
+            public static final boolean FIRST_LAUNCH = true;
         }
 
         public static class Keys {
@@ -40,6 +41,7 @@ public class Preferences {
             public static final String RSS_LAST_UPDATED = "rss_last_updated";
             public static final String RSS_VERSION = "rss_version";
             public static final String RSS_LAST_TAG = "rss_last_tag";
+            public static final String FIRST_LAUNCH = "first_launch";
         }
     }
 }

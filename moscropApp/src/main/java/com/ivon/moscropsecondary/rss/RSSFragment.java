@@ -97,10 +97,19 @@ public class RSSFragment extends Fragment
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-        loadFeed(false, false);
+        if (firstLaunch()) {
+            loadFeed(false, true);
+        } else {
+            loadFeed(false, false);
+        }
         mSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
 
         return mContentView;
+    }
+
+    private boolean firstLaunch() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        return prefs.getBoolean(Preferences.App.Keys.FIRST_LAUNCH, Preferences.App.Default.FIRST_LAUNCH);
     }
 
     @Override
@@ -272,6 +281,11 @@ public class RSSFragment extends Fragment
                     mAdapter.add(item);
                 }
                 mAdapter.notifyDataSetChanged();
+                if (firstLaunch()) {
+                    SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+                    prefs.putBoolean(Preferences.App.Keys.FIRST_LAUNCH, false);
+                    prefs.apply();
+                }
             }
         } else {
             Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
