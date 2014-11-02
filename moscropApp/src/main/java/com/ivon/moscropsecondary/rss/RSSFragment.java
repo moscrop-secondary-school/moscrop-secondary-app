@@ -7,6 +7,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,14 +16,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
+import com.ivon.moscropsecondary.ToolbarActivity;
 import com.ivon.moscropsecondary.util.Logger;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RSSFragment extends Fragment
@@ -41,6 +50,9 @@ public class RSSFragment extends Fragment
 
     private int mPosition = 0;
 
+    List<String> mSpinnerTags = new ArrayList<String>();
+
+    public View mSpinnerContainer = null;
     public SwipeRefreshLayout mSwipeLayout = null;
     public ListView mListView = null;
     public RSSAdapter mAdapter = null;
@@ -77,13 +89,6 @@ public class RSSFragment extends Fragment
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
 
-        // Uncomment to set colors for loading bar of SwipeRefreshLayout
-        /*swipeLayout.setColorScheme(
-        		android.R.color.holo_blue_dark, 
-                R.color.background_holo_light, 
-                android.R.color.holo_blue_dark, 
-                R.color.background_holo_light);*/
-
         mListView = (ListView) mContentView.findViewById(R.id.rlf_list);
 
         // Set the adapter for the recycler view
@@ -93,7 +98,65 @@ public class RSSFragment extends Fragment
 
         loadFeed(false, false);
 
-    	return mContentView;
+        return mContentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUpToolbarSpinner();
+    }
+
+    private void setUpToolbarSpinner() {
+
+        // Add spinner container
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        mSpinnerContainer= LayoutInflater.from(getActivity()).inflate(R.layout.actionbar_spinner, toolbar, false);
+        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        toolbar.addView(mSpinnerContainer, lp);
+
+        // Update tags list
+        String[] spinnerTagsArray = null;
+        try {
+            spinnerTagsArray = RSSTagCriteria.getTagNames(getActivity());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (spinnerTagsArray != null) {
+            mSpinnerTags = Arrays.asList(spinnerTagsArray);
+        }
+
+        // Adapter and spinner stuff
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mSpinnerTags);
+
+        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+        spinner.setAdapter(spinnerAdapter);
+        int position = mSpinnerTags.indexOf(mTag);
+        spinner.setSelection(position);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+                String tag = spinnerAdapter.getItem(position);
+                if (!tag.equals(mTag)) {
+                    mTag = tag;
+                    loadFeed(true, false);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.removeView(mSpinnerContainer);
     }
 
     @Override

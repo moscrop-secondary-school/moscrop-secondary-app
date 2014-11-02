@@ -57,6 +57,8 @@ public class MainActivity extends ToolbarActivity
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+
+        //setUpToolbarSpinner();
     }
 
     @Override
@@ -67,6 +69,8 @@ public class MainActivity extends ToolbarActivity
             finish();
         }
     }
+
+
 
     @Override
     protected int getLayoutResource() {
@@ -83,7 +87,7 @@ public class MainActivity extends ToolbarActivity
 
                 case NavigationDrawerFragment.NEWS:
                     if (mNewsFragment == null)
-                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, "Unicorns");
+                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, "Autopost");
                     mNextFragment = mNewsFragment;
                     break;
                 case NavigationDrawerFragment.EVENTS:

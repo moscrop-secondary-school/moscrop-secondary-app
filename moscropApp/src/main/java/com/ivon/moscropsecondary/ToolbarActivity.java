@@ -30,7 +30,7 @@ public abstract class ToolbarActivity extends ActionBarActivity {
         toolbar.setNavigationIcon(iconRes);
     }
 
-    protected Toolbar getToolbar() {
+    public Toolbar getToolbar() {
         return toolbar;
     }
 
