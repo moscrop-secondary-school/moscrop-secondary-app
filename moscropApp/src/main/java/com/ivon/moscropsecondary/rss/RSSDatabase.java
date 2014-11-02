@@ -90,15 +90,22 @@ public class RSSDatabase extends SQLiteOpenHelper {
      * Get all items stored in the database
      * with a certain tag
      *
-     * @param tag
+     * @param filterTags
      *          tag to filter by
      * @return  list of RSSItems with certain tag
      */
-    public List<RSSItem> getItems(String tag) {
+    public List<RSSItem> getItems(String[] filterTags) {
         String selection = null;
-        if (tag != null) {
-            tag = "\'%" + tag + "%\'";
-            selection = COLUMN_TAGS + " LIKE " + tag;
+        if (filterTags != null) {
+            selection = "";
+            for (int i=0; i<filterTags.length; i++) {
+                String tag = filterTags[i];
+                tag = "\'%" + tag + "%\'";
+                selection += COLUMN_TAGS + " LIKE " + tag;
+                if (i < filterTags.length-1) {
+                    selection += " OR ";
+                }
+            }
         }
         String orderBy = COLUMN_DATE + " desc";
 

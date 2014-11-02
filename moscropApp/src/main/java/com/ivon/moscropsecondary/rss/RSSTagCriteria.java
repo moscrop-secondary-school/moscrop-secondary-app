@@ -1,9 +1,12 @@
 package com.ivon.moscropsecondary.rss;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.ivon.moscropsecondary.util.JsonUtil;
 import com.ivon.moscropsecondary.util.Logger;
+import com.ivon.moscropsecondary.util.Preferences;
 import com.ivon.moscropsecondary.util.Util;
 
 import org.apache.http.HttpEntity;
@@ -20,6 +23,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ivon on 10/31/14.
@@ -75,6 +82,31 @@ public class RSSTagCriteria {
             names[i] = criteriaJSONArray[i].getString("name");
         }
         return names;
+    }
+
+    public static String[] getSubscribedTags(Context context) throws IOException, JSONException {
+
+        // Get a list of recognized tags
+        String[] tagNamesArray = getTagNames(context);
+
+        // Get a list of tags the user subscribed to
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> existingSelectedValuesSet = prefs.getStringSet(Preferences.Keys.TAGS, Preferences.Default.TAGS);
+        String[] existingSelectedValues = existingSelectedValuesSet.toArray(new String[existingSelectedValuesSet.size()]);
+
+        List<String> validatedSelectedValues = new ArrayList<String>();
+        for (String value : existingSelectedValues) {
+            if (Arrays.asList(tagNamesArray).contains(value)) {
+                validatedSelectedValues.add(value);
+            }
+        }
+
+        String[] subscribedTags = new String[validatedSelectedValues.size()];
+        for (int i=0; i<subscribedTags.length; i++) {
+            subscribedTags[i] = validatedSelectedValues.get(i);
+        }
+
+        return subscribedTags;
     }
 
     public static void copyTagListFromAssetsToStorage(Context context) throws IOException {

@@ -1,5 +1,9 @@
 package com.ivon.moscropsecondary.util;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ivon on 9/16/14.
  */
@@ -7,6 +11,7 @@ public class Preferences {
 
     public static class Default {
         public static final String THEME = "0";
+        public static final Set<String> TAGS = new HashSet<String>(Arrays.asList(new String[] {"Unicorns", "Other mythical beings"}));
     }
 
     public static class Keys {

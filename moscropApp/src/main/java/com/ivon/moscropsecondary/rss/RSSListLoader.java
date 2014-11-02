@@ -63,9 +63,9 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
             try {
                 parser = new RSSParser(getContext());
             } catch (JSONException e) {
-
+                e.printStackTrace();
             } catch (IOException e) {
-
+                e.printStackTrace();
             }
 
             if (parser != null) {
@@ -107,7 +107,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
 
                 // Display list
                 RSSDatabase database = new RSSDatabase(getContext());
-                List<RSSItem> list = database.getItems(mTag);
+                List<RSSItem> list = database.getItems(getFilterTags());
                 database.close();
                 return list;
 
@@ -122,9 +122,33 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
 
     private List<RSSItem> getListOnly() {
         RSSDatabase database = new RSSDatabase(getContext());
-        List<RSSItem> list = database.getItems(mTag);
+        List<RSSItem> list = database.getItems(getFilterTags());
         database.close();
         return list;
+    }
+
+    private String[] getFilterTags() {
+        String[] tags = null;
+        if (mTag.equals("All")) {
+            try {
+                tags = RSSTagCriteria.getTagNames(getContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (mTag.equals("Subscribed")) {
+            try {
+                tags = RSSTagCriteria.getSubscribedTags(getContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            tags = new String[] { mTag };
+        }
+        return tags;
     }
 
     /* Runs on the UI thread */

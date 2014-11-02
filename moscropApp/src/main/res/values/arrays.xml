@@ -41,7 +41,7 @@
     </string-array>
 
     <string-array name="default_tags">
-        <item>test</item>
-        <item>bar</item>
+        <item>Unicorns</item>
+        <item>Other mythical beings</item>
     </string-array>
 </resources>

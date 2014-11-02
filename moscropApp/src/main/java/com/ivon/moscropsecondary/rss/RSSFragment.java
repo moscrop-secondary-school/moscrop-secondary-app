@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.ToolbarActivity;
-import com.ivon.moscropsecondary.util.Logger;
 import com.ivon.moscropsecondary.util.Preferences;
 
 import org.json.JSONException;
@@ -107,7 +106,6 @@ public class RSSFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        Logger.log("onResume");
         setUpToolbarSpinner();
     }
 
@@ -123,7 +121,7 @@ public class RSSFragment extends Fragment
         // Update tags list
         String[] spinnerTagsArray = null;
         try {
-            spinnerTagsArray = RSSTagCriteria.getTagNames(getActivity());
+            spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -131,6 +129,7 @@ public class RSSFragment extends Fragment
         }
         if (spinnerTagsArray != null) {
             mSpinnerAdapter.clear();
+            mSpinnerAdapter.add("Subscribed");
             mSpinnerAdapter.add("All");
             for (String tag : spinnerTagsArray) {
                 mSpinnerAdapter.add(tag);
@@ -172,18 +171,11 @@ public class RSSFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        Logger.log("onPause");
         Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
         toolbar.removeView(mSpinnerContainer);
         SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
         prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
         prefs.apply();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Logger.log("onStop");
     }
 
     @Override
