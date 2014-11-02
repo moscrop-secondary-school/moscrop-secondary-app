@@ -1,3 +1,15 @@
+********** To Do **********
+Add agenda (for events)
+Add search functions app wide (for posts & teachers)
+Add about section
+Add notifications & settings for pull periods
+Make stuff themeable
+
+Questionable
+Add option to hide a card
+Add filters for calendar
+Make toolbar go over drawer?
+
 ********** Dependencies **********
 
 All dependencies are configured correctly already. Some dependencies are in git submodules. These will be updated automatically (see section on updating below) and are relatively hassle-free. Others you will need to install beforehand. So far, the dependencies you will need to install separately are:

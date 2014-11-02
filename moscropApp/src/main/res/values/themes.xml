@@ -53,11 +53,6 @@
 
         <!--navdrawer-->
         <item name="banner">@drawable/banner</item>
-        <!--<item name="news">@drawable/ic_action_news_light</item>
-        <item name="newsletter">@drawable/ic_action_newsletters_light</item>
-        <item name="student">@drawable/ic_action_student_light</item>
-        <item name="events">@drawable/ic_action_event_light</item>
-        <item name="teachers">@drawable/ic_action_teacher_light</item>-->
         <item name="drawer_icon_array">@array/drawer_icons_light</item>
 
         <item name="settings">@drawable/ic_action_settings_light</item>
@@ -89,11 +84,6 @@
 
         <!--navdrawer-->
         <item name="banner">@drawable/banner_dark</item>
-        <!--<item name="news">@drawable/ic_action_news_dark</item>
-        <item name="newsletter">@drawable/ic_action_newsletters_dark</item>
-        <item name="student">@drawable/ic_action_student_dark</item>
-        <item name="events">@drawable/ic_action_event_dark</item>
-        <item name="teachers">@drawable/ic_action_teacher_dark</item>-->
         <item name="drawer_icon_array">@array/drawer_icons_dark</item>
 
         <item name="settings">@drawable/ic_action_settings_dark</item>
@@ -134,11 +124,6 @@
 
         <!--navdrawer-->
         <item name="banner">@drawable/banner_dark</item>
-        <!--<item name="news">@drawable/ic_action_news_dark</item>
-        <item name="newsletter">@drawable/ic_action_newsletters_dark</item>
-        <item name="student">@drawable/ic_action_student_dark</item>
-        <item name="events">@drawable/ic_action_event_dark</item>
-        <item name="teachers">@drawable/ic_action_teacher_dark</item>-->
         <item name="drawer_icon_array">@array/drawer_icons_dark</item>
 
         <item name="settings">@drawable/ic_action_settings_dark</item>
