@@ -59,6 +59,14 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
     private List<RSSItem> downloadParseSaveGetList() {
         if (Util.isConnected(getContext())) {
 
+            // Try to update the tag list before updating feed
+            try {
+                RSSTagCriteria.downloadTagListToStorage(getContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Try to create a parser object
             RSSParser parser = null;
             try {
                 parser = new RSSParser(getContext());
@@ -68,6 +76,7 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
                 e.printStackTrace();
             }
 
+            // Download and parse the feed
             if (parser != null) {
 
                 // Check if database is empty
