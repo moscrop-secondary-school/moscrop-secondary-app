@@ -1,6 +1,8 @@
 package com.ivon.moscropsecondary;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import com.ivon.moscropsecondary.calendar.CalendarFragment;
 import com.ivon.moscropsecondary.rss.RSSFragment;
 import com.ivon.moscropsecondary.staffinfo.StaffInfoFragment;
 import com.ivon.moscropsecondary.util.Logger;
+import com.ivon.moscropsecondary.util.Preferences;
 import com.ivon.moscropsecondary.util.ThemesUtil;
 
 public class MainActivity extends ToolbarActivity
@@ -86,8 +89,11 @@ public class MainActivity extends ToolbarActivity
             switch (position) {
 
                 case NavigationDrawerFragment.NEWS:
-                    if (mNewsFragment == null)
-                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, "Autopost");
+                    if (mNewsFragment == null) {
+                        SharedPreferences prefs = getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+                        String lastTag = prefs.getString(Preferences.App.Keys.RSS_LAST_TAG, Preferences.App.Default.RSS_LAST_TAG);
+                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, lastTag);
+                    }
                     mNextFragment = mNewsFragment;
                     break;
                 case NavigationDrawerFragment.EVENTS:
@@ -124,8 +130,11 @@ public class MainActivity extends ToolbarActivity
     }
 
     public void onSectionAttached(int position) {
-        mTitle = getResources().getStringArray(R.array.navigation_items)[position];
-        Logger.log("onSectionAttached: " + position + ", " + mTitle);
+        if (position == -1) {
+            mTitle = "";
+        } else {
+            mTitle = getResources().getStringArray(R.array.navigation_items)[position];
+        }
         getSupportActionBar().setTitle(mTitle);
     }
 

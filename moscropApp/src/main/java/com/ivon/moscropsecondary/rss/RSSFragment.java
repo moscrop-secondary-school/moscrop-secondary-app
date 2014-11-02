@@ -1,6 +1,8 @@
 package com.ivon.moscropsecondary.rss;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -25,12 +27,12 @@ import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.ToolbarActivity;
 import com.ivon.moscropsecondary.util.Logger;
+import com.ivon.moscropsecondary.util.Preferences;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RSSFragment extends Fragment
@@ -50,9 +52,9 @@ public class RSSFragment extends Fragment
 
     private int mPosition = 0;
 
-    List<String> mSpinnerTags = new ArrayList<String>();
+    private View mSpinnerContainer;
+    private ArrayAdapter<String> mSpinnerAdapter;
 
-    public View mSpinnerContainer = null;
     public SwipeRefreshLayout mSwipeLayout = null;
     public ListView mListView = null;
     public RSSAdapter mAdapter = null;
@@ -97,6 +99,7 @@ public class RSSFragment extends Fragment
         mListView.setOnItemClickListener(this);
 
         loadFeed(false, false);
+        mSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
 
         return mContentView;
     }
@@ -104,6 +107,7 @@ public class RSSFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        Logger.log("onResume");
         setUpToolbarSpinner();
     }
 
@@ -126,20 +130,33 @@ public class RSSFragment extends Fragment
             e.printStackTrace();
         }
         if (spinnerTagsArray != null) {
-            mSpinnerTags = Arrays.asList(spinnerTagsArray);
+            mSpinnerAdapter.clear();
+            mSpinnerAdapter.add("All");
+            for (String tag : spinnerTagsArray) {
+                mSpinnerAdapter.add(tag);
+            }
         }
 
-        // Adapter and spinner stuff
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mSpinnerTags);
-
+        // Initialize spinner and set adapter
         Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
-        spinner.setAdapter(spinnerAdapter);
-        int position = mSpinnerTags.indexOf(mTag);
+        spinner.setAdapter(mSpinnerAdapter);
+
+        // Set initial selection
+        int position = 0;
+        for (int i=0; i<mSpinnerAdapter.getCount(); i++) {
+            String tag = mSpinnerAdapter.getItem(i);
+            if (tag.equals(mTag)) {
+                position = i;
+                break;
+            }
+        }
         spinner.setSelection(position);
+
+        // When item is selected, set mTag and then reload the feed
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
-                String tag = spinnerAdapter.getItem(position);
+                String tag = mSpinnerAdapter.getItem(position);
                 if (!tag.equals(mTag)) {
                     mTag = tag;
                     loadFeed(true, false);
@@ -153,10 +170,20 @@ public class RSSFragment extends Fragment
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
+        Logger.log("onPause");
         Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
         toolbar.removeView(mSpinnerContainer);
+        SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+        prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
+        prefs.apply();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Logger.log("onStop");
     }
 
     @Override
@@ -170,8 +197,7 @@ public class RSSFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Logger.log("onActivityCreated from fragment; position: " + mPosition);
-        ((MainActivity) getActivity()).onSectionAttached(mPosition);
+        ((MainActivity) getActivity()).onSectionAttached(-1);
     }
 
     @Override
