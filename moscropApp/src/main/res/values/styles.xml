@@ -21,7 +21,7 @@
         <item name="actionBarSize">@dimen/ab_height</item>
         <item name="android:actionBarSize">@dimen/ab_height</item>
         <item name="android:height">@dimen/ab_height</item>
-        <item name="android:background">@color/text</item>
+        <item name="android:background">@color/background</item>
         <item name="android:titleTextStyle">@style/moscrop.ActionBar.Title</item>
         <item name="android:subtitleTextStyle">@style/moscrop.ActionBar.SubTitle</item>
     </style>
