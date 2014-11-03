@@ -1,4 +1,5 @@
 ********** To Do **********
+
 Add agenda (for events)
 Add search functions app wide (for posts & teachers)
 Add about section

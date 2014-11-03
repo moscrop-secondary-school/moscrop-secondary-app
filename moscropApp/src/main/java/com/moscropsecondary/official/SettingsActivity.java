@@ -1,14 +1,25 @@
 package com.moscropsecondary.official;
 
 import android.os.Bundle;
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
-public class SettingsActivity extends ToolbarActivity {
-	
+import com.moscropsecondary.official.util.ThemesUtil;
+
+public class SettingsActivity extends ToolbarActivity
+        implements ThemesUtil.ThemeChangedListener {
+
+    private boolean mThemeRequiresUpdate = false;
+
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-		
+
+        int theme = ThemesUtil.getThemeResFromPreference(this);
+        setTheme(theme);
+        mThemeRequiresUpdate = false;   // We just set the latest theme
+        ThemesUtil.registerThemeChangedListener(this);
+
         super.onCreate(savedInstanceState);
 
         // Display the fragment as the main content.
@@ -16,6 +27,15 @@ public class SettingsActivity extends ToolbarActivity {
         		.replace(R.id.content_frame, new SettingsFragment())
         		.commit();
 	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mThemeRequiresUpdate) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            finish();
+        }
+    }
 
     @Override
     protected int getLayoutResource() {
@@ -39,4 +59,11 @@ public class SettingsActivity extends ToolbarActivity {
         }
         return super.onKeyDown(keyCode, keyEvent);
     }
+
+    @Override
+    public void onThemeChanged() {
+        mThemeRequiresUpdate = true;
+    }
+
+
 }
