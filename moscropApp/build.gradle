@@ -5,7 +5,7 @@ android {
     buildToolsVersion '21.0.1'
 
     defaultConfig {
-        applicationId "com.ivon.moscropsecondary"
+        applicationId "com.moscropsecondary.official"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 300

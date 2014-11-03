@@ -4,7 +4,7 @@
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ivon.moscropsecondary.MainActivity$EmailFragmentFragment" >
+    tools:context="com.moscropsecondary.official.MainActivity$EmailFragmentFragment" >
         
     <com.fima.cardsui.views.CardUI
         android:id="@+id/cardsview"

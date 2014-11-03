@@ -97,9 +97,9 @@ That means that the main repository is referencing a submodule commit that the a
 
 ********** Miscellaneous **********
 
-Google Play Store page: https://play.google.com/store/apps/details?id=com.ivon.moscropsecondary  
+Google Play Store page: https://play.google.com/store/apps/details?id=com.moscropsecondary.official
 Beta testing group: https://plus.google.com/communities/112676384883353874549  
-Google Play beta opt-in: https://play.google.com/apps/testing/com.ivon.moscropsecondary  
+Google Play beta opt-in: https://play.google.com/apps/testing/com.moscropsecondary.official
 Guide on git submodules: http://git-scm.com/book/en/Git-Tools-Submodules
 
 Have fun!
