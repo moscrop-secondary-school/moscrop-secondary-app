@@ -17,22 +17,24 @@ import java.util.List;
 /**
  * Created by ivon on 24/10/14.
  */
-public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
+public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
 
-    private List<RSSItem> mList;
+    private RSSResult mResult;
     private String mBlogId;
     private String mTag;
+    private boolean mAppend;
     private boolean mOnlineEnabled;
 
-    public RSSListLoader(Context context, String blogId, String tag, boolean onlineEnabled) {
+    public RSSListLoader(Context context, String blogId, String tag, boolean append, boolean onlineEnabled) {
         super(context);
         mBlogId = blogId;
         mTag = tag;
+        mAppend = append;
         mOnlineEnabled = onlineEnabled;
     }
 
     @Override
-    public List<RSSItem> loadInBackground() {
+    public RSSResult loadInBackground() {
 /*        if (mOnlineEnable && isConnected()) {
             Logger.log("RSSListLoader Loading from " + mBlogId + " and " + mTag);
             RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
@@ -46,13 +48,13 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
             if (list == null) {
                 list = getListOnly();
             }
-            return list;
+            return new RSSResult(list, mAppend);
         } else {
             List<RSSItem> list = getListOnly();
             if (list.size() == 0) {
                 list = downloadParseSaveGetList();
             }
-            return list;
+            return new RSSResult(list, mAppend);
         }
     }
 
@@ -162,12 +164,12 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
 
     /* Runs on the UI thread */
     @Override
-    public void deliverResult(List<RSSItem> list) {
+    public void deliverResult(RSSResult result) {
 
-        mList = list;
+        mResult = result;
 
         if(isStarted()) {
-            super.deliverResult(list);
+            super.deliverResult(result);
         }
     }
 
@@ -180,10 +182,10 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
      */
     @Override
     protected void onStartLoading() {
-        if(mList != null) {
-            deliverResult(mList);
+        if(mResult != null) {
+            deliverResult(mResult);
         }
-        if(takeContentChanged() || mList == null) {
+        if(takeContentChanged() || mResult == null) {
             forceLoad();
         }
     }
@@ -204,6 +206,6 @@ public class RSSListLoader extends AsyncTaskLoader<List<RSSItem>> {
         // Ensure the loader is stopped
         onStopLoading();
 
-        mList = null;
+        mResult = null;
     }
 }

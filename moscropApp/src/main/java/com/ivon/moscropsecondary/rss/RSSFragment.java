@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.ivon.moscropsecondary.MainActivity;
 import com.ivon.moscropsecondary.R;
 import com.ivon.moscropsecondary.ToolbarActivity;
+import com.ivon.moscropsecondary.util.Logger;
 import com.ivon.moscropsecondary.util.Preferences;
 
 import org.json.JSONException;
@@ -35,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFragment extends Fragment
-        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<List<RSSItem>> {
+        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>, AbsListView.OnScrollListener {
 
     public static final String FEED_NEWS = "moscropschool";
     public static final String FEED_NEWSLETTERS = "moscropnewsletters";
@@ -47,7 +49,10 @@ public class RSSFragment extends Fragment
 	
 	private String mBlogId = "";
     private String mTag = "";
+    private boolean mAppend = false;
     private boolean mOnlineEnabled = true;
+
+    private boolean mScrolling = false;
 
     private int mPosition = 0;
 
@@ -96,11 +101,12 @@ public class RSSFragment extends Fragment
         mAdapter = new RSSAdapter(getActivity(), new ArrayList<RSSItem>());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+        mListView.setOnScrollListener(this);
 
         if (firstLaunch()) {
-            loadFeed(false, true);
+            loadFeed(false, false, true);
         } else {
-            loadFeed(false, false);
+            loadFeed(false, false, false);
         }
         mSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
 
@@ -167,7 +173,7 @@ public class RSSFragment extends Fragment
                 String tag = mSpinnerAdapter.getItem(position);
                 if (!tag.equals(mTag)) {
                     mTag = tag;
-                    loadFeed(true, false);
+                    loadFeed(true, false, false);
                 }
             }
 
@@ -243,9 +249,10 @@ public class RSSFragment extends Fragment
 	 * @param force
      *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
 	 */
-	private void loadFeed(boolean force, boolean onlineEnabled) {
+	private void loadFeed(boolean force, boolean append, boolean onlineEnabled) {
 		if(force || (mAdapter.getCount() == 0)) {
             if(!getLoaderManager().hasRunningLoaders()) {
+                mAppend = append;
                 mOnlineEnabled = onlineEnabled;
                 getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
@@ -254,37 +261,42 @@ public class RSSFragment extends Fragment
 
 	@Override
 	public void onRefresh() {
-		loadFeed(true, true);
+		loadFeed(true, false, true);
 	}
 
     @Override
-    public Loader<List<RSSItem>> onCreateLoader(int i, Bundle bundle) {
+    public Loader<RSSResult> onCreateLoader(int i, Bundle bundle) {
         if (mSwipeLayout != null) {
             mSwipeLayout.setRefreshing(true);
         }
-        return new RSSListLoader(getActivity(), mBlogId, mTag, mOnlineEnabled);
+        return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, mOnlineEnabled);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<RSSItem>> listLoader, List<RSSItem> items) {
+    public void onLoadFinished(Loader<RSSResult> listLoader, RSSResult result) {
         if (mSwipeLayout != null) {
             mSwipeLayout.setRefreshing(false);
         }
 
-        if (items != null) {
-            mAdapter.clear();
-            if (items.size() == 0) {
-                Toast.makeText(getActivity(), "No items returned", Toast.LENGTH_SHORT).show();
-                // TODO replace with text view
+        if (result != null) {
+            if (result.append) {
+
             } else {
-                for (RSSItem item : items) {
-                    mAdapter.add(item);
-                }
-                mAdapter.notifyDataSetChanged();
-                if (firstLaunch()) {
-                    SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
-                    prefs.putBoolean(Preferences.App.Keys.FIRST_LAUNCH, false);
-                    prefs.apply();
+                mAdapter.clear();
+                List<RSSItem> items = result.items;
+                if (items.size() == 0) {
+                    Toast.makeText(getActivity(), "No items returned", Toast.LENGTH_SHORT).show();
+                    // TODO replace with text view
+                } else {
+                    for (RSSItem item : items) {
+                        mAdapter.add(item);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    if (firstLaunch()) {
+                        SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+                        prefs.putBoolean(Preferences.App.Keys.FIRST_LAUNCH, false);
+                        prefs.apply();
+                    }
                 }
             }
         } else {
@@ -293,7 +305,36 @@ public class RSSFragment extends Fragment
     }
 
     @Override
-    public void onLoaderReset(Loader<List<RSSItem>> listLoader) {
+    public void onLoaderReset(Loader<RSSResult> listLoader) {
         // No reference to the list provided by the loader is held
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == SCROLL_STATE_TOUCH_SCROLL || scrollState == SCROLL_STATE_FLING) {
+            mScrolling = true;
+        } else {
+            mScrolling = false;
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        //boolean loadMore =  firstVisibleItem + visibleItemCount >= totalItemCount-1;
+
+        if (mScrolling) {
+            boolean loadMore = false;
+            if (mListView != null && mListView.getChildAt(mListView.getChildCount() - 1) != null
+                    && mListView.getLastVisiblePosition() == mListView.getAdapter().getCount() - 1
+                    && mListView.getChildAt(mListView.getChildCount() - 1).getBottom() <= mListView.getHeight()) {
+                loadMore = true;
+            }
+
+            if (loadMore) {
+                Logger.log("Trying to load more feed");
+                loadFeed(true, true, true);
+                mScrolling = false;
+            }
+        }
     }
 }
