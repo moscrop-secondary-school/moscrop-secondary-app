@@ -1,22 +1,16 @@
 package com.moscropsecondary.official.rss;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +20,14 @@ import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.util.Logger;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class NewsDisplayFragment extends Fragment {
 	
@@ -65,9 +67,25 @@ public class NewsDisplayFragment extends Fragment {
 	
 	private String getHtmlData(String bodyHTML) {
 	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;}</style></head>";
-	    return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
+	    return "<html>" + head + "<body bgcolor=\"" + getBgColor() + "\" + text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
 	}
-	
+
+    private String getBgColor() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.background, typedValue, true);
+        int bgcolorInt = typedValue.data;
+        return String.format("#%06X", (0xFFFFFF & bgcolorInt));
+    }
+
+    private String getTextColor() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.text, typedValue, true);
+        int textcolorInt = typedValue.data;
+        return String.format("#%06X", (0xFFFFFF & textcolorInt));
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
