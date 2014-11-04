@@ -1,14 +1,12 @@
 package com.moscropsecondary.official;
 
-import android.os.Bundle;
 import android.content.Intent;
-import android.view.KeyEvent;
+import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.moscropsecondary.official.util.ThemesUtil;
 
-public class SettingsActivity extends ToolbarActivity
-        implements ThemesUtil.ThemeChangedListener {
+public class SettingsActivity extends ToolbarActivity {
 
     private boolean mThemeRequiresUpdate = false;
 
@@ -17,8 +15,6 @@ public class SettingsActivity extends ToolbarActivity
 
         int theme = ThemesUtil.getThemeResFromPreference(this);
         setTheme(theme);
-        mThemeRequiresUpdate = false;   // We just set the latest theme
-        ThemesUtil.registerThemeChangedListener(this);
 
         super.onCreate(savedInstanceState);
 
@@ -50,20 +46,4 @@ public class SettingsActivity extends ToolbarActivity
         }
         return super.onOptionsItemSelected(item);
     }
-	
-	@Override
-    public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
-        if(keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, keyEvent);
-    }
-
-    @Override
-    public void onThemeChanged() {
-        mThemeRequiresUpdate = true;
-    }
-
-
 }
