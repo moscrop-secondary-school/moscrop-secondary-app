@@ -62,6 +62,7 @@
         <item name="nav_header_shadow">@drawable/shadow_drawer_header</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_light</item>
         <item name="background_nav">@color/backgroundd</item>
+        <item name="avatar">@drawable/avatar</item>
 
         <!-- Toolbar stuff, move wherever you want
              then delete this comment -->
@@ -93,6 +94,7 @@
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
         <item name="background_nav">@color/dbackgroundd</item>
+        <item name="avatar">@drawable/avatar_dark</item>
 
         <!-- Toolbar stuff, move wherever you want
              then delete this comment -->
@@ -133,6 +135,7 @@
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
         <item name="background_nav">@color/tdbackground_nav</item>
+        <item name="avatar">@drawable/avatar_dark</item>
 
         <!-- Toolbar stuff, move wherever you want
              then delete this comment -->
