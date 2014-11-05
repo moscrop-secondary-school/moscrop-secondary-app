@@ -1,17 +1,57 @@
 {"tags":[
 	{
-		"name":"Unicorns",
+		"name":"Official",
 		"id_author":"Allan W",
-		"id_category":"nonexistanttag"
+		"id_category":"Official"
 	},
 	{
-		"name":"Other mythical beings",
-		"id_author":"Ivon Liu",
-		"id_category":"beta"
-	},
-	{
-		"name":"Autopost",
+		"name":"Student Bulletin",
 		"id_author":"Moscrop School",
 		"id_category":"@null"
+	},
+	{
+		"name":"Scholarships",
+		"id_author":"Moscrop Scholarships",
+		"id_category":"@null"
+	},
+	{
+		"name":"Best Buddies",
+		"id_author":"Moscrop BestBuddies",
+		"id_category":"@null"
+	},
+	{
+		"name":"Grad Council",
+		"id_author":"Grad 2k15",
+		"id_category":"@null"
+	},
+	{
+		"name":"GAAP Moscrop",
+		"id_author":"GAAP Moscrop",
+		"id_category":"@null"
+	},
+	{
+		"name":"Leo Club",
+		"id_author":"Leo Club",
+		"id_category":"@null"
+	},
+	{
+		"name":"MUN",
+		"id_author":"Moscrop Model United Nations Club",
+		"id_category":"@null"
+	},
+	{
+		"name":"Reach for the Top",
+		"id_author":"LAPD RAMPART",
+		"id_category":"@null"
+	}, 
+	{
+		"name":"Spoken Word Club",
+		"id_author":"Moscrop SWC",
+		"id_category":"@null"
+	},
+	{
+		"name":"Unity in Green",
+		"id_author":"Unity In Green",
+		"id_category":"Unity in Green"
 	}
 ]}

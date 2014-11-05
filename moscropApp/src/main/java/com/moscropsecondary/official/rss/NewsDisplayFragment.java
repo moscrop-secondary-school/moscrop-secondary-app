@@ -73,7 +73,7 @@ public class NewsDisplayFragment extends Fragment {
     private String getBgColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(R.attr.background, typedValue, true);
+        theme.resolveAttribute(R.attr.backgroundd, typedValue, true);
         int bgcolorInt = typedValue.data;
         return String.format("#%06X", (0xFFFFFF & bgcolorInt));
     }
