@@ -16,6 +16,7 @@
         <attr name="text_card" format="reference" />
         <attr name="drawer_divider" format="reference" />
         <attr name="nav_drawer_selector" format="reference" />
+        <attr name="avatar" format="reference" />
 
         <attr name="text" format="reference" />
         <attr name="textt" format="reference" />
