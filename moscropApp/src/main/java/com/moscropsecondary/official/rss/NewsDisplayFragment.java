@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,16 +73,16 @@ public class NewsDisplayFragment extends Fragment {
 	}
 
     private int getBgColor() {
-        TypedValue typedValue = new TypedValue();
+        /*TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(R.color.transparent, typedValue, true);
         int bgcolor = typedValue.data;
-        /*int a = (bgcolor >> 24) & 0xFF;
+        int a = (bgcolor >> 24) & 0xFF;
         int r = (bgcolor >> 16) & 0xFF;
         int g = (bgcolor >> 8) & 0xFF;
         int b = (bgcolor >> 0) & 0xFF;
         return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);*/
-        return bgcolor;
+        return Color.TRANSPARENT;
     }
 
     private String getTextColor() {
