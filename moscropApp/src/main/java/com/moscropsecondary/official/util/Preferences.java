@@ -11,7 +11,7 @@ public class Preferences {
 
     public static class Default {
         public static final String THEME = "0";
-        public static final Set<String> TAGS = new HashSet<String>(Arrays.asList(new String[] {"Unicorns", "Other mythical beings"}));
+        public static final Set<String> TAGS = new HashSet<String>(Arrays.asList(new String[] { "Official" }));
     }
 
     public static class Keys {
