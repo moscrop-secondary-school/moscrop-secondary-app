@@ -74,7 +74,7 @@ public class NewsDisplayFragment extends Fragment {
     private int getBgColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(R.attr.backgroundd, typedValue, true);
+        theme.resolveAttribute(R.color.transparent, typedValue, true);
         int bgcolor = typedValue.data;
         /*int a = (bgcolor >> 24) & 0xFF;
         int r = (bgcolor >> 16) & 0xFF;
