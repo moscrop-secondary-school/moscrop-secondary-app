@@ -59,6 +59,7 @@ public class NewsDisplayFragment extends Fragment {
 		
 		WebView wv = (WebView) mContentView.findViewById(R.id.fnd_webview);
 		if(wv != null) {
+            wv.setBackgroundColor(getBgColor());
 			wv.loadDataWithBaseURL(null, getHtmlData(htmlContent), "text/html", "UTF-8", null);
 		}
 		
@@ -67,15 +68,20 @@ public class NewsDisplayFragment extends Fragment {
 	
 	private String getHtmlData(String bodyHTML) {
 	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;}</style></head>";
-	    return "<html>" + head + "<body bgcolor=\"" + getBgColor() + "\" + text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
+	    return "<html>" + head + "<body style=\"background-color:transparent\" text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
 	}
 
-    private String getBgColor() {
+    private int getBgColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(R.attr.backgroundd, typedValue, true);
-        int bgcolorInt = typedValue.data;
-        return String.format("#%06X", (0xFFFFFF & bgcolorInt));
+        int bgcolor = typedValue.data;
+        /*int a = (bgcolor >> 24) & 0xFF;
+        int r = (bgcolor >> 16) & 0xFF;
+        int g = (bgcolor >> 8) & 0xFF;
+        int b = (bgcolor >> 0) & 0xFF;
+        return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);*/
+        return bgcolor;
     }
 
     private String getTextColor() {
