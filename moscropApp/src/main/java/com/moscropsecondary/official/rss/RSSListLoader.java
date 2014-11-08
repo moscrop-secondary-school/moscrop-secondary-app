@@ -2,12 +2,10 @@ package com.moscropsecondary.official.rss;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.moscropsecondary.official.util.Preferences;
 import com.moscropsecondary.official.util.Util;
-import com.tyczj.extendedcalendarview.CalendarProvider;
 
 import org.json.JSONException;
 
@@ -81,44 +79,21 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
             // Download and parse the feed
             if (parser != null) {
 
-                // Check if database is empty
-                Cursor c = getContext().getContentResolver().query(CalendarProvider.CONTENT_URI, null, null, null, null);
-                int count = c.getCount();
-                c.close();
-
                 SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
-                long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.RSS_LAST_UPDATED, Preferences.App.Default.RSS_LAST_UPDATED);
                 String lastFeedVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
 
-                if((count == 0)
-                        || (lastUpdateMillis == Preferences.App.Default.RSS_LAST_UPDATED)
-                        || (lastFeedVersion.equals(Preferences.App.Default.RSS_VERSION))
-                        ) {
+                RSSDatabase database = new RSSDatabase(getContext());
+                long prevOldestPostDate = database.getOldestPostDate();
 
-                    // Provider is empty
-                    // Or, if last update info is missing, to be safe,
-                    // we will reload everything. Make sure data is up to date.
-                    parser.parseAndSaveAll(mBlogId);
-
-                } else {
-
-                    // Everything good to go! Functioning normally.
-
-                    // If last update time is in the future for some reason,
-                    // assume last update time is now so we can recheck everything
-                    // between now and the last updated time, which is somehow
-                    // in the future. Probably aliens. (Actually, very likely due to timezones)
-                    if(lastUpdateMillis > System.currentTimeMillis()) {
-                        lastUpdateMillis = System.currentTimeMillis();
-                    }
-
-                    parser.parseAndSave(mBlogId, lastUpdateMillis, lastFeedVersion);
-
-                }
+                parser.parseAndSave(mBlogId, lastFeedVersion, mAppend);
 
                 // Display list
-                RSSDatabase database = new RSSDatabase(getContext());
-                List<RSSItem> list = database.getItems(getFilterTags());
+                List<RSSItem> list;
+                if (mAppend) {
+                    list = database.getItems(getFilterTags(), prevOldestPostDate);
+                } else {
+                    list = database.getItems(getFilterTags());
+                }
                 database.close();
                 return list;
 

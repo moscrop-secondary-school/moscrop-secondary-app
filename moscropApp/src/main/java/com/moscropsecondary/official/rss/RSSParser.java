@@ -133,7 +133,7 @@ public class RSSParser {
     }
 
     private String getFeedUrlFromId(String blogId) {
-        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=1000";
+        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=25";
     }
 
     private void saveUpdateInfo(String gcalVersion) {
@@ -141,6 +141,76 @@ public class RSSParser {
         prefs.putLong(Preferences.App.Keys.RSS_LAST_UPDATED, System.currentTimeMillis());
         prefs.putString(Preferences.App.Keys.RSS_VERSION, gcalVersion);
         prefs.apply();
+    }
+
+    public void parseAndSave(String blogId, String lastFeedVersion, boolean append) {
+
+        if (!append) {
+
+            // Get the list of events from the URL
+            RSSFeed feed = null;
+            try {
+                String url = getFeedUrlFromId(blogId);
+                feed = getRssFeed(mContext, url);
+            } catch (JSONException e) {
+                Logger.error("RSSParser.parseAndSave()", e);
+            }
+
+            if (feed != null) {
+
+                // We just updated, so update records
+                // with current time and the version we
+                // just downloaded regardless of whether
+                // updating the database was needed
+
+                //saveUpdateInfo(feed.version);
+
+                String newFeedVersion = feed.version;
+                if (!newFeedVersion.equals(lastFeedVersion)) {
+
+                    // New version. All our cache is invalid.
+                    // Exterminate! Exterminate the cache!
+                    // Of course, then replace with new data.
+
+                    RSSDatabase database = new RSSDatabase(mContext);
+                    database.deleteAll();
+                    database.save(feed.items);
+                    database.close();
+                }
+            }
+
+        } else {
+
+            RSSFeed feed = null;
+            RSSDatabase database = new RSSDatabase(mContext);
+            try {
+                String url = getFeedUrlFromId(blogId);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                String publishedMaxStr = sdf.format(new Date(database.getOldestPostDate()));
+                url = url + "&published-max=" + publishedMaxStr;
+                feed = getRssFeed(mContext, url);
+            } catch (JSONException e) {
+                Logger.error("RSSParser.parseAndSave()", e);
+            }
+
+            if (feed != null) {
+                // We just updated, so update records
+                // with current time and the version we
+                // just downloaded regardless of whether
+                // updating the database was needed
+
+                //saveUpdateInfo(feed.version);
+
+
+                // New version. All our cache is invalid.
+                // Exterminate! Exterminate the cache!
+                // Of course, then replace with new data.
+
+                database.save(feed.items);
+                database.close();
+            }
+        }
+
     }
 
     /**
@@ -192,7 +262,7 @@ public class RSSParser {
      *      After all, if it's the same version, no need to do all that work again!
      *      Usually of the format "2014-09-09T12:21:08.000Z"
      */
-    public void parseAndSave(String blogId, long publishedMin, String lastFeedVersion) {
+    public void parseAndSave2(String blogId, long publishedMin, String lastFeedVersion) {
 
         Logger.log("Processing selectively");
 

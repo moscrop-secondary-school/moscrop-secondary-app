@@ -51,6 +51,20 @@ public class RSSDatabase extends SQLiteOpenHelper {
         // N/A
     }
 
+    public long getOldestPostDate() {
+        String[] columns = new String[] { COLUMN_DATE };
+        String orderBy = COLUMN_DATE + " asc";
+        String limit = "1";
+
+        Cursor c = mDB.query(NAME, columns, null, null, null, null, orderBy, limit);
+        long oldestPostDate = System.currentTimeMillis();
+        if (c.getCount() >= 1) {
+            c.moveToPosition(0);
+            oldestPostDate = c.getLong(c.getColumnIndex(COLUMN_DATE));
+        }
+        return oldestPostDate;
+    }
+
     public void save(List<RSSItem> items) {
         mDB.beginTransaction();
         try {
@@ -95,9 +109,13 @@ public class RSSDatabase extends SQLiteOpenHelper {
      * @return  list of RSSItems with certain tag
      */
     public List<RSSItem> getItems(String[] filterTags) {
-        String selection = null;
-        if (filterTags != null) {
-            selection = "";
+        return getItems(filterTags, System.currentTimeMillis());
+    }
+
+    public List<RSSItem> getItems(String[] filterTags, long dateMax) {
+        String selection = COLUMN_DATE + " < " + dateMax;
+        if (filterTags != null && filterTags.length >= 1) {
+            selection += " AND (";
             for (int i=0; i<filterTags.length; i++) {
                 String tag = filterTags[i];
                 tag = "\'%" + tag + "%\'";
@@ -106,6 +124,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
                     selection += " OR ";
                 }
             }
+            selection += ")";
         }
         String orderBy = COLUMN_DATE + " desc";
 

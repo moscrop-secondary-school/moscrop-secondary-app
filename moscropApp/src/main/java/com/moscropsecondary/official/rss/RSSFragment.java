@@ -281,7 +281,19 @@ public class RSSFragment extends Fragment
         if (result != null) {
             if (result.append) {
 
+                List<RSSItem> items = result.items;
+                if (items.size() == 0) {
+                    Toast.makeText(getActivity(), "No more items to load", Toast.LENGTH_SHORT).show();
+                    // TODO replace with text view
+                } else {
+                    for (RSSItem item : items) {
+                        mAdapter.add(item);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+
             } else {
+
                 mAdapter.clear();
                 List<RSSItem> items = result.items;
                 if (items.size() == 0) {
@@ -298,6 +310,7 @@ public class RSSFragment extends Fragment
                         prefs.apply();
                     }
                 }
+
             }
         } else {
             Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
