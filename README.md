@@ -8,6 +8,7 @@ Add newsletter section - force it to pull from the "student bulletin" tag
 Hide "official" and "student bulletin" tag from category selector
 Change spinner to order tags by "all", "subscribed", "official", then alphabetically
 Add about section
+Card - add date stamp, move tags to the right like the google + hashtags in the posts (minus the hashtag), add back description preview (maybe make this a setting)
 Add notifications & settings for pull periods
 
 ** Theme/Design Related **
