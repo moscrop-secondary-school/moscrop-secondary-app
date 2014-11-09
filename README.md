@@ -2,25 +2,25 @@
 
 ** Important **
 
-Add agenda (for events)
-Add search functions app wide (for posts & teachers)
-Add newsletter section - force it to pull from the "student bulletin" tag
-Hide "official" and "student bulletin" tag from category selector
-Change spinner to order tags by "all", "subscribed", "official", then alphabetically
-Add about section
-Card - add date stamp, move tags to the right like the google + hashtags in the posts (minus the hashtag), add back description preview (maybe make this a setting)
+Add agenda (for events)  
+Add search functions app wide (for posts & teachers)  
+Add newsletter section - force it to pull from the "student bulletin" tag  
+Hide "official" and "student bulletin" tag from category selector  
+Change spinner to order tags by "all", "subscribed", "official", then alphabetically  
+Add about section  
+Card - add date stamp, move tags to the right like the google + hashtags in the posts (minus the hashtag), add back description preview (maybe make this a setting)  
 Add notifications & settings for pull periods
 
 ** Theme/Design Related **
 
-Theme webview/html view - ie text when forwarded, bolded, underlined, and links etc
-Make light transparent theme?
+Theme webview/html view - ie text when forwarded, bolded, underlined, and links etc  
+Make light transparent theme?  
 Add animations when opening cards (ie animup)
 
 ** Questionable **
 
-Add option to hide a card
-Change cardview (from full screen to the what the "people credits" thing looks like, where tapping a card opens the card but still allows you to scroll through other cards. Just a thought)
+Add option to hide a card  
+Change cardview (from full screen to the what the "people credits" thing looks like, where tapping a card opens the card but still allows you to scroll through other cards. Just a thought)  
 Add filters for calendar
 
 ********** Dependencies **********
