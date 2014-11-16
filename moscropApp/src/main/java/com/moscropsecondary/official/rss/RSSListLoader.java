@@ -21,13 +21,15 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
     private String mBlogId;
     private String mTag;
     private boolean mAppend;
+    private long mOldestPostDate;
     private boolean mOnlineEnabled;
 
-    public RSSListLoader(Context context, String blogId, String tag, boolean append, boolean onlineEnabled) {
+    public RSSListLoader(Context context, String blogId, String tag, boolean append, long oldestPostDate, boolean onlineEnabled) {
         super(context);
         mBlogId = blogId;
         mTag = tag;
         mAppend = append;
+        mOldestPostDate = oldestPostDate;
         mOnlineEnabled = onlineEnabled;
     }
 
@@ -42,7 +44,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         */
 
         if (mOnlineEnabled) {
-            List<RSSItem> list = downloadParseSaveGetList();
+            List<RSSItem> list = tryGetFullLoad();
             if (list == null) {
                 list = getListOnly();
             }
@@ -50,13 +52,61 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         } else {
             List<RSSItem> list = getListOnly();
             if (list.size() == 0) {
-                list = downloadParseSaveGetList();
+                list = tryGetFullLoad();
             }
             return new RSSResult(list, mAppend);
         }
     }
 
-    private List<RSSItem> downloadParseSaveGetList() {
+    private List<RSSItem> tryGetFullLoad() {
+
+        // Get an initial list
+        List<RSSItem> list = downloadParseSaveGetList(mAppend, mOldestPostDate);
+
+        SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
+
+        RSSDatabase database = new RSSDatabase(getContext());
+
+        while (list.size() < loadLimit) {
+
+            // Get date of the oldest post with the tag
+            // we're interested in. List is a list of up
+            // to loadLimit items with the tag we're
+            // interested in that are in the database.
+            // If list size is 0, that means there are
+            // no posts with such tags in the database.
+            // Therefore, we can safely tell
+            // downloadParseSaveGetList() to look for
+            // posts older than the oldest post in the database.
+
+            long updatedOldestPostDate;
+            if (list.size() > 0) {
+                updatedOldestPostDate=list.get(list.size() - 1).date;
+            } else {
+                updatedOldestPostDate = database.getOldestPostDate(null);
+            }
+            List<RSSItem> appendList = downloadParseSaveGetList(true, updatedOldestPostDate);
+            if (appendList.size() == 0) {
+                break;
+            } else {
+                list.addAll(appendList);
+            }
+        }
+
+        if (list.size() > loadLimit) {
+            list = list.subList(0, loadLimit);
+        }
+
+        database.close();
+        return list;
+    }
+
+    /**
+     * Gets a list of RSSItems from the internet
+     * @return a list of RSSItems.
+     */
+    private List<RSSItem> downloadParseSaveGetList(boolean append, long prevOldestPostDate) {
         if (Util.isConnected(getContext())) {
 
             // Try to update the tag list before updating feed
@@ -81,18 +131,17 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
 
                 SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
                 String lastFeedVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
+                int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
 
                 RSSDatabase database = new RSSDatabase(getContext());
-                long prevOldestPostDate = database.getOldestPostDate();
-
-                parser.parseAndSave(mBlogId, lastFeedVersion, mAppend);
+                parser.parseAndSave(mBlogId, lastFeedVersion, append);
 
                 // Display list
                 List<RSSItem> list;
-                if (mAppend) {
-                    list = database.getItems(getFilterTags(), prevOldestPostDate);
+                if (append) {
+                    list = database.getItems(getFilterTags(), prevOldestPostDate, loadLimit);
                 } else {
-                    list = database.getItems(getFilterTags());
+                    list = database.getItems(getFilterTags(), loadLimit);
                 }
                 database.close();
                 return list;
@@ -107,8 +156,10 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
     }
 
     private List<RSSItem> getListOnly() {
+        SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
         RSSDatabase database = new RSSDatabase(getContext());
-        List<RSSItem> list = database.getItems(getFilterTags());
+        List<RSSItem> list = database.getItems(getFilterTags(), loadLimit);
         database.close();
         return list;
     }

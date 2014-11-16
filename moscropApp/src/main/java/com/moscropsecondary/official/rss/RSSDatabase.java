@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.moscropsecondary.official.util.Preferences;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,12 +53,24 @@ public class RSSDatabase extends SQLiteOpenHelper {
         // N/A
     }
 
-    public long getOldestPostDate() {
+    public long getOldestPostDate(String[] filterTags) {
         String[] columns = new String[] { COLUMN_DATE };
+        String selection = null;
+        if (filterTags != null && filterTags.length >= 1) {
+            selection = "";
+            for (int i=0; i<filterTags.length; i++) {
+                String tag = filterTags[i];
+                tag = "\'%" + tag + "%\'";
+                selection += COLUMN_TAGS + " LIKE " + tag;
+                if (i < filterTags.length-1) {
+                    selection += " OR ";
+                }
+            }
+        }
         String orderBy = COLUMN_DATE + " asc";
         String limit = "1";
 
-        Cursor c = mDB.query(NAME, columns, null, null, null, null, orderBy, limit);
+        Cursor c = mDB.query(NAME, columns, selection, null, null, null, orderBy, limit);
         long oldestPostDate = System.currentTimeMillis();
         if (c.getCount() >= 1) {
             c.moveToPosition(0);
@@ -97,7 +111,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
      * @return list of RSSItems
      */
     public List<RSSItem> getItems() {
-        return getItems(null);
+        return getItems(null, Preferences.Default.LOAD_LIMIT);
     }
 
     /**
@@ -108,11 +122,11 @@ public class RSSDatabase extends SQLiteOpenHelper {
      *          tag to filter by
      * @return  list of RSSItems with certain tag
      */
-    public List<RSSItem> getItems(String[] filterTags) {
-        return getItems(filterTags, System.currentTimeMillis());
+    public List<RSSItem> getItems(String[] filterTags, int loadLimit) {
+        return getItems(filterTags, System.currentTimeMillis(), loadLimit);
     }
 
-    public List<RSSItem> getItems(String[] filterTags, long dateMax) {
+    public List<RSSItem> getItems(String[] filterTags, long dateMax, int loadLimit) {
         String selection = COLUMN_DATE + " < " + dateMax;
         if (filterTags != null && filterTags.length >= 1) {
             selection += " AND (";
@@ -127,10 +141,11 @@ public class RSSDatabase extends SQLiteOpenHelper {
             selection += ")";
         }
         String orderBy = COLUMN_DATE + " desc";
+        String limit = String.valueOf(loadLimit);
 
         List<RSSItem> items = new ArrayList<RSSItem>();
 
-        Cursor c = mDB.query(NAME, null, selection, null, null, null, orderBy);
+        Cursor c = mDB.query(NAME, null, selection, null, null, null, orderBy, limit);
         c.moveToPosition(-1);
         while (c.moveToNext()) {
             long duration = c.getLong(c.getColumnIndex(COLUMN_DATE));

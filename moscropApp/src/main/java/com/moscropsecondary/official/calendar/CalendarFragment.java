@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.MainActivity;
+import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
@@ -190,13 +190,15 @@ public class CalendarFragment extends Fragment
         }
 
         // Update UI when done loading
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCalendarView.refreshCalendar();
-                Logger.log("done loading");
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCalendarView.refreshCalendar();
+                    Logger.log("done loading");
+                }
+            });
+        }
     }
 
     @Override

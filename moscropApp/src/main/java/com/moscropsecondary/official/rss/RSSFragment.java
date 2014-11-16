@@ -269,7 +269,11 @@ public class RSSFragment extends Fragment
         if (mSwipeLayout != null) {
             mSwipeLayout.setRefreshing(true);
         }
-        return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, mOnlineEnabled);
+        long oldestPostDate = System.currentTimeMillis();
+        if (mAdapter.getCount() > 0 && mAppend) {
+            oldestPostDate = mAdapter.getItem(mAdapter.getCount()-1).date;
+        }
+        return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, oldestPostDate, mOnlineEnabled);
     }
 
     @Override

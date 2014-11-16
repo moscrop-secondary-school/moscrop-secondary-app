@@ -195,14 +195,17 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
 
         // This line is the normal database stuff
         final List<StaffInfoModel> models = db.getList(query);
+        db.close();
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.clear();
-                mAdapter.addAll(models);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.clear();
+                    mAdapter.addAll(models);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 }

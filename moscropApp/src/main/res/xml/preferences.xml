@@ -23,5 +23,6 @@
         android:key="refresh_tag_list"
         android:title="@string/refresh_tag_list_title"
         android:summary="@string/refresh_tag_list_summary"/>
+
 </PreferenceScreen>
 

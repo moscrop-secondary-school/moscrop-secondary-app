@@ -106,7 +106,7 @@ public class CalendarParser {
             String url = getCalendarUrlFromId(id);
             feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
-            Logger.error("CalendarParser.parseAndSaveAll()", e);
+            //Logger.error("CalendarParser.parseAndSaveAll()", e);
         }
 
         if (feed != null) {
@@ -144,7 +144,7 @@ public class CalendarParser {
 
             feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
-            Logger.error("CalendarParser.process()", e);
+            //Logger.error("CalendarParser.process()", e);
         }
 
         if (feed != null) {
