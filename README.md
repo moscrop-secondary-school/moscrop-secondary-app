@@ -23,6 +23,10 @@ Add option to hide a card
 Change cardview (from full screen to the what the "people credits" thing looks like, where tapping a card opens the card but still allows you to scroll through other cards. Just a thought)  
 Add filters for calendar
 
+** Keystore **
+
+Please contact us if you would like to join in the development and access the keystore. Remove this later.
+
 ********** Dependencies **********
 
 All dependencies are configured correctly already. Some dependencies are in git submodules. These will be updated automatically (see section on updating below) and are relatively hassle-free. Others you will need to install beforehand. So far, the dependencies you will need to install separately are:
