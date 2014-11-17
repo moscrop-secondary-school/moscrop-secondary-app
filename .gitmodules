@@ -1,6 +1,3 @@
-[submodule "android-rss"]
-	path = android-rss
-	url = https://github.com/IvonLiu/android-rss.git
 [submodule "extended-calendar-view"]
 	path = extended-calendar-view
 	url = https://github.com/IvonLiu/ExtendedCalendarView.git
