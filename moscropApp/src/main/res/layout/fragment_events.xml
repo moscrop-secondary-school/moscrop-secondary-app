@@ -8,6 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <FrameLayout
+            android:id="@+id/calendar_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <!-- Change the values of things that begin with ExtendedCalendarView
              dateTextColor, disabledTextColor are ColorStateLists
              singleEventIcon, multiEventIcon are Drawables
@@ -26,7 +30,7 @@
              but try to just change the colors of the light/dark drawables
              and keep the same shape -->
 
-        <com.tyczj.extendedcalendarview.ExtendedCalendarView
+        <!--<com.tyczj.extendedcalendarview.ExtendedCalendarView
             android:id="@+id/calendar"
             android:layout_width="match_parent"
             android:layout_height="316dp"
@@ -37,7 +41,7 @@
             ExtendedCalendarView:titleTextColor="#FFFF0000"
             ExtendedCalendarView:titleBackgroundColor="#FF00FF00"
             ExtendedCalendarView:singleEventIcon="@drawable/single_event"
-            ExtendedCalendarView:multiEventIcon="@drawable/multi_event"/>
+            ExtendedCalendarView:multiEventIcon="@drawable/multi_event"/>-->
 
     </android.support.v7.widget.CardView>
 

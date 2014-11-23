@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
+import com.roomorama.caldroid.CaldroidFragment;
 import com.tyczj.extendedcalendarview.CalendarProvider;
 import com.tyczj.extendedcalendarview.Day;
 import com.tyczj.extendedcalendarview.Event;
@@ -26,6 +28,7 @@ import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class CalendarFragment extends Fragment
@@ -74,21 +77,36 @@ public class CalendarFragment extends Fragment
         mFooterView = new TextView(getActivity());
         mFooterView.setText("No events planned for today");
 
-        mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
+        /*mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
-        mCalendarView.setOnDaySelectListener(this);
+        mCalendarView.setOnDaySelectListener(this);*/
+
+        CaldroidFragment caldroidFragment = new CaldroidFragment();
+        Bundle args = new Bundle();
+        Calendar cal = Calendar.getInstance();
+        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+        args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, true);
+        caldroidFragment.setArguments(args);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DATE, 6);
+        Date date = cal.getTime();
+        caldroidFragment.setBackgroundResourceForDate(R.color.primary_dark_green, date);
+
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.calendar_frame, caldroidFragment).commit();
 
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
 
         // Refresh calendar
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 doJsonStuff();
             }
-        }).start();
+        }).start();*/
 
     	return mContentView;
     }

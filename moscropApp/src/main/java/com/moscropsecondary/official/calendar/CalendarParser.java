@@ -73,7 +73,7 @@ public class CalendarParser {
     }
 
     private static String getCalendarUrlFromId(String id) {
-        return "http://www.google.com/calendar/feeds/" + id + "/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
+        return "http://www.google.com/calendar/feeds/" + id + "/public/basic?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
     }
 
     private static void saveUpdateInfo(Context context, String gcalVersion) {
@@ -106,7 +106,7 @@ public class CalendarParser {
             String url = getCalendarUrlFromId(id);
             feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
-            //Logger.error("CalendarParser.parseAndSaveAll()", e);
+            Logger.error("CalendarParser.parseAndSaveAll()", e);
         }
 
         if (feed != null) {
@@ -144,7 +144,7 @@ public class CalendarParser {
 
             feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
-            //Logger.error("CalendarParser.process()", e);
+            Logger.error("CalendarParser.process()", e);
         }
 
         if (feed != null) {

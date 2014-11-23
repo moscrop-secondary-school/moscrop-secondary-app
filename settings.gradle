@@ -1,1 +1,1 @@
-include ':moscropApp', ':extended-calendar-view:ExtendedCalendarViewLibrary'
+include ':moscropApp'
