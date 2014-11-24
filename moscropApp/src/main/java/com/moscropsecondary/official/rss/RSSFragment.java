@@ -58,6 +58,7 @@ public class RSSFragment extends Fragment
 
     private View mSpinnerContainer;
     private ArrayAdapter<String> mSpinnerAdapter;
+    private boolean mHasSpinner = true;
 
     public SwipeRefreshLayout mSwipeLayout = null;
     public ListView mListView = null;
@@ -74,6 +75,11 @@ public class RSSFragment extends Fragment
         fragment.mPosition = position;
 		fragment.mBlogId = blogId;
         fragment.mTag = tag;
+        if (tag.equals("Student Bulletin")) {
+            fragment.mHasSpinner = false;
+        } else {
+            fragment.mHasSpinner = true;
+        }
 		return fragment;
 	}
 	
@@ -121,7 +127,11 @@ public class RSSFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        setUpToolbarSpinner();
+        if (mHasSpinner) {
+            setUpToolbarSpinner();
+        } else {
+            ((MainActivity) getActivity()).onSectionAttached(mPosition);
+        }
     }
 
     private void setUpToolbarSpinner() {

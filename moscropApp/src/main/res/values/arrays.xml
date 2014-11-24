@@ -2,6 +2,7 @@
 <resources>    
     <string-array name="navigation_items">
         <item>News</item>
+        <item>Newsletters</item>
         <item>Events</item>
         <item>Teachers</item>
     </string-array>
@@ -9,7 +10,7 @@
     <string-array name="drawer_icons_light">
         <item>@drawable/ic_action_news_light</item>
         <item>@drawable/ic_action_newsletters_light</item>
-        <item>@drawable/ic_action_student_light</item>
+        <!--<item>@drawable/ic_action_student_light</item>-->
         <item>@drawable/ic_action_event_light</item>
         <item>@drawable/ic_action_teacher_light</item>
     </string-array>
@@ -17,7 +18,7 @@
     <string-array name="drawer_icons_dark">
         <item>@drawable/ic_action_news_dark</item>
         <item>@drawable/ic_action_newsletters_dark</item>
-        <item>@drawable/ic_action_student_dark</item>
+        <!--<item>@drawable/ic_action_student_dark</item>-->
         <item>@drawable/ic_action_event_dark</item>
         <item>@drawable/ic_action_teacher_dark</item>
     </string-array>
