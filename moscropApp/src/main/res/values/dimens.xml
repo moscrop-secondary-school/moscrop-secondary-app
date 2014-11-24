@@ -42,4 +42,43 @@
 
     <dimen name="padding_teacher_list">5dp</dimen>
 
+
+
+    <!-- Settings Section -->
+    <dimen name="settings_header">16sp</dimen>
+    <dimen name="settings_title">16sp</dimen>
+    <dimen name="settings_description">14sp</dimen>
+    <dimen name="settings_spacing">8dp</dimen>
+    <dimen name="settings_spacing_small">4dp</dimen>
+    <dimen name="settings_spacing_horizontal">16dp</dimen>
+
+    <!-- Popup Dialog -->
+    <dimen name="dialog_button_height">48dp</dimen>
+    <dimen name="dialog_spacing">10dp</dimen>
+    <dimen name="dialog_width">300dp</dimen>
+    <dimen name="dialog_small">14sp</dimen>
+    <!-- ListView -->
+    <dimen name="listview_height">88dp</dimen>
+    <!-- Feature Banner -->
+    <dimen name="banner_height">158dp</dimen>
+    <dimen name="banner_title_margin">28dp</dimen>
+    <dimen name="banner_desc">16sp</dimen>
+    <dimen name="banner_title">22sp</dimen>
+    <!-- ******************************* FONTS ********************************* -->
+
+
+    <!-- FONT SIZES CONSTANTS -->
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_small_lg">14sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_large">22dp</dimen>
+
+    <!-- MISC -->
+    <dimen name="list_desc_text">14sp</dimen>
+    <dimen name="list_title_text">16sp</dimen>
+    <dimen name="button_text">16sp</dimen>
+    <dimen name="grid_desc_text">12sp</dimen>
+    <dimen name="grid_title_text">14sp</dimen>
+    <dimen name="launcher_title">48sp</dimen>
+
 </resources>

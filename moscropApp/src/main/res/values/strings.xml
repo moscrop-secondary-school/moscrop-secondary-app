@@ -57,4 +57,8 @@
     <string name="tag_chooser_summary">Select categories to view in your news feed</string>
     <string name="refresh_tag_list_title">Refresh Categories List</string>
     <string name="refresh_tag_list_summary">We\'re always adding more new categories, so get them while they\'re hot!</string>
+
+
+    <string name="people">People</string>
+    <string name="people_description">The people who helped make this happen</string>
 </resources>
