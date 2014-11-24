@@ -113,7 +113,7 @@ public class MainActivity extends ToolbarActivity
                     Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
                     return;
                 case NavigationDrawerFragment.CONTACT:
-                    Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.email), null));
+                    Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
                     contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_subject));
                     contactIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(Intent.createChooser(contactIntent, getString(R.string.send_email)));

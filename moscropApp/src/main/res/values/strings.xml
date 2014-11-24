@@ -7,7 +7,6 @@
     <string name="action_openbrowser">Open in browser</string>
     <string name="action_refresh">Refresh</string>
     <string name="package_name">com.moscropsecondary.official</string>
-    <string name="email">moscropsecondaryschool@gmail.com</string>
 
     <!--Nav drawer-->
     <string name="news">News</string>
@@ -17,7 +16,7 @@
     <string name="teachers">Teachers</string>
 
 
-    <string name="activity_displaynews"></string>
+    <string name="activity_displaynews">News</string>
     <string name="activity_settings">Settings</string>
     <string name="search">Search</string>
     <string name="share">Share</string>
@@ -35,8 +34,10 @@
     <string name="moscrop_desc">Home of the Panthers</string>
     <string name="about">About</string>
     <string name="settings">Settings</string>
+    <string name="email">moscropsecondaryschool@gmail.com</string>
 
 <!--Email-->
+    <string name="dev_email">moscropsecondarydev@gmail.com</string>
     <string name="contact">Contact</string>
     <string name="send_email">Send Email</string>
     <string name="link_share">Sharing Moscrop\'s official app!
