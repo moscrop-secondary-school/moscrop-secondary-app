@@ -27,7 +27,7 @@ public class MainActivity extends ToolbarActivity
     private DrawerLayout mDrawerLayout;
     protected RSSFragment mNewsFragment;
     protected RSSFragment mEmailFragment;
-    protected RSSFragment mStudentSubsFragment;
+    //protected RSSFragment mStudentSubsFragment;
     protected CalendarFragment mEventsFragment;
     protected StaffInfoFragment mTeachersFragment;
 
@@ -96,13 +96,17 @@ public class MainActivity extends ToolbarActivity
                     }
                     mNextFragment = mNewsFragment;
                     break;
+                case NavigationDrawerFragment.EMAIL:
+                    if (mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(NavigationDrawerFragment.EMAIL, RSSFragment.FEED_NEWS, "Student Bulletin");
+                    mNextFragment = mEmailFragment;
+                    break;
                 case NavigationDrawerFragment.EVENTS:
-                    if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(1);
+                    if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(NavigationDrawerFragment.EVENTS);
                     mNextFragment = mEventsFragment;
                     break;
                 case NavigationDrawerFragment.TEACHERS:
                     if (mTeachersFragment == null)
-                        mTeachersFragment = StaffInfoFragment.newInstance(2);
+                        mTeachersFragment = StaffInfoFragment.newInstance(NavigationDrawerFragment.TEACHERS);
                     mNextFragment = mTeachersFragment;
                     break;
                 case NavigationDrawerFragment.SETTINGS:

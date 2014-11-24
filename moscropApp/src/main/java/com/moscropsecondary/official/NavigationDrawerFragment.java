@@ -19,10 +19,10 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
 
     // Section Constants
     public static final int NEWS = 0;
-    //public static final int EMAIL = 1;
+    public static final int EMAIL = 1;
     //public static final int STUDENT = 2;
-    public static final int EVENTS = 1;
-    public static final int TEACHERS = 2;
+    public static final int EVENTS = 2;
+    public static final int TEACHERS = 3;
     public static final int SETTINGS = 500;
     public static final int ABOUT = 600;
     public static final int CONTACT = 700;
