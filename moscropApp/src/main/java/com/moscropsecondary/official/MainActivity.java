@@ -117,7 +117,7 @@ public class MainActivity extends ToolbarActivity
                     return;
                 case NavigationDrawerFragment.ABOUT:
                     //TODO
-                    if (mAboutFragment == null) mAboutFragment = AboutFragment.newInstance(NavigationDrawerFragment.ABOUT);
+                    if (mAboutFragment == null) mAboutFragment = new AboutFragment();
                     mNextFragment = mAboutFragment;
                 case NavigationDrawerFragment.CONTACT:
                     Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
