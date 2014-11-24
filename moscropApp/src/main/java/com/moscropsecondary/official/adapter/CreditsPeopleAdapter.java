@@ -9,15 +9,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pitchedapps.icons.glass.R;
-import com.pitchedapps.icons.glass.model.CreditsPeopleItem;
-import com.pitchedapps.icons.glass.util.RoundTransform;
+import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.model.CreditsPeopleItem;
+import com.moscropsecondary.official.util.RoundTransform;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import view.CircularImageView;
+import com.moscropsecondary.official.view.CircularImageView;
 
 public class CreditsPeopleAdapter extends BaseAdapter
 {

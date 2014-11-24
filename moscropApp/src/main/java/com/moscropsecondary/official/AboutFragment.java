@@ -1,122 +1,71 @@
 package com.moscropsecondary.official;
 
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.os.Build;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ListView;
 
-import com.pitchedapps.icons.glass.adapter.AboutAdapter;
-import com.pitchedapps.icons.glass.adapter.AboutAdapter.onContactListener;
-import com.pitchedapps.icons.glass.model.ContactItem;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.squareup.picasso.Picasso;
+import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.adapter.AboutAdapter;
+import com.moscropsecondary.official.model.SettingsItem;
+import com.moscropsecondary.official.util.Dialogs;
+import com.moscropsecondary.official.util.Util;
 
-import view.FixedListView;
-import view.PkScrollView;
-import view.PkScrollView.PkScrollViewListener;
-
-public class AboutFragment extends Fragment implements PkScrollViewListener, onContactListener
+public class AboutFragment extends ListFragment
 {
-	private int lastTopValue;
-	private AboutAdapter mAdapter;
-	
-	// Views
-	private PkScrollView mScroll;
-	private FrameLayout mHeader;
-	private ImageView imgBanner;
-	private FixedListView mList;
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
-	{
-		View view = inflater.inflate(R.layout.fragment_about, container, false);
-		initViews(view);
-		return view;
-	}
-	
-	@Override
-	public void onStart()
-	{
-		super.onStart();
-		
-		fixSystemPadding();
-		initSocial();
-		//blurBanner(10);
-		mAdapter.setOnClickListener(this);
-		mScroll.setOnScrollListener(this);
-	}
-	
-	private void initViews(View v)
-	{
-		mScroll = (PkScrollView) v.findViewById(R.id.scroll);
-		mHeader = (FrameLayout) v.findViewById(R.id.header);
-		imgBanner = (ImageView) v.findViewById(R.id.imgBanner);
-		mList = (FixedListView) v.findViewById(R.id.aboutList);
-	}
-	
-	private void fixSystemPadding()
-	{
-		// Get the tint manager
-		SystemBarTintManager mTintManager = ((MainActivity) getActivity()).getTintManager();
-		
-		// Return if system tint isn't enabled
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || mTintManager == null)
-			return;
-		
-		// Set the appropriate padding
-		mList.setPadding(mList.getPaddingLeft(), mList.getPaddingTop(), mList.getPaddingRight(), mTintManager.getConfig().getPixelInsetBottom());
-	}
-	
-	private void initSocial()
-	{
-		Resources mRes = getActivity().getResources();
-		mAdapter = new AboutAdapter(getActivity());
-		mAdapter.addItem(new ContactItem(R.drawable.ic_social_email, mRes.getString(R.string.dev_email), Uri.parse("mailto:" + mRes.getString(R.string.dev_email))));
-		mAdapter.addItem(new ContactItem(R.drawable.ic_social_google_play, mRes.getString(R.string.dev_social_play), Uri.parse(mRes.getString(R.string.dev_social_play_link))));
-		///mAdapter.addItem(new ContactItem(R.drawable.ic_social_github, mRes.getString(R.string.dev_social_github), Uri.parse(mRes.getString(R.string.dev_social_github_link))));
-		mAdapter.addItem(new ContactItem(R.drawable.ic_social_xda, mRes.getString(R.string.dev_social_xda), Uri.parse(mRes.getString(R.string.dev_social_xda_link))));
-		mAdapter.addItem(new ContactItem(R.drawable.ic_social_google_plus, mRes.getString(R.string.dev_social_gplus), Uri.parse(mRes.getString(R.string.dev_social_gplus_link))));
-		///mAdapter.addItem(new ContactItem(R.drawable.ic_social_twitter, mRes.getString(R.string.dev_social_twitter), Uri.parse(mRes.getString(R.string.dev_social_twitter_link))));
-		mList.setAdapter(mAdapter);
-	}
-	
-	private void blurBanner(int blurRadius)
-	{
-		// DISABLED UNTIL ANDROID STUDIO SUPPORTS RENDERSCRIPT!!!
-		Picasso
-			.with(getActivity())
-			.load(R.drawable.dev_banner)
-			//.transform(new BlurTransform())
-			.into(imgBanner);
-	}
-	
-	private void parallaxHeader()
-	{
-		Rect rect = new Rect();
-	    mHeader.getLocalVisibleRect(rect);
-	    if (lastTopValue != rect.top){
-	        lastTopValue = rect.top;
-	        mHeader.setY((float) (rect.top/2.0));
-	    }
-	}
-	
-	@Override
-	public void onClick(Uri link)
-	{
-		startActivity(new Intent().setData(link));
-	}
-	
-	@Override
-	public void onScrollChanged(PkScrollView scrollView, int x, int y, int oldx, int oldy)
-	{
-		parallaxHeader();
-	}
+    // ID Keys
+    private final int CREDITS_PEOPLE = 0;
+
+
+    // App Preferences
+    private SharedPreferences mPrefs;
+
+    // List Adapter
+    private AboutAdapter mAdapter;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+//        mPrefs = getActivity().getSharedPreferences(Util.PREFS_NAME, 0);
+        addSettings();
+        setListAdapter(mAdapter);
+
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        // Reinitialize our preferences if they somehow became null
+//        if(mPrefs == null)
+//            mPrefs = getActivity().getSharedPreferences(Util.PREFS_NAME, 0);
+
+        // We have a custom divider so let's disable this
+        getListView().setDivider(null);
+        getListView().setDividerHeight(0);
+
+        // Apply custom selector
+        getListView().setSelector(R.drawable.selector_transparent_lgray);
+        getListView().setDrawSelectorOnTop(false);
+
+    }
+
+    private void addSettings()
+    {
+        mAdapter = new AboutAdapter(getActivity());
+
+        mAdapter.addHeader(getString(R.string.about));
+        mAdapter.addItem(new SettingsItem.Builder()
+                .type(AboutAdapter.TYPE_TEXT)
+                .title(getString(R.string.people))
+                .description(getString(R.string.people_description))
+                .id(CREDITS_PEOPLE)
+                .build());
+    }
 }

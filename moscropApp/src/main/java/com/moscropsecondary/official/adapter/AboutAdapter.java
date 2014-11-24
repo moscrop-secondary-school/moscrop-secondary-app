@@ -1,63 +1,98 @@
 package com.moscropsecondary.official.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pitchedapps.icons.glass.R;
-import com.pitchedapps.icons.glass.model.ContactItem;
+import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.model.SettingsItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AboutAdapter extends BaseAdapter
 {
+	// View Types
+	public static final int TYPE_HEADER = 0;
+	public static final int TYPE_DIVIDER = 1;
+	public static final int TYPE_TEXT = 2;
+//	public static final int TYPE_CHECKBOX = 3;
+	public static final int TYPE_MAX_COUNT = 3;
+	
 	// Essential Resources
-	private Context mContext;
-	private List<ContactItem> mInfoList;
-	private onContactListener mListener;
+	private List<SettingsItem> mSettings;
+	private LayoutInflater mInflater;
 	
 	public AboutAdapter(Context context)
 	{
-		this.mContext = context;
-		this.mInfoList = new ArrayList<ContactItem>();
+		this.mSettings = new ArrayList<SettingsItem>();
+		this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-	public AboutAdapter(Context context, List<ContactItem> info)
+	public AboutAdapter(Context context, List<SettingsItem> settings)
 	{
-		this.mContext = context;
-		this.mInfoList = info;
+		this.mSettings = settings;
+		this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-	public void addItem(ContactItem info)
+	public void addItem(SettingsItem setting)
 	{
-		this.mInfoList.add(info);
+		mSettings.add(setting);
 	}
 	
-	public void setOnClickListener(onContactListener listener)
+	public void addHeader(String title)
 	{
-		this.mListener = listener;
+		mSettings.add(new SettingsItem(AboutAdapter.TYPE_HEADER, title));
+	}
+	
+	public void addDivider()
+	{
+		mSettings.add(new SettingsItem(AboutAdapter.TYPE_DIVIDER));
+	}
+	
+	public SettingsItem getSetting(int id)
+	{
+		for(SettingsItem setting : mSettings) {
+			if(setting.getID() == id)
+				return setting;
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public boolean isEnabled(int position)
+	{
+		return getItemViewType(position) != TYPE_HEADER && getItemViewType(position) != TYPE_DIVIDER;
+	}
+	
+	@Override
+	public int getItemViewType(int position)
+	{
+		return mSettings.get(position).getType();
+	}
+	
+	@Override
+	public int getViewTypeCount()
+	{
+		return TYPE_MAX_COUNT;
 	}
 	
 	@Override
 	public int getCount()
 	{
-		return mInfoList.size();
+		return mSettings.size();
 	}
-	
+
 	@Override
-	public ContactItem getItem(int position)
+	public SettingsItem getItem(int position)
 	{
-		return mInfoList.get(position);
+		return mSettings.get(position);
 	}
-	
+
 	@Override
 	public long getItemId(int position)
 	{
@@ -68,18 +103,38 @@ public class AboutAdapter extends BaseAdapter
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		ViewHolder holder = null;
-		final ContactItem mInfo = mInfoList.get(position);
+		SettingsItem mSetting = mSettings.get(position);
+		int type = getItemViewType(position);
 		
-		if (convertView == null)
-		{
-			LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = mInflater.inflate(R.layout.fragment_about_item, parent, false);
-			
+		if(convertView == null) {
 			holder = new ViewHolder();
-			holder.mCard = (LinearLayout) convertView.findViewById(R.id.Card);
-			holder.imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
-			holder.txtData = (TextView) convertView.findViewById(R.id.txtData);
-			holder.txtLink = (TextView) convertView.findViewById(R.id.txtLink);
+			
+			switch(type) {
+				case TYPE_HEADER:
+					convertView = mInflater.inflate(R.layout.settings_header, parent, false);
+					holder.txtTitle = (TextView) convertView.findViewById(R.id.txtHeader);
+					holder.txtDescription = null;
+//					holder.imgCheckbox = null;
+					break;
+				case TYPE_DIVIDER:
+					convertView = mInflater.inflate(R.layout.settings_divider, parent, false);
+					holder.txtTitle = null;
+					holder.txtDescription = null;
+//					holder.imgCheckbox = null;
+					break;
+				case TYPE_TEXT:
+					convertView = mInflater.inflate(R.layout.settings_text, parent, false);
+					holder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
+					holder.txtDescription = (TextView) convertView.findViewById(R.id.txtDescription);
+//					holder.imgCheckbox = null;
+					break;
+//				case TYPE_CHECKBOX:
+//					convertView = mInflater.inflate(R.layout.settings_checkbox, parent, false);
+//					holder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
+//					holder.txtDescription = (TextView) convertView.findViewById(R.id.txtDescription);
+//					holder.imgCheckbox = (ImageView) convertView.findViewById(R.id.imgCheckbox);
+//					break;
+			}
 			
 			convertView.setTag(holder);
 		}
@@ -87,34 +142,32 @@ public class AboutAdapter extends BaseAdapter
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		// Set icon & data
-		holder.imgIcon.setImageResource(mInfo.getIcon());
-		holder.txtData.setText(mInfo.getData());
-		holder.txtLink.setText(mInfo.getLink().toString());
+		// Don't edit anything for dividers
+		if(type == TYPE_DIVIDER)
+			return convertView;
 		
-		// onClick event
-		if(mListener != null) {
-			holder.mCard.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					mListener.onClick(mInfo.getLink());
-				}
-			});
-		}
+		// Apply title
+		holder.txtTitle.setText(mSetting.getTitle());
 		
+		// Return prematurely if type is header
+		if(type == TYPE_HEADER)
+			return convertView;
+		
+		// Apply description
+		holder.txtDescription.setText(mSetting.getDescription());
+		
+//		// Set checkbox state if applicable
+//		if(type == TYPE_CHECKBOX && holder.imgCheckbox != null)
+//			holder.imgCheckbox.setImageResource(mSetting.isSelected() ? R.drawable.ic_checkbox_on : R.drawable.ic_checkbox_off);
+//
+		// Return this row view
 		return convertView;
 	}
 	
 	private class ViewHolder
 	{
-		public LinearLayout mCard;
-		public ImageView imgIcon;
-		public TextView txtData;
-		public TextView txtLink;
-	}
-	
-	public interface onContactListener
-	{
-		void onClick(Uri link);
+		public TextView txtTitle;
+		public TextView txtDescription;
+//		public ImageView imgCheckbox;
 	}
 }
