@@ -20,12 +20,20 @@ public class AboutFragment extends ListFragment
     // ID Keys
     private final int CREDITS_PEOPLE = 0;
 
-
+    private static final String KEY_POSITION = "position";
+    private int mPosition;
+    private View mContentView;
     // App Preferences
     private SharedPreferences mPrefs;
 
     // List Adapter
     private AboutAdapter mAdapter;
+
+    public static AboutFragment newInstance(int position) {
+        AboutFragment fragment = new AboutFragment();
+        fragment.mPosition = position;
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -67,5 +75,15 @@ public class AboutFragment extends ListFragment
                 .description(getString(R.string.people_description))
                 .id(CREDITS_PEOPLE)
                 .build());
+    }
+    @Override
+    public void onListItemClick(ListView list, View view, int position, long id) {
+        SettingsItem mSetting = mAdapter.getItem(position);
+
+        switch (mSetting.getID()) {
+            case CREDITS_PEOPLE:
+                Dialogs.getCreditsPeopleDialog(getActivity()).show();
+                break;
+        }
     }
 }

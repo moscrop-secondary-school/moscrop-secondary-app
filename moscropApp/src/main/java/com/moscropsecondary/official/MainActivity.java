@@ -20,7 +20,9 @@ import com.moscropsecondary.official.staffinfo.StaffInfoFragment;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.moscropsecondary.official.util.ThemesUtil;
+import com.moscropsecondary.official.util.Dialogs;
 import com.moscropsecondary.official.AboutFragment;
+import com.moscropsecondary.official.adapter.AboutAdapter;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationDrawerBase.NavigationDrawerCallbacks, ThemesUtil.ThemeChangedListener {
@@ -117,8 +119,10 @@ public class MainActivity extends ToolbarActivity
                     return;
                 case NavigationDrawerFragment.ABOUT:
                     //TODO
-                    if (mAboutFragment == null) mAboutFragment = new AboutFragment();
-                    mNextFragment = mAboutFragment;
+//                    if (mAboutFragment == null) mAboutFragment = new AboutFragment();
+//                    mNextFragment = mAboutFragment;
+                    Dialogs.getCreditsPeopleDialog(getActivity()).show();
+                    break;
                 case NavigationDrawerFragment.CONTACT:
                     Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
                     contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_subject));
