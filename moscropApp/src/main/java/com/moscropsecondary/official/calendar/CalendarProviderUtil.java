@@ -1,18 +1,5 @@
 package com.moscropsecondary.official.calendar;
 
-import android.content.ContentValues;
-import android.content.Context;
-
-import com.moscropsecondary.official.util.DateUtil;
-import com.moscropsecondary.official.util.Logger;
-import com.tyczj.extendedcalendarview.CalendarProvider;
-import com.tyczj.extendedcalendarview.Event;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 /**
  * Util used to handle interactions with
  * ExtendedCalendarView's content provider.
@@ -21,7 +8,7 @@ import java.util.List;
  */
 public class CalendarProviderUtil {
 
-    public static int deleteAll(Context context) {
+    /*public static int deleteAll(Context context) {
         Logger.log("Deleting all");
         return context.getContentResolver().delete(CalendarProvider.CONTENT_URI, null, null);
     }
@@ -59,5 +46,5 @@ public class CalendarProviderUtil {
             valueArray[i++] = values;
         }
         context.getContentResolver().bulkInsert(CalendarProvider.CONTENT_URI, valueArray);
-    }
+    }*/
 }

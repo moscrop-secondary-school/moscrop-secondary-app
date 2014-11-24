@@ -1,38 +1,23 @@
 package com.moscropsecondary.official.calendar;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.util.DateUtil;
-import com.moscropsecondary.official.util.Logger;
-import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
-import com.tyczj.extendedcalendarview.CalendarProvider;
-import com.tyczj.extendedcalendarview.Day;
-import com.tyczj.extendedcalendarview.Event;
-import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class CalendarFragment extends Fragment
-        implements ExtendedCalendarView.OnDaySelectListener, AdapterView.OnItemClickListener {
+        /*implements AdapterView.OnItemClickListener*/ {
 
     public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
@@ -40,14 +25,14 @@ public class CalendarFragment extends Fragment
     private static final String KEY_POSITION = "position";
     private int mPosition;
     private View mContentView;
-    private Day mSelectedDay;
+    //private Day mSelectedDay;
 
-    private ExtendedCalendarView mCalendarView;
+    //private ExtendedCalendarView mCalendarView;
     private ListView mListView;
     private TextView mHeaderView;
     private TextView mFooterView;
 
-    private List<Event> mEvents = new ArrayList<Event>();
+    //private List<Event> mEvents = new ArrayList<Event>();
     private EventListAdapter mAdapter;
     
     public static CalendarFragment newInstance(int position) {
@@ -66,7 +51,7 @@ public class CalendarFragment extends Fragment
 
         //insertDays();
 
-        mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
+        /*mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), mEvents);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
@@ -75,7 +60,7 @@ public class CalendarFragment extends Fragment
         mHeaderView.setTextSize(20);
         mListView.addHeaderView(mHeaderView);
         mFooterView = new TextView(getActivity());
-        mFooterView.setText("No events planned for today");
+        mFooterView.setText("No events planned for today");*/
 
         /*mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
         mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
@@ -122,7 +107,7 @@ public class CalendarFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         ((MainActivity) getActivity()).onSectionAttached(mPosition);
     }
-
+/*
     @Override
     public void onDaySelected(Day day) {
         if (day != null) {
@@ -271,5 +256,5 @@ public class CalendarFragment extends Fragment
             }
         });
         builder.create().show();
-    }
+    }*/
 }

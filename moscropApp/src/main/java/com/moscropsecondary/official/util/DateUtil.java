@@ -2,14 +2,10 @@ package com.moscropsecondary.official.util;
 
 import android.text.format.Time;
 
-import com.tyczj.extendedcalendarview.Event;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -102,7 +98,7 @@ public class DateUtil {
         }
         return "";
     }
-
+/*
     public static String formatEventDuration(Event event) {
 
         String duration;
@@ -208,5 +204,5 @@ public class DateUtil {
         }
 
         return duration;
-    }
+    }*/
 }

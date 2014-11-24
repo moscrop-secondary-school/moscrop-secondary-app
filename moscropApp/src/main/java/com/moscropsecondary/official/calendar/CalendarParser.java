@@ -1,21 +1,5 @@
 package com.moscropsecondary.official.calendar;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.moscropsecondary.official.util.JsonUtil;
-import com.moscropsecondary.official.util.Logger;
-import com.moscropsecondary.official.util.Preferences;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Helper class that performs Google
  * Calendar specific JSON parsing.
@@ -23,7 +7,7 @@ import java.util.List;
  * Created by ivon on 9/2/14.
  */
 public class CalendarParser {
-
+/*
     private static String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
         JSONObject updated = feed.getJSONObject("updated");
@@ -82,7 +66,7 @@ public class CalendarParser {
         prefs.putString(Preferences.App.Keys.GCAL_VERSION, gcalVersion);
         prefs.apply();
     }
-
+*/
     /**
      * Download, parse, and store data from a Google Calendar feed. This method
      * will load all data from the whole calendar. Unlike process(String, long, String),
@@ -96,7 +80,7 @@ public class CalendarParser {
      * @param id
      *      ID of the Google Calendar
      */
-    public static void parseAndSaveAll(Context context, String id) {
+ /*   public static void parseAndSaveAll(Context context, String id) {
 
         Logger.log("Processing all");
 
@@ -114,7 +98,7 @@ public class CalendarParser {
             CalendarProviderUtil.deleteAll(context);
             CalendarProviderUtil.saveEventsToProvider(context, feed.events);
         }
-    }
+    }*/
 
     /**
      * Selectively download, parse, and store data from a Google Calendar feed
@@ -131,7 +115,7 @@ public class CalendarParser {
      *      After all, if it's the same version, no need to do all that work again!
      *      Usually of the format "2014-09-09T12:21:08.000Z"
      */
-    public static void parseAndSave(Context context, String id, long startMin, String lastGcalVersion) {
+  /*  public static void parseAndSave(Context context, String id, long startMin, String lastGcalVersion) {
 
         Logger.log("Processing selectively");
 
@@ -188,7 +172,7 @@ public class CalendarParser {
                 Logger.log("Existing version is already up to date.");
             }
         }
-    }
+    }*/
 
 
 }

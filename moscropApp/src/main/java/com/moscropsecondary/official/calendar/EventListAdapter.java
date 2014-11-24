@@ -1,24 +1,11 @@
 package com.moscropsecondary.official.calendar;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
-import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.util.DateUtil;
-import com.tyczj.extendedcalendarview.Event;
-
-import java.util.List;
-
 /**
  * Created by ivon on 9/7/14.
  */
-public class EventListAdapter extends ArrayAdapter<Event> {
+public class EventListAdapter /*extends ArrayAdapter<Event> */{
 
-    List<Event> mEvents = null;
+    /*List<Event> mEvents = null;
 
     public EventListAdapter(Context context, List<Event> events) {
         super(context, android.R.layout.simple_list_item_1, events);
@@ -44,5 +31,5 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         subtitleText.setText(duration);
 
         return view;
-    }
+    }*/
 }
