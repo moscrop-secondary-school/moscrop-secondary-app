@@ -20,6 +20,7 @@ import com.moscropsecondary.official.staffinfo.StaffInfoFragment;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.moscropsecondary.official.util.ThemesUtil;
+import com.moscropsecondary.official.AboutFragment;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationDrawerBase.NavigationDrawerCallbacks, ThemesUtil.ThemeChangedListener {
@@ -30,6 +31,7 @@ public class MainActivity extends ToolbarActivity
     //protected RSSFragment mStudentSubsFragment;
     protected CalendarFragment mEventsFragment;
     protected StaffInfoFragment mTeachersFragment;
+    protected AboutFragment mAboutFragment;
 
     //protected static int currentFragment;
 
@@ -114,8 +116,9 @@ public class MainActivity extends ToolbarActivity
                     startActivity(intent);
                     return;
                 case NavigationDrawerFragment.ABOUT:
-                    Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
-                    return;
+                    //TODO
+                    if (mAboutFragment == null) mAboutFragment = AboutFragment.newInstance(NavigationDrawerFragment.ABOUT);
+                    mNextFragment = mAboutFragment;
                 case NavigationDrawerFragment.CONTACT:
                     Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
                     contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_subject));
