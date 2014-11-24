@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -77,11 +79,33 @@ public class RSSTagCriteria {
     public static String[] getTagNames(Context context) throws IOException, JSONException {
         JSONObject tagListJsonObject = getTagListJsonObject(context);
         JSONObject[] criteriaJSONArray = JsonUtil.extractJsonArray(tagListJsonObject.getJSONArray("tags"));
-        String[] names = new String[criteriaJSONArray.length];
-        for (int i=0; i<criteriaJSONArray.length; i++) {
-            names[i] = criteriaJSONArray[i].getString("name");
+
+        List<String> names = new ArrayList<String>();
+        for (JSONObject criteriaObject : criteriaJSONArray) {
+            if (!criteriaObject.getString("name").equals("Student Bulletin")) {
+                names.add(criteriaObject.getString("name"));
+            }
         }
-        return names;
+
+        Collections.sort(names, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                if (s1.equals("Official")) {
+                    return Integer.MIN_VALUE;
+                } else if (s2.equals("Official")) {
+                    return Integer.MAX_VALUE;
+                } else {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            }
+        });
+
+        String[] allTags = new String[names.size()];
+        for (int i=0; i<allTags.length; i++) {
+            allTags[i] = names.get(i);
+        }
+
+        return allTags;
     }
 
     public static String[] getSubscribedTags(Context context) throws IOException, JSONException {
@@ -100,6 +124,19 @@ public class RSSTagCriteria {
                 validatedSelectedValues.add(value);
             }
         }
+
+        Collections.sort(validatedSelectedValues, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                if (s1.equals("Official")) {
+                    return Integer.MIN_VALUE;
+                } else if (s2.equals("Official")) {
+                    return Integer.MAX_VALUE;
+                } else {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            }
+        });
 
         String[] subscribedTags = new String[validatedSelectedValues.size()];
         for (int i=0; i<subscribedTags.length; i++) {
