@@ -19,10 +19,9 @@ public class SettingsActivity extends ToolbarActivity {
         super.onCreate(savedInstanceState);
 
         // Display the fragment as the main content.
-        //TODO fix error
-//        getFragmentManager().beginTransaction()
-//        		.replace(R.id.content_frame, new AboutFragment())
-//        		.commit();
+        getFragmentManager().beginTransaction()
+        		.replace(R.id.content_frame, new SettingsFragment())
+        		.commit();
 	}
 
     @Override

@@ -12,7 +12,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.moscropsecondary.official.calendar.CalendarFragment;
 import com.moscropsecondary.official.rss.RSSFragment;
@@ -20,9 +19,6 @@ import com.moscropsecondary.official.staffinfo.StaffInfoFragment;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.moscropsecondary.official.util.ThemesUtil;
-import com.moscropsecondary.official.util.Dialogs;
-import com.moscropsecondary.official.AboutFragment;
-import com.moscropsecondary.official.adapter.AboutAdapter;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationDrawerBase.NavigationDrawerCallbacks, ThemesUtil.ThemeChangedListener {
@@ -119,9 +115,9 @@ public class MainActivity extends ToolbarActivity
                     return;
                 case NavigationDrawerFragment.ABOUT:
                     //TODO
-//                    if (mAboutFragment == null) mAboutFragment = new AboutFragment();
-//                    mNextFragment = mAboutFragment;
-                    Dialogs.getCreditsPeopleDialog(getActivity()).show();
+                    if (mAboutFragment == null) mAboutFragment = new AboutFragment();
+                    mNextFragment = mAboutFragment;
+                    //Dialogs.getCreditsPeopleDialog(this).show();
                     break;
                 case NavigationDrawerFragment.CONTACT:
                     Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
@@ -133,10 +129,12 @@ public class MainActivity extends ToolbarActivity
 
             // update the main content by replacing fragments
             Logger.log("Choosing fragment: " + position);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, mNextFragment)
-                    .commit();
+            if (mNextFragment != null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, mNextFragment)
+                        .commit();
+            }
         }
     }
 

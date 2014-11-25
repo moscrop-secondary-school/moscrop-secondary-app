@@ -1,7 +1,6 @@
-package com.moscropsecondary.official;
+package com.moscropsecondary.official;        //TODO fix error
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -9,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.adapter.AboutAdapter;
 import com.moscropsecondary.official.model.SettingsItem;
 import com.moscropsecondary.official.util.Dialogs;
-import com.moscropsecondary.official.util.Util;
 
 public class AboutFragment extends ListFragment
 {
@@ -32,6 +29,7 @@ public class AboutFragment extends ListFragment
     public static AboutFragment newInstance(int position) {
         AboutFragment fragment = new AboutFragment();
         fragment.mPosition = position;
+        fragment.addSettings();
         return fragment;
     }
 
@@ -76,6 +74,7 @@ public class AboutFragment extends ListFragment
                 .id(CREDITS_PEOPLE)
                 .build());
     }
+
     @Override
     public void onListItemClick(ListView list, View view, int position, long id) {
         SettingsItem mSetting = mAdapter.getItem(position);
