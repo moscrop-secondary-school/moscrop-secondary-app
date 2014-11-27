@@ -4,7 +4,7 @@
     android:id="@+id/Card"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/selector_card2_bg"
+    android:background="?attr/card_about"
     android:orientation="vertical" >
 
     <FrameLayout
@@ -14,7 +14,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:foreground="@drawable/selector_transparent_black" >
+            android:foreground="?attr/nav_drawer_selector" >
 
             <ImageView
                 android:id="@+id/imgBanner"
@@ -52,11 +52,11 @@
                     android:ellipsize="end"
                     android:gravity="bottom"
                     android:maxLines="1"
-                    android:shadowColor="@color/background"
+                    android:shadowColor="?attr/backgroundorig"
                     android:shadowDx="1"
                     android:shadowDy="1"
                     android:shadowRadius="2"
-                    android:textColor="@color/text"
+                    android:textColor="?attr/text"
                     android:textSize="20sp" />
 
                 <TextView
@@ -67,11 +67,11 @@
                     android:ellipsize="end"
                     android:gravity="top"
                     android:maxLines="1"
-                    android:shadowColor="@color/background"
+                    android:shadowColor="?attr/backgroundorig"
                     android:shadowDx="1"
                     android:shadowDy="1"
                     android:shadowRadius="2"
-                    android:textColor="@color/text"
+                    android:textColor="?attr/text"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -92,7 +92,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
-        android:textColor="@color/textt"
+        android:textColor="?attr/textt"
         android:textSize="14sp" />
 
 </LinearLayout>
