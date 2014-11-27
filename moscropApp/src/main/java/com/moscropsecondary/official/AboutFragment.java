@@ -2,6 +2,8 @@ package com.moscropsecondary.official;        //TODO fix error
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +12,15 @@ import android.widget.ListView;
 
 import com.moscropsecondary.official.adapter.AboutAdapter;
 import com.moscropsecondary.official.model.SettingsItem;
+import com.moscropsecondary.official.util.Preferences;
+import com.moscropsecondary.official.util.ThemesUtil;
 import com.moscropsecondary.official.util.Dialogs;
 
 public class AboutFragment extends ListFragment
-{
+        implements ThemesUtil.ThemeChangedListener {
+//        PreferenceFragment
+//        implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+
     // ID Keys
     private final int CREDITS_PEOPLE = 0;
 
@@ -26,6 +33,8 @@ public class AboutFragment extends ListFragment
     // List Adapter
     private AboutAdapter mAdapter;
 
+    private boolean mThemeRequiresUpdate = false;
+
     public static AboutFragment newInstance(int position) {
         AboutFragment fragment = new AboutFragment();
         fragment.mPosition = position;
@@ -33,6 +42,14 @@ public class AboutFragment extends ListFragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+
+        int theme = ThemesUtil.getThemeResFromPreference(this);
+        setTheme(theme);
+        mThemeRequiresUpdate = false;   // We just set the latest theme
+        ThemesUtil.registerThemeChangedListener(this);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
