@@ -69,7 +69,7 @@ public class Dialogs
                 .banner(resToUri(context, R.drawable.credits_ivon_banner))
                 .name("Ivon Liu")
                 .tagline("Main Developer")
-                .description(getApacheLicense("Main dev who does 99% of the work and fixes Allan\'s mistakes\n\n"))
+                .description(getApacheLicense("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes\n\n"))
                 .type(TYPE_MAIN)
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
