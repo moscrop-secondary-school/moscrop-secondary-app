@@ -65,20 +65,21 @@ public class Dialogs
 
         final CreditsPeopleAdapter mAdapter = new CreditsPeopleAdapter(context);
         mAdapter.addItem(new CreditsPeopleItem.Builder()
-                .banner(resToUri(context, R.drawable.avatar))
-                .name("the1dynasty")
+                .avatar(resToUri(context, R.drawable.credits_ivon))
+                .banner(resToUri(context, R.drawable.credits_ivon_banner))
+                .name("Ivon Liu")
                 .tagline("Main Developer")
-                .description("I started this ish and.......")
+                .description(getApacheLicense("Main dev who does 99% of the work and fixes Allan\'s mistakes\n\n"))
                 .type(TYPE_MAIN)
                 .build());
-//        mAdapter.addItem(new CreditsPeopleItem.Builder()
-//                .avatar(resToUri(context, R.drawable.credits_pkmmte_xeleon))
-//                        //.banner(resToUri(context, R.drawable.credits_phlash_banner))
-//                .name("Pkmmte Xeleon")
-//                .tagline("Main Developer")
-//                .description(getApacheLicense("Copyright 2013 readyState Software Limited\n\n"))
-//                .type(TYPE_MAIN)
-//                .build());
+        mAdapter.addItem(new CreditsPeopleItem.Builder()
+                .avatar(resToUri(context, R.drawable.credits_allan))
+                .banner(resToUri(context, R.drawable.credits_allan_banner))
+                .name("Allan Wang")
+                .tagline("Main Developer")
+                .description(getApacheLicense("Main themer and moderator with a 1% success rate in java\n\n"))
+                .type(TYPE_MAIN)
+                .build());
 //        //TODO Add info
 //        mAdapter.addItem(new CreditsPeopleItem.Builder()
 //                .avatar(resToUri(context, R.drawable.credits_ivonliu))
