@@ -114,7 +114,7 @@
         <item name="background_card">@drawable/background_card_tblack</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
-        <item name="card_about">@drawable/selector_card_about_d</item>
+        <item name="card_about">@drawable/selector_card_about_t</item>
 
         <item name="colorPrimary">@color/primary_indigo_t</item>
         <item name="colorPrimaryDark">@color/primary_dark_indigo_t</item>
