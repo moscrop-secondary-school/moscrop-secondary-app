@@ -139,7 +139,7 @@ public class NewsDisplayFragment extends Fragment {
 		Logger.log("try export");
 		// Create a file on external storage
 		File root = Environment.getExternalStorageDirectory();
-		File dir = new File(root.getAbsolutePath(), "/ivonapps");
+		File dir = new File(root.getAbsolutePath(), "/moscrop");
 		dir.mkdirs();
 		File outFile = new File(dir, "htmlStringDump.txt");
 		
