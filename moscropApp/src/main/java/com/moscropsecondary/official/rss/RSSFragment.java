@@ -198,9 +198,11 @@ public class RSSFragment extends Fragment
         super.onPause();
         Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
         toolbar.removeView(mSpinnerContainer);
-        SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
-        prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
-        prefs.apply();
+        if (mHasSpinner) {
+        	SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+        	prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
+        	prefs.apply();
+		}
     }
 
     @Override
