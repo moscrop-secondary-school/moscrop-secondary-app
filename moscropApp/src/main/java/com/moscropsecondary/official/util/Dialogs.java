@@ -64,22 +64,22 @@ public class Dialogs
         mDialog.setCancelable(true);
 
         final CreditsPeopleAdapter mAdapter = new CreditsPeopleAdapter(context);
-        mAdapter.addItem(new CreditsPeopleItem.Builder()
-                .avatar(resToUri(context, R.drawable.credits_ivon))
-                .banner(resToUri(context, R.drawable.credits_ivon_banner))
-                .name("Ivon Liu")
-                .tagline("Main Developer")
-                .description(getApacheLicense("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes\n\n"))
-                .type(TYPE_MAIN)
-                .build());
-        mAdapter.addItem(new CreditsPeopleItem.Builder()
-                .avatar(resToUri(context, R.drawable.credits_allan))
-                .banner(resToUri(context, R.drawable.credits_allan_banner))
-                .name("Allan Wang")
-                .tagline("Main Developer")
-                .description(getApacheLicense("Main themer and moderator with a 1% success rate in java\n\n"))
-                .type(TYPE_MAIN)
-                .build());
+//        mAdapter.addItem(new CreditsPeopleItem.Builder()
+//                .avatar(resToUri(context, R.drawable.credits_ivon))
+//                .banner(resToUri(context, R.drawable.credits_ivon_banner))
+//                .name("Ivon Liu")
+//                .tagline("Main Developer")
+//                .description(getApacheLicense("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes\n\n"))
+//                .type(TYPE_MAIN)
+//                .build());
+//        mAdapter.addItem(new CreditsPeopleItem.Builder()
+//                .avatar(resToUri(context, R.drawable.credits_allan))
+//                .banner(resToUri(context, R.drawable.credits_allan_banner))
+//                .name("Allan Wang")
+//                .tagline("Main Developer")
+//                .description(getApacheLicense("Main themer and moderator with a 1% success rate in java\n\n"))
+//                .type(TYPE_MAIN)
+//                .build());
 //        //TODO Add info
 //        mAdapter.addItem(new CreditsPeopleItem.Builder()
 //                .avatar(resToUri(context, R.drawable.credits_ivonliu))
