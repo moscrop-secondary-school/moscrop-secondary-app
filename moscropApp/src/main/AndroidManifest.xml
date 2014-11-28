@@ -35,7 +35,7 @@
         </activity>
 
         <activity
-            android:name="com.moscropsecondary.official.SettingsActivity"
+            android:name="com.moscropsecondary.official.GenericActivity"
             android:label="@string/activity_settings"
             android:parentActivityName="com.moscropsecondary.official.MainActivity" >
             <meta-data

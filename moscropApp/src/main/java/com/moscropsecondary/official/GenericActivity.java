@@ -6,9 +6,13 @@ import android.view.MenuItem;
 
 import com.moscropsecondary.official.util.ThemesUtil;
 
-public class SettingsActivity extends ToolbarActivity {
+public class GenericActivity extends ToolbarActivity {
 
     private boolean mThemeRequiresUpdate = false;
+
+    public static final String TYPE_KEY = "type";
+    public static final int TYPE_SETTINGS = 0;
+    public static final int TYPE_ABOUT = 1;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,16 +23,28 @@ public class SettingsActivity extends ToolbarActivity {
         super.onCreate(savedInstanceState);
 
         // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-        		.replace(R.id.content_frame, new SettingsFragment())
-        		.commit();
+        int type = getIntent().getIntExtra(TYPE_KEY, TYPE_SETTINGS);
+        switch (type) {
+            case TYPE_SETTINGS:
+                getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, new SettingsFragment())
+                    .commit();
+                getSupportActionBar().setTitle("Settings");
+                break;
+            case TYPE_ABOUT:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, new AboutFragment())
+                        .commit();
+                getSupportActionBar().setTitle("About");
+                break;
+        }
 	}
 
     @Override
     protected void onResume() {
         super.onResume();
         if(mThemeRequiresUpdate) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            startActivity(new Intent(this, GenericActivity.class));
             finish();
         }
     }

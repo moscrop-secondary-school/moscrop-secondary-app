@@ -128,7 +128,7 @@ public class CreditsPeopleAdapter extends BaseAdapter
 				notifyDataSetChanged();
 			}
 		});
-		
+
 		if(mPerson.getAvatar() != null) {
 			holder.imgAvatar.setVisibility(View.VISIBLE);
 			Picasso.with(mContext).load(mPerson.getAvatar()).transform(new RoundTransform(0, 0)).into(holder.imgAvatar);

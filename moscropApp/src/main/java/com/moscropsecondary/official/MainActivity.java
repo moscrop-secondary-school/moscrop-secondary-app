@@ -110,15 +110,15 @@ public class MainActivity extends ToolbarActivity
                     mNextFragment = mTeachersFragment;
                     break;
                 case NavigationDrawerFragment.SETTINGS:
-                    Intent intent = new Intent(this, SettingsActivity.class);
-                    startActivity(intent);
+                    Intent settingsIntent = new Intent(this, GenericActivity.class);
+                    settingsIntent.putExtra(GenericActivity.TYPE_KEY, GenericActivity.TYPE_SETTINGS);
+                    startActivity(settingsIntent);
                     return;
                 case NavigationDrawerFragment.ABOUT:
-                    //TODO
-                    if (mAboutFragment == null) mAboutFragment = new AboutFragment();
-                    mNextFragment = mAboutFragment;
-                    //Dialogs.getCreditsPeopleDialog(this).show();
-                    break;
+                    Intent aboutIntent = new Intent(this, GenericActivity.class);
+                    aboutIntent.putExtra(GenericActivity.TYPE_KEY, GenericActivity.TYPE_ABOUT);
+                    startActivity(aboutIntent);
+                    return;
                 case NavigationDrawerFragment.CONTACT:
                     Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
                     contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_subject));
