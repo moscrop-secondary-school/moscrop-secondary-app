@@ -1,23 +1,35 @@
 package com.moscropsecondary.official.calendar;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.util.DateUtil;
+import com.moscropsecondary.official.util.Logger;
+import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
+import com.roomorama.caldroid.CaldroidListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class CalendarFragment extends Fragment
-        /*implements AdapterView.OnItemClickListener*/ {
+        implements AdapterView.OnItemClickListener {
 
     public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
@@ -25,19 +37,25 @@ public class CalendarFragment extends Fragment
     private static final String KEY_POSITION = "position";
     private int mPosition;
     private View mContentView;
-    //private Day mSelectedDay;
+    private Date mSelectedDate;
 
-    //private ExtendedCalendarView mCalendarView;
+    private CaldroidFragment mCaldroid;
     private ListView mListView;
     private TextView mHeaderView;
     private TextView mFooterView;
 
-    //private List<Event> mEvents = new ArrayList<Event>();
+    private int mYear = -1;
+    private int mMonth = -1;     // java.util.Calendar months. One less than actual month.
+
+    private List<GCalEvent> mEvents = new ArrayList<GCalEvent>();
     private EventListAdapter mAdapter;
     
     public static CalendarFragment newInstance(int position) {
     	CalendarFragment fragment = new CalendarFragment();
         fragment.mPosition = position;
+        Calendar cal = Calendar.getInstance();
+        fragment.mYear = cal.get(Calendar.YEAR);
+        fragment.mMonth = cal.get(Calendar.MONTH);
     	return fragment;
     }
     
@@ -51,47 +69,40 @@ public class CalendarFragment extends Fragment
 
         //insertDays();
 
-        /*mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
+        mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), mEvents);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
         mHeaderView = new TextView(getActivity());
         mHeaderView.setTextSize(20);
-        mListView.addHeaderView(mHeaderView);
+        mListView.addHeaderView(mHeaderView, null, false);
         mFooterView = new TextView(getActivity());
-        mFooterView.setText("No events planned for today");*/
+        mFooterView.setText("No events planned for today");
 
-        /*mCalendarView = (ExtendedCalendarView) mContentView.findViewById(R.id.calendar);
-        mCalendarView.setGesture(ExtendedCalendarView.LEFT_RIGHT_GESTURE);
-        mCalendarView.setOnDaySelectListener(this);*/
-
-        CaldroidFragment caldroidFragment = new CaldroidFragment();
+        mCaldroid = new CaldroidFragment();
         Bundle args = new Bundle();
-        Calendar cal = Calendar.getInstance();
-        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+        Calendar today = Calendar.getInstance();
+        args.putInt(CaldroidFragment.MONTH, today.get(Calendar.MONTH) + 1);
+        args.putInt(CaldroidFragment.YEAR, today.get(Calendar.YEAR));
         args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, true);
-        caldroidFragment.setArguments(args);
-        cal.set(Calendar.MONTH, Calendar.DECEMBER);
-        cal.set(Calendar.DATE, 6);
-        Date date = cal.getTime();
-        caldroidFragment.setBackgroundResourceForDate(R.color.primary_dark_green, date);
+        mCaldroid.setArguments(args);
+        mCaldroid.setCaldroidListener(mCaldroidListener);
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.calendar_frame, caldroidFragment).commit();
+        transaction.add(R.id.calendar_frame, mCaldroid).commit();
 
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
 
         // Refresh calendar
-        /*new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                doJsonStuff();
+                downloadCalendar();
             }
-        }).start();*/
+        }).start();
 
     	return mContentView;
     }
@@ -107,61 +118,13 @@ public class CalendarFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         ((MainActivity) getActivity()).onSectionAttached(mPosition);
     }
-/*
-    @Override
-    public void onDaySelected(Day day) {
-        if (day != null) {
-            Logger.log("Selected day " + day.getDay());
-            // Check if day is valid (>0) and is not the same as the already selected day
-            // If the already selected day is null then nothing has been set yet, proceed
-            if (mSelectedDay == null
-                    || (day.getDay() > 0 &&
-                        !(day.getDay() == mSelectedDay.getDay() && day.getMonth() == mSelectedDay.getMonth() && day.getYear() == mSelectedDay.getYear())
-                        )
-                    ) {
-                mSelectedDay = day;
-                updateEventsList(day);
-            }
-        } else {
-           Logger.log("Selected day is null");
-        }
-    }
 
-    private void updateEventsList(Day day) {
-
-        Logger.log("Updating events list");
-        mEvents.clear();
-
-        List<Event> dayEvents = day.getEvents();
-        for (Event event : dayEvents) {
-            mEvents.add(event);
-        }
-
-        mListView.removeFooterView(mFooterView);
-        if (mEvents.size() == 0) {
-            mListView.addFooterView(mFooterView);
-        }
-
-        if(mHeaderView != null) {
-            String date;
-
-            if (day.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
-                date = String.format("%s %d", DateUtil.getMonthName(day.getMonth(), true), day.getDay());
-            } else {
-                date = String.format("%s %d, %d", DateUtil.getMonthName(day.getMonth(), true), day.getDay(), day.getYear());
-            }
-            mHeaderView.setText(date);
-        }
-
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void doJsonStuff() {
+    private void downloadCalendar() {
 
         // Check if provider is empty
-        Cursor c = getActivity().getContentResolver().query(CalendarProvider.CONTENT_URI, null, null, null, null);
-        int count = c.getCount();
-        c.close();
+        CalendarDatabase db = new CalendarDatabase(getActivity());
+        int count = db.getCount();
+        db.close();
 
         SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.GCAL_LAST_UPDATED, Preferences.App.Default.GCAL_LAST_UPDATED);
@@ -197,64 +160,146 @@ public class CalendarFragment extends Fragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mCalendarView.refreshCalendar();
-                    Logger.log("done loading");
+                    mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
+                    mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
                 }
             });
         }
     }
 
+    private void loadEventsIntoCaldroid() {
+        CalendarDatabase db = new CalendarDatabase(getActivity());
+        List<GCalEvent> events = db.getEventsForMonth(mYear, mMonth);
+        db.close();
+
+        for (GCalEvent event : events) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(event.startTime);                                           // Set cal to event start time
+            while (cal.getTimeInMillis() < event.endTime-1) {                               // Loop through days within event range
+                Date date = cal.getTime();
+                mCaldroid.setBackgroundResourceForDate(R.color.primary_dark_green, date);   // Set background color of this day
+                cal.setTimeInMillis(cal.getTimeInMillis() + 24*60*60*1000);                 // Increment calendar by a day
+            }
+        }
+    }
+
+    final CaldroidListener mCaldroidListener = new CaldroidListener() {
+        @Override
+        public void onSelectDate(Date date, View view) {
+            if (date != null) {
+                // Only update if there isn't an existing selected date or
+                // if the new date differs from the existing selected date
+                if (mSelectedDate == null || !date.equals(mSelectedDate)) {
+                    mSelectedDate = date;
+                    updateEventsList(date);
+                }
+            } else {
+                Logger.log("Selected day is null");
+            }
+        }
+
+        @Override
+        public void onChangeMonth(final int month, final int year) {
+            Logger.log("Change month: " + month + ", " + year);
+            mMonth = month-1;
+            mYear = year;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mYear == year && mMonth == month-1) {
+                        loadEventsIntoCaldroid();
+                        mCaldroid.refreshView();
+                    }
+                }
+            }, 1000);
+        }
+    };
+
+    private void updateEventsList(Date date) {
+
+        Logger.log("Updating events list");
+        mEvents.clear();
+
+        CalendarDatabase db = new CalendarDatabase(getActivity());
+        List<GCalEvent> events = db.getEventsForDay(date);
+        for (GCalEvent event : events) {
+            mEvents.add(event);
+        }
+
+        mListView.removeFooterView(mFooterView);
+        if (mEvents.size() == 0) {
+            mListView.addFooterView(mFooterView, null, false);
+        }
+
+        if(mHeaderView != null) {
+            String dateStr;
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            if (cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
+                dateStr = String.format("%s %d", DateUtil.getMonthName(cal.get(Calendar.MONTH), true), cal.get(Calendar.DAY_OF_MONTH));
+            } else {
+                dateStr = String.format("%s %d, %d", DateUtil.getMonthName(cal.get(Calendar.MONTH), true), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR));
+            }
+            mHeaderView.setText(dateStr);
+        }
+
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.event_dialog, null);
+        if (view != mHeaderView && view != mFooterView) {
 
-        Event event = mEvents.get(position-1);  // -1 to account for header view
-        String title = event.getTitle();
-        String duration = DateUtil.formatEventDuration(event);
-        String description = event.getDescription();
-        String location = event.getLocation();
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.event_dialog, null);
 
-        if (duration != null && !duration.equals("")) {
-            View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
-            durationGroup.setVisibility(View.VISIBLE);
-            TextView durationText = (TextView) dialogView.findViewById(R.id.view_event_duration);
-            durationText.setText(duration);
-        } else {
-            View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
-            durationGroup.setVisibility(View.GONE);
-        }
-        
-        if (description != null && !description.equals("")) {
-            View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
-            descriptionGroup.setVisibility(View.VISIBLE);
-            TextView descriptionText = (TextView) dialogView.findViewById(R.id.view_event_description);
-            descriptionText.setText(description);
-        } else {
-            View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
-            descriptionGroup.setVisibility(View.GONE);
-        }
-        
-        if (location != null && !location.equals("")) {
-            View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
-            locationGroup.setVisibility(View.VISIBLE);
-            TextView locationText = (TextView) dialogView.findViewById(R.id.view_event_location);
-            locationText.setText(location);
-        } else {
-            View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
-            locationGroup.setVisibility(View.GONE);
-        }
+            GCalEvent event = mEvents.get(position - 1);  // -1 to account for header view
+            String title = event.title;
+            String duration = DateUtil.formatEventDuration(event);
+            String description = event.description;
+            String location = event.location;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(title);
-        builder.setView(dialogView);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            if (duration != null && !duration.equals("")) {
+                View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
+                durationGroup.setVisibility(View.VISIBLE);
+                TextView durationText = (TextView) dialogView.findViewById(R.id.view_event_duration);
+                durationText.setText(duration);
+            } else {
+                View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
+                durationGroup.setVisibility(View.GONE);
             }
-        });
-        builder.create().show();
-    }*/
+
+            if (description != null && !description.equals("")) {
+                View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
+                descriptionGroup.setVisibility(View.VISIBLE);
+                TextView descriptionText = (TextView) dialogView.findViewById(R.id.view_event_description);
+                descriptionText.setText(description);
+            } else {
+                View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
+                descriptionGroup.setVisibility(View.GONE);
+            }
+
+            if (location != null && !location.equals("")) {
+                View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
+                locationGroup.setVisibility(View.VISIBLE);
+                TextView locationText = (TextView) dialogView.findViewById(R.id.view_event_location);
+                locationText.setText(location);
+            } else {
+                View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
+                locationGroup.setVisibility(View.GONE);
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(title);
+            builder.setView(dialogView);
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }
+    }
 }

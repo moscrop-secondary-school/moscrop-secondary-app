@@ -2,10 +2,14 @@ package com.moscropsecondary.official.util;
 
 import android.text.format.Time;
 
+import com.moscropsecondary.official.calendar.GCalEvent;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +23,11 @@ public class DateUtil {
         return Time.getJulianDay(calendar.getTimeInMillis(), TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(calendar.getTimeInMillis())));
     }
 
+    /**
+     * Use this one for generic dates
+     * @param dateStr
+     * @return
+     */
     public static Date parseRCF339Date(String dateStr) {
         try {
             if (dateStr.endsWith("Z")) {         // End in Z means no time zone
@@ -27,6 +36,33 @@ public class DateUtil {
             } else {
                 if(dateStr.length() >= 28) {     // Proper RCF 3339 format with time zone
                     SimpleDateFormat withTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
+                    return withTimeZoneFormat.parse(dateStr);
+                } else {                        // Format uncertain, only take common substring
+                    SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String substring = dateStr.substring(0, 10);
+                    return shortDateFormat.parse(substring);
+                }
+            }
+        } catch (ParseException e) {
+            Logger.error("DateUtil.parseRCF3339Date() with dateStr = " + dateStr, e);
+        }
+        return null;
+    }
+
+    /**
+     * Use this one for Google Calendar dates
+     * @param dateStr
+     * @param dateOnly
+     * @return
+     */
+    public static Date parseRCF339Date(String dateStr, boolean dateOnly) {
+        try {
+            if (dateStr.endsWith("Z")) {         // End in Z means no time zone
+                SimpleDateFormat noTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                return noTimeZoneFormat.parse(dateStr);
+            } else {
+                if(!dateOnly) {     // Proper RCF 3339 format with time zone
+                    SimpleDateFormat withTimeZoneFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ");
                     return withTimeZoneFormat.parse(dateStr);
                 } else {                        // Format uncertain, only take common substring
                     SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -98,13 +134,13 @@ public class DateUtil {
         }
         return "";
     }
-/*
-    public static String formatEventDuration(Event event) {
+
+    public static String formatEventDuration(GCalEvent event) {
 
         String duration;
 
-        long startMillis = event.getStartMillis();
-        long endMillis = event.getEndMillis();
+        long startMillis = event.startTime;
+        long endMillis = event.endTime;
 
         Date startDate = new Date(startMillis);
         Date endDate = new Date(endMillis);
@@ -204,5 +240,5 @@ public class DateUtil {
         }
 
         return duration;
-    }*/
+    }
 }
