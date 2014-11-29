@@ -8,8 +8,8 @@ android {
         applicationId "com.moscropsecondary.official"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 340
-        versionName "0.3.4"
+        versionCode 400
+        versionName "0.4.0"
     }
     buildTypes {
         release {
