@@ -40,7 +40,7 @@
                     android:layout_margin="8dp"
                     app:border="true"
                     app:border_color="?attr/text"
-                    app:border_width="3.5dp"
+                    app:border_width="2dp"
                     app:shadow="true" />
 
                 <ImageView

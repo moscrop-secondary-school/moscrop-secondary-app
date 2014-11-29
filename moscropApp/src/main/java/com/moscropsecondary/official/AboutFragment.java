@@ -43,6 +43,7 @@ public class AboutFragment extends Fragment
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_ivon))
                 .banner(resToUri(getActivity(), R.drawable.credits_ivon_banner))
+                .name("Ivon Liu")
                 .tagline("Main Developer")
                 .description("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes")
                 .type(TYPE_MAIN)
