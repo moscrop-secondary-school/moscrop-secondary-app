@@ -8,8 +8,7 @@
         android:orderInCategory="100"
         android:title="@string/action_refresh"
         android:icon="@drawable/ic_action_refresh"
-        app:showAsAction="ifRoom"
-        android:visible="false"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_search"
@@ -17,7 +16,6 @@
         android:title="@string/search"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_action_search"
-        android:visible="false"
-        android:actionViewClass="android.widget.SearchView"/>
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
 
 </menu>

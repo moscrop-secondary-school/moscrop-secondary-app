@@ -1,5 +1,6 @@
 package com.moscropsecondary.official;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.moscropsecondary.official.calendar.CalendarFragment;
@@ -29,9 +29,8 @@ public class MainActivity extends ToolbarActivity
     //protected RSSFragment mStudentSubsFragment;
     protected CalendarFragment mEventsFragment;
     protected StaffInfoFragment mTeachersFragment;
-    protected AboutFragment mAboutFragment;
 
-    //protected static int currentFragment;
+    protected static int mCurrentFragment;
 
     private CharSequence mTitle;
 
@@ -42,6 +41,12 @@ public class MainActivity extends ToolbarActivity
     }
 
     private BackPressListener mBackPressListener;
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,26 @@ public class MainActivity extends ToolbarActivity
         //setUpToolbarSpinner();
     }
 
+    private void handleIntent(Intent intent) {
+        if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            switch (mCurrentFragment) {
+                case NavigationDrawerFragment.NEWS:
+                    mNewsFragment.doSearch(query);
+                    break;
+                case NavigationDrawerFragment.EMAIL:
+                    mEmailFragment.doSearch(query);
+                    break;
+                case NavigationDrawerFragment.EVENTS:
+                    mEventsFragment.doSearch(query);
+                    break;
+                case NavigationDrawerFragment.TEACHERS:
+                    mTeachersFragment.doSearch(query);
+                    break;
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -72,8 +97,6 @@ public class MainActivity extends ToolbarActivity
             finish();
         }
     }
-
-
 
     @Override
     protected int getLayoutResource() {
@@ -135,6 +158,7 @@ public class MainActivity extends ToolbarActivity
                         .replace(R.id.content_frame, mNextFragment)
                         .commit();
             }
+            mCurrentFragment = position;
         }
     }
 
@@ -147,11 +171,11 @@ public class MainActivity extends ToolbarActivity
         getSupportActionBar().setTitle(mTitle);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_staff, menu);
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

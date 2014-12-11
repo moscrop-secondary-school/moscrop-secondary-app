@@ -1,6 +1,7 @@
 package com.moscropsecondary.official.calendar;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -8,12 +9,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
@@ -117,6 +122,19 @@ public class CalendarFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((MainActivity) getActivity()).onSectionAttached(mPosition);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_events, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void downloadCalendar() {
@@ -244,6 +262,10 @@ public class CalendarFragment extends Fragment
         }
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    public void doSearch(String query) {
+        Toast.makeText(getActivity(), "Events: " + query, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.moscropsecondary.official.rss;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -127,6 +129,7 @@ public class RSSFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        Logger.log("onresume");
         if (mHasSpinner) {
             setUpToolbarSpinner();
         } else {
@@ -221,11 +224,15 @@ public class RSSFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_rss, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+
     	super.onCreateOptionsMenu(menu, inflater);
-    	MenuItem refresh = menu.findItem(R.id.action_refresh);
-        if(refresh != null) {
-            refresh.setVisible(true);
-        }
     }
     
 	@Override
@@ -275,6 +282,10 @@ public class RSSFragment extends Fragment
 	public void onRefresh() {
 		loadFeed(true, false, true);
 	}
+
+    public void doSearch(String query) {
+        Toast.makeText(getActivity(), "News: " + query, Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public Loader<RSSResult> onCreateLoader(int i, Bundle bundle) {

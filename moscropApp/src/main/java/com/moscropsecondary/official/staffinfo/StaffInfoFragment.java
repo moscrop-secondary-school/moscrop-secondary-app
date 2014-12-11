@@ -1,18 +1,21 @@
 package com.moscropsecondary.official.staffinfo;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
@@ -74,30 +77,15 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem search = menu.findItem(R.id.action_search);
-        if(search != null) {
-            search.setVisible(true);
-            /*SearchView searchView = (SearchView) search.getActionView();
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    Toast.makeText(getActivity(), "Searching for " + query, Toast.LENGTH_SHORT).show();
-                    refreshList(query);
-                    return true;
-                }
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    if (newText == null || newText.equals("")) {
-                        refreshList(null);
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            });*/
-        }
+        inflater.inflate(R.menu.menu_staff, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -207,5 +195,9 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
                 }
             });
         }
+    }
+
+    public void doSearch(String query) {
+        Toast.makeText(getActivity(), "Staff: " + query, Toast.LENGTH_SHORT).show();
     }
 }

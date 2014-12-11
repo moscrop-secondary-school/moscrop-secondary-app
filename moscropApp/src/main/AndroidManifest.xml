@@ -7,9 +7,6 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-sdk
-        tools:node="replace" />
-
     <application android:allowBackup="true"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
@@ -17,32 +14,27 @@
 
         <activity
             android:name="com.moscropsecondary.official.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable_staff"/>
         </activity>
 
         <activity
             android:name="com.moscropsecondary.official.rss.NewsDisplayActivity"
-            android:label="@string/activity_displaynews"
-            android:parentActivityName="com.moscropsecondary.official.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.moscropsecondary.official.ui.MainActivity" />
-        </activity>
+            android:label="@string/activity_displaynews" />
 
         <activity
             android:name="com.moscropsecondary.official.GenericActivity"
-            android:label="@string/activity_settings"
-            android:parentActivityName="com.moscropsecondary.official.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.moscropsecondary.official.ui.MainActivity" />
-        </activity>
-
+            android:label="@string/activity_settings" />
     </application>
 
 </manifest>
