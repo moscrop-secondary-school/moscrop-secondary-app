@@ -13,6 +13,7 @@ import com.moscropsecondary.official.adapter.CreditsPeopleAdapter;
 import com.moscropsecondary.official.model.CreditsPeopleItem;
 
 import static com.moscropsecondary.official.adapter.CreditsPeopleAdapter.TYPE_MAIN;
+import static com.moscropsecondary.official.adapter.CreditsPeopleAdapter.TYPE_TESTER;
 import static com.moscropsecondary.official.util.Util.resToUri;
 
 public class AboutFragment extends Fragment
@@ -43,38 +44,7 @@ public class AboutFragment extends Fragment
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_ivon))
                 .banner(resToUri(getActivity(), R.drawable.credits_ivon_banner))
-                .name("Ivon Liu")//        mAdapter.addItem(new CreditsPeopleItem.Builder()
-//                .avatar(resToUri(getActivity(), R.drawable.avatar))
-//                .banner(resToUri(getActivity(), R.drawable.banner))
-//                .name("Third Person")
-//                .tagline("Random Guy")
-//                .description("Poor third person who is forgotten and has no friends")
-//                .type(TYPE_MAIN)
-//                .build());
-//        mAdapter.addItem(new CreditsPeopleItem.Builder()
-//                .avatar(resToUri(getActivity(), R.drawable.avatar_dark))
-//                .banner(resToUri(getActivity(), R.drawable.banner_dark))
-//                .name("Fourth Person")
-//                .tagline("Random Guy")
-//                .description("Poor fourth person who is forgotten and has no friends")
-//                .type(TYPE_MAIN)
-//                .build());
-//        mAdapter.addItem(new CreditsPeopleItem.Builder()
-//                .avatar(resToUri(getActivity(), R.drawable.ic_launcher))
-//                .banner(resToUri(getActivity(), R.drawable.ic_ab_drawer))
-//                .name("Fifth Person")
-//                .tagline("Random Guy")
-//                .description("Poor fifth person who is forgotten and has no friends")
-//                .type(TYPE_MAIN)
-//                .build());
-//        mAdapter.addItem(new CreditsPeopleItem.Builder()
-//                .avatar(resToUri(getActivity(), R.drawable.ic_launcher))
-//                .banner(resToUri(getActivity(), R.drawable.ic_ab_drawer))
-//                .name("Sixth Person")
-//                .tagline("Random Guy")
-//                .description("Poor sixth person who is forgotten and has no friends")
-//                .type(TYPE_MAIN)
-//                .build());
+                .name("Ivon Liu")
                 .tagline("Main Developer")
                 .description("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes")
                 .type(TYPE_MAIN)
@@ -87,14 +57,15 @@ public class AboutFragment extends Fragment
                 .description("Main themer and moderator with a 1% success rate in java")
                 .type(TYPE_MAIN)
                 .build());
-//        mAdapter.addItem(new CreditsPeopleItem.Builder()
-//                .avatar(resToUri(getActivity(), R.drawable.avatar))
-//                .banner(resToUri(getActivity(), R.drawable.banner))
-//                .name("Third Person")
-//                .tagline("Random Guy")
-//                .description("Poor third person who is forgotten and has no friends")
-//                .type(TYPE_MAIN)
-//                .build());
+        mAdapter.addItem(new CreditsPeopleItem.Builder()
+                .avatar(resToUri(getActivity(), R.drawable.credits_hazhir))
+                .banner(resToUri(getActivity(), R.drawable.credits_hazhir_banner))
+                .name("Hazhir Good")
+                .tagline("Backend and Support")
+                .description("10% backing; 20% skill; 15% super duper awesomely chill; 5% design; 50% divine. 100% reason to remember the sign")
+                .type(TYPE_MAIN)
+                .build());
+        //TODO Fix TYPE_TESTER
 //        mAdapter.addItem(new CreditsPeopleItem.Builder()
 //                .avatar(resToUri(getActivity(), R.drawable.avatar_dark))
 //                .banner(resToUri(getActivity(), R.drawable.banner_dark))
