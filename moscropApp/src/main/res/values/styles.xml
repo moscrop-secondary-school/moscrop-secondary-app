@@ -83,4 +83,22 @@
         <item name="android:textColor">@color/text</item>
     </style>
 
+    <!--Spinner-->
+    <style name="MoscropSpinner">
+        <item name="gravity">center</item>
+        <item name="background">@drawable/btn_dropdown</item>
+        <item name="clickable">true</item>
+        <item name="dropDownSelector">@drawable/list_selector_background</item>
+        <item name="popupBackground">@drawable/spinner_dropdown_background</item>
+        <item name="dropDownWidth">wrap_content</item>
+        <item name="dropDownHorizontalOffset">0.0dip</item>
+        <item name="dropDownVerticalOffset">-10.0dip</item>
+        <item name="spinnerMode">dialog</item>
+        <item name="popupPromptView">@layout/dropdown_hint</item>
+        <item name="textAppearance">@style/MoscropText</item>
+    </style>
+    <style name="MoscropText">
+        <item name="textColor">?/attrtext</item>
+        <item name="textColorHint">?attr/textt</item>
+    </style>
 </resources>
