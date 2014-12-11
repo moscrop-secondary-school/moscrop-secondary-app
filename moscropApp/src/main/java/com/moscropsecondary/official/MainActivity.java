@@ -70,7 +70,7 @@ public class MainActivity extends ToolbarActivity
     }
 
     private void handleIntent(Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
+        if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEARCH)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             switch (mCurrentFragment) {
                 case NavigationDrawerFragment.NEWS:

@@ -22,24 +22,5 @@
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
-
-    <!--Spinner-->
-    <style name="MoscropSpinner" parent="android:Widget.Material.Spinner">
-        <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/btn_dropdown</item>
-        <item name="android:clickable">true</item>
-        <item name="android:dropDownSelector">@drawable/list_selector_background</item>
-        <item name="android:popupBackground">@drawable/spinner_dropdown_background</item>
-        <item name="android:dropDownWidth">wrap_content</item>
-        <item name="android:dropDownHorizontalOffset">0.0dip</item>
-        <item name="android:dropDownVerticalOffset">-10.0dip</item>
-        <item name="android:spinnerMode">dialog</item>
-        <item name="android:textAppearance">@style/MoscropText</item>
-    </style>
-    <!--<item name="android:popupPromptView">@layout/dropdown_hint</item>-->
-    <style name="MoscropText">
-        <item name="android:textColor">?attr/text</item>
-        <item name="android:textColorHint">?attr/textt</item>
-    </style>
     
 </resources>
