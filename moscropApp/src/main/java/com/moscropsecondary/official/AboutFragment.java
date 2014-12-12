@@ -63,7 +63,7 @@ public class AboutFragment extends Fragment
                 .name("Hazhir Good")
                 .tagline("Backend and Support")
                 .description("10% backing; 20% skill; 15% super duper awesomely chill; 5% design; 50% divine. 100% reason to remember the sign")
-                .type(TYPE_MAIN)
+                .type(TYPE_TESTER)
                 .build());
         //TODO Fix TYPE_TESTER
 //        mAdapter.addItem(new CreditsPeopleItem.Builder()
