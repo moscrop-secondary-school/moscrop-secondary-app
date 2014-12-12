@@ -103,4 +103,22 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textColorHint">@android:color/holo_red_dark</item>
     </style>
+
+    <style name="Widget.IOSched.HeaderBar.Spinner" parent="Widget.IOSched.HeaderBar.Spinner.Base" />
+
+    <style name="Widget.IOSched.HeaderBar.Spinner.Base" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <!--<item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>-->
+        <item name="android:overlapAnchor">true</item>
+    </style>
+
+    <style name="ActionBarThemeOverlay" parent="">
+        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorControlNormal">#fff</item>
+        <item name="colorControlHighlight">#3fff</item>
+    </style>
+
+
 </resources>

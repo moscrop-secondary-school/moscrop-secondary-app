@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:textColor="#ffffffff"
         android:textSize="@dimen/spinner_title_text"
+        android:textStyle="bold"
         android:fontFamily="sans-serif"
         android:drawablePadding="4dp"
         android:drawableRight="@drawable/spinner_triangle" />
