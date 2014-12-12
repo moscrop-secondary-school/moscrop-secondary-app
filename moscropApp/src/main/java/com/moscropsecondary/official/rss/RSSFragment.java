@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,6 +28,7 @@ import android.widget.Toast;
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
+import com.moscropsecondary.official.ToolbarSpinnerAdapter;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 
@@ -59,7 +59,7 @@ public class RSSFragment extends Fragment
     private int mPosition = 0;
 
     private View mSpinnerContainer;
-    private ArrayAdapter<String> mSpinnerAdapter;
+    private ToolbarSpinnerAdapter mSpinnerAdapter;
     private boolean mHasSpinner = true;
 
     public SwipeRefreshLayout mSwipeLayout = null;
@@ -116,7 +116,7 @@ public class RSSFragment extends Fragment
         } else {
             loadFeed(false, false, false);
         }
-        mSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+        mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
 
         return mContentView;
     }
