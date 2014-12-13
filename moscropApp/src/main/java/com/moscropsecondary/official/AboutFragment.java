@@ -43,7 +43,7 @@ public class AboutFragment extends Fragment
         CreditsPeopleAdapter mAdapter = new CreditsPeopleAdapter(getActivity());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_ivon))
-                .banner(resToUri(getActivity(), R.drawable.credits_ivon_banner))
+                .banner(resToUri(getActivity(), R.attr.credits_ivon_banner))
                 .name("Ivon Liu")
                 .tagline("Main Developer")
                 .description("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes")
@@ -51,7 +51,7 @@ public class AboutFragment extends Fragment
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_allan))
-                .banner(resToUri(getActivity(), R.drawable.credits_allan_banner))
+                .banner(resToUri(getActivity(), R.attr.credits_allan_banner))
                 .name("Allan Wang")
                 .tagline("Main Developer")
                 .description("Main themer and moderator with a 1% success rate in java")
@@ -59,7 +59,7 @@ public class AboutFragment extends Fragment
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_hazhir))
-                .banner(resToUri(getActivity(), R.drawable.credits_hazhir_banner))
+                .banner(resToUri(getActivity(), R.attr.credits_hazhir_banner))
                 .name("Hazhir Good")
                 .tagline("Backend and Support")
                 .description("10% backing; 20% skill; 15% super duper awesomely chill; 5% design; 50% divine. 100% reason to remember the sign")

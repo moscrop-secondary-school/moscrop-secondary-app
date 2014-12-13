@@ -38,6 +38,11 @@
         <attr name="contact" format="reference" />
         <attr name="nav_header_shadow" format="reference" />
         <attr name="background_nav" format="reference" />
+
+        <!--banners-->
+        <attr name="credits_allan_banner" format="reference" />
+        <attr name="credits_ivon_banner" format="reference" />
+        <attr name="credits_hazhir_banner" format="reference" />
     </declare-styleable>
 
     <!-- RelativeLayout with foreground capability -->
