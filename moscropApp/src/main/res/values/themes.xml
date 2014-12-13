@@ -44,6 +44,7 @@
         <item name="title_card">@color/text</item>
         <item name="text_card">@color/card_light_text</item>
         <item name="card_about">@drawable/selector_card_about</item>
+        <item name="drawer_shadow">@drawable/drawer_shadow</item>
 
         <item name="text">@color/text</item>
         <item name="textt">@color/textt</item>
@@ -82,6 +83,7 @@
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
         <item name="card_about">@drawable/selector_card_about_d</item>
+        <item name="drawer_shadow">@drawable/drawer_shadow_d</item>
 
         <item name="text">@color/dtext</item>
         <item name="textt">@color/dtextt</item>
@@ -119,6 +121,7 @@
         <item name="android:windowBackground">@color/tdbackgroundd</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
+        <item name="drawer_shadow">@drawable/drawer_shadow_d</item>
 
         <!-- Other stuff -->
         <item name="background_card">@drawable/background_card_tblack</item>

@@ -11,6 +11,7 @@
         <!-- I added this for the toolbar, feel free to move
              it wherever you want. Then delete this comment -->
         <attr name="toolbar_color" format="reference" />
+        <attr name="drawer_shadow" format="reference" />
 
         <attr name="background_card" format="reference" />
         <attr name="title_card" format="reference" />
