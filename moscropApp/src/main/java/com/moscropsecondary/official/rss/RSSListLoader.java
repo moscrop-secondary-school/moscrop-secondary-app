@@ -23,14 +23,16 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
     private boolean mAppend;
     private long mOldestPostDate;
     private boolean mOnlineEnabled;
+    private boolean mShowCacheWhileLoadingOnline;
 
-    public RSSListLoader(Context context, String blogId, String tag, boolean append, long oldestPostDate, boolean onlineEnabled) {
+    public RSSListLoader(Context context, String blogId, String tag, boolean append, long oldestPostDate, boolean onlineEnabled, boolean showCacheWhileLoadingOnline) {
         super(context);
         mBlogId = blogId;
         mTag = tag;
         mAppend = append;
         mOldestPostDate = oldestPostDate;
         mOnlineEnabled = onlineEnabled;
+        mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline;
     }
 
     @Override
@@ -43,18 +45,37 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         return database.getItems(mTag);
         */
 
-        if (mOnlineEnabled) {
+        SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        String version = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
+
+        if (!mShowCacheWhileLoadingOnline && mOnlineEnabled) {
             List<RSSItem> list = tryGetFullLoad();
             if (list == null) {
                 list = getListOnly();
             }
-            return new RSSResult(list, mAppend);
+
+            int result;
+            String newVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
+            if (newVersion.equals(version)) {
+                result = RSSResult.RESULT_REDUNDANT;
+            } else {
+                result = RSSResult.RESULT_OK;
+            }
+
+            return new RSSResult(version, result, list, mAppend);
         } else {
             List<RSSItem> list = getListOnly();
             if (list.size() == 0) {
                 list = tryGetFullLoad();
             }
-            return new RSSResult(list, mAppend);
+
+            int result;
+            if (mShowCacheWhileLoadingOnline) {
+                result = RSSResult.RESULT_REDO_ONLINE;
+            } else {
+                result = RSSResult.RESULT_OK;
+            }
+            return new RSSResult(version, result, list, mAppend);
         }
     }
 

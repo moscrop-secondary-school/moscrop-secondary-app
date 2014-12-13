@@ -13,6 +13,7 @@ public class Preferences {
         public static final String THEME = "0";
         public static final Set<String> TAGS = new HashSet<String>(Arrays.asList(new String[] { "Official" }));
         public static final int LOAD_LIMIT = 25;
+        public static final boolean AUTO_REFRESH = true;
     }
 
     public static class Keys {
@@ -20,6 +21,7 @@ public class Preferences {
         public static final String THEME = "theme_selector";
         public static final String TAGS = "tag_chooser";
         public static final String LOAD_LIMIT = "load_limit";
+        public static final String AUTO_REFRESH = "auto_refresh";
     }
 
     public static class App {

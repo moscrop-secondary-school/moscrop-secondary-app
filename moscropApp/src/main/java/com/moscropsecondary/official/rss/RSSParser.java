@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 
 import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.JsonUtil;
-import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 
 import org.json.JSONArray;
@@ -136,10 +135,10 @@ public class RSSParser {
         return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=25";
     }
 
-    private void saveUpdateInfo(String gcalVersion) {
+    private void saveUpdateInfo(String version) {
         SharedPreferences.Editor prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
         prefs.putLong(Preferences.App.Keys.RSS_LAST_UPDATED, System.currentTimeMillis());
-        prefs.putString(Preferences.App.Keys.RSS_VERSION, gcalVersion);
+        prefs.putString(Preferences.App.Keys.RSS_VERSION, version);
         prefs.apply();
     }
 
@@ -163,7 +162,7 @@ public class RSSParser {
                 // just downloaded regardless of whether
                 // updating the database was needed
 
-                //saveUpdateInfo(feed.version);
+                saveUpdateInfo(feed.version);
 
                 String newFeedVersion = feed.version;
                 if (!newFeedVersion.equals(lastFeedVersion)) {
@@ -199,7 +198,7 @@ public class RSSParser {
                 // just downloaded regardless of whether
                 // updating the database was needed
 
-                //saveUpdateInfo(feed.version);
+                saveUpdateInfo(feed.version);
 
 
                 // New version. All our cache is invalid.
@@ -226,7 +225,7 @@ public class RSSParser {
      * @param blogId
      *      ID of the Blogger RSS feed
      */
-    public void parseAndSaveAll(String blogId) {
+   /* public void parseAndSaveAll(String blogId) {
 
         Logger.log("Processing all");
 
@@ -246,5 +245,5 @@ public class RSSParser {
             database.save(feed.items);
             database.close();
         }
-    }
+    }*/
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -53,6 +54,7 @@ public class RSSFragment extends Fragment
     private String mTag = "";
     private boolean mAppend = false;
     private boolean mOnlineEnabled = true;
+    private boolean mShowCacheWhileLoadingOnline = false;
 
     private boolean mScrolling = false;
 
@@ -86,8 +88,7 @@ public class RSSFragment extends Fragment
 	}
 	
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	
     	setHasOptionsMenu(true);
 
@@ -112,9 +113,12 @@ public class RSSFragment extends Fragment
         mListView.setOnScrollListener(this);
 
         if (firstLaunch()) {
-            loadFeed(false, false, true);
+            loadFeed(false, false, true, false, false);    // No cache to load anyways
         } else {
-            loadFeed(false, false, false);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean autoRefresh = prefs.getBoolean(Preferences.Keys.AUTO_REFRESH, Preferences.Default.AUTO_REFRESH);
+            boolean loadOnline = autoRefresh && (savedInstanceState == null);
+            loadFeed(false, false, loadOnline, true, false);
         }
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
 
@@ -150,9 +154,7 @@ public class RSSFragment extends Fragment
         String[] spinnerTagsArray = null;
         try {
             spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         if (spinnerTagsArray != null) {
@@ -186,7 +188,8 @@ public class RSSFragment extends Fragment
                 String tag = mSpinnerAdapter.getItem(position);
                 if (!tag.equals(mTag)) {
                     mTag = tag;
-                    loadFeed(true, false, false);
+                    loadFeed(true, false, false, false, true);    // Not loading online, so don't worry about cache
+                                                                  // Stop previous loader and start new one
                 }
             }
 
@@ -268,11 +271,14 @@ public class RSSFragment extends Fragment
 	 * @param force
      *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
 	 */
-	private void loadFeed(boolean force, boolean append, boolean onlineEnabled) {
+	private void loadFeed(boolean force, boolean append, boolean onlineEnabled, boolean showCacheWhileLoadingOnline, boolean runEvenIfHasRunningLoaders) {
 		if(force || (mAdapter.getCount() == 0)) {
-            if(!getLoaderManager().hasRunningLoaders()) {
+            if(runEvenIfHasRunningLoaders || !getLoaderManager().hasRunningLoaders()) {
+
                 mAppend = append;
                 mOnlineEnabled = onlineEnabled;
+                mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline;
+
                 getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
 		}
@@ -280,7 +286,7 @@ public class RSSFragment extends Fragment
 
 	@Override
 	public void onRefresh() {
-		loadFeed(true, false, true);
+		loadFeed(true, false, true, false, false);     // Don't show cache as old data is still not cleared
 	}
 
     public void doSearch(String query) {
@@ -296,57 +302,80 @@ public class RSSFragment extends Fragment
         if (mAdapter.getCount() > 0 && mAppend) {
             oldestPostDate = mAdapter.getItem(mAdapter.getCount()-1).date;
         }
-        return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, oldestPostDate, mOnlineEnabled);
+
+        return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, oldestPostDate, mOnlineEnabled, mShowCacheWhileLoadingOnline);
     }
 
     @Override
     public void onLoadFinished(Loader<RSSResult> listLoader, RSSResult result) {
+
         if (mSwipeLayout != null) {
             mSwipeLayout.setRefreshing(false);
         }
 
         if (result != null) {
-            if (result.append) {
 
-                List<RSSItem> items = result.items;
-                if (items.size() == 0) {
-                    Toast.makeText(getActivity(), "No more items to load", Toast.LENGTH_SHORT).show();
-                    // TODO replace with text view
-                } else {
-                    for (RSSItem item : items) {
-                        mAdapter.add(item);
-                    }
-                    mAdapter.notifyDataSetChanged();
-                }
+            Logger.log("Result code: " + result.resultCode);
 
-            } else {
-
-                mAdapter.clear();
-                List<RSSItem> items = result.items;
-                if (items.size() == 0) {
-                    Toast.makeText(getActivity(), "No items returned", Toast.LENGTH_SHORT).show();
-                    // TODO replace with text view
-                } else {
-                    for (RSSItem item : items) {
-                        mAdapter.add(item);
-                    }
-                    mAdapter.notifyDataSetChanged();
-                    if (firstLaunch()) {
-                        SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
-                        prefs.putBoolean(Preferences.App.Keys.FIRST_LAUNCH, false);
-                        prefs.apply();
-                    }
-                }
-
+            switch(result.resultCode) {
+                case RSSResult.RESULT_OK:
+                    updateListOnLoadFinished(result);
+                    break;
+                case RSSResult.RESULT_REDUNDANT:
+                    // Do nothing
+                    break;
+                case RSSResult.RESULT_REDO_ONLINE:
+                    updateListOnLoadFinished(result);
+                    loadFeed(true, false, true, false, true);
+                    break;
+                case RSSResult.RESULT_FAIL:
+                    Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
+                    break;
             }
         } else {
             Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void updateListOnLoadFinished(RSSResult result) {
+        if (result.append) {
+
+            List<RSSItem> items = result.items;
+            if (items.size() == 0) {
+                Toast.makeText(getActivity(), "No more items to load", Toast.LENGTH_SHORT).show();
+                // TODO replace with text view
+            } else {
+                for (RSSItem item : items) {
+                    mAdapter.add(item);
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+        } else {
+
+            mAdapter.clear();
+            List<RSSItem> items = result.items;
+            if (items.size() == 0) {
+                Toast.makeText(getActivity(), "No items returned", Toast.LENGTH_SHORT).show();
+                // TODO replace with text view
+            } else {
+                for (RSSItem item : items) {
+                    mAdapter.add(item);
+                }
+                mAdapter.notifyDataSetChanged();
+                if (firstLaunch()) {
+                    SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+                    prefs.putBoolean(Preferences.App.Keys.FIRST_LAUNCH, false);
+                    prefs.apply();
+                }
+            }
+        }
+    }
+
     @Override
     public void onLoaderReset(Loader<RSSResult> listLoader) {
         // No reference to the list provided by the loader is held
+        // So no resetting is needed to be done here
     }
 
     @Override
@@ -372,7 +401,7 @@ public class RSSFragment extends Fragment
 
             if (loadMore) {
                 Logger.log("Trying to load more feed");
-                loadFeed(true, true, true);
+                loadFeed(true, true, true, false, false);  // No need to show cache, old posts still there
                 mScrolling = false;
             }
         }
