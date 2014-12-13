@@ -82,7 +82,8 @@ public abstract class NavigationDrawerBase extends Fragment {
         mDrawerLayout = drawerLayout;
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.attr.drawer_shadow, GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+    //TODO Allow drawer_shadow to reference an attribute
     }
 
     protected void selectItem(int position) {
