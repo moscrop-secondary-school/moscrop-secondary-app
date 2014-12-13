@@ -14,8 +14,7 @@
         android:layout_marginBottom="@dimen/card_spacing"
         android:layout_marginLeft="@dimen/card_side_padding"
         android:layout_marginRight="@dimen/card_side_padding"
-        android:background="?attr/background_card"
-        android:descendantFocusability="afterDescendants">
+        android:background="?attr/background_card">
 
         <RelativeLayout
             android:layout_width="match_parent"
