@@ -2,7 +2,8 @@
 
 ** Important **
 
-Add agenda (for events)  
+Fix attr for banners (aboutfragment.java)
+Add agenda (for events)
 Add search functions app wide (for posts & teachers)  
 Add newsletter section - force it to pull from the "student bulletin" tag  
 Hide "official" and "student bulletin" tag from category selector  
