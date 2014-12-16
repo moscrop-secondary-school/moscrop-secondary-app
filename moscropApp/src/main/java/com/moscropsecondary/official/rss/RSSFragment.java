@@ -313,7 +313,7 @@ public class RSSFragment extends Fragment
             mSwipeLayout.setRefreshing(false);
         }
 
-        if (result != null) {
+        if (result != null && result.items != null) {
 
             Logger.log("Result code: " + result.resultCode);
 

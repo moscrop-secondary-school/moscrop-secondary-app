@@ -84,6 +84,10 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         // Get an initial list
         List<RSSItem> list = downloadParseSaveGetList(mAppend, mOldestPostDate);
 
+        if (list == null) {
+            return null;
+        }
+
         SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
 
