@@ -3,6 +3,7 @@ package com.moscropsecondary.official;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
@@ -82,7 +83,9 @@ public abstract class NavigationDrawerBase extends Fragment {
         mDrawerLayout = drawerLayout;
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.attr.drawer_shadow, GravityCompat.START);
+        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] {R.attr.drawer_shadow});
+        int attributeResourceId = a.getResourceId(0, 0);
+        mDrawerLayout.setDrawerShadow(attributeResourceId, GravityCompat.START);
     }
 
     protected void selectItem(int position) {

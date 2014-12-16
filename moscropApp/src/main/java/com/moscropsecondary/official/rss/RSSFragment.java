@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -65,7 +65,7 @@ public class RSSFragment extends Fragment
     private boolean mHasSpinner = true;
 
     public SwipeRefreshLayout mSwipeLayout = null;
-    public ListView mListView = null;
+    public GridView mListView = null;
     public RSSAdapter mAdapter = null;
 
 	/**
@@ -104,7 +104,7 @@ public class RSSFragment extends Fragment
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
 
-        mListView = (ListView) mContentView.findViewById(R.id.rlf_list);
+        mListView = (GridView) mContentView.findViewById(R.id.rlf_list);
 
         // Set the adapter for the recycler view
         mAdapter = new RSSAdapter(getActivity(), new ArrayList<RSSItem>());

@@ -1,30 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/rlc_card"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/card_spacing"
-        android:layout_marginBottom="@dimen/card_spacing"
-        android:layout_marginLeft="@dimen/card_side_padding"
-        android:layout_marginRight="@dimen/card_side_padding"
-        android:background="?attr/background_card">
 
         <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?attr/background_card">
 
             <TextView
                 android:id="@+id/rlc_title"
                 style="@style/CardTitle"
-                android:ellipsize="end"
-                android:maxLines="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
@@ -52,10 +37,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
-                android:ellipsize="end"
                 android:textStyle="italic"
                 android:textColor="?attr/title_card"/>
 
         </RelativeLayout>
-    </LinearLayout>
-</FrameLayout>

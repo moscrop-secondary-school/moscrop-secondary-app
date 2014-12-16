@@ -6,11 +6,14 @@
     android:layout_height="match_parent"
     tools:context="com.moscropsecondary.official.MainActivity$RSSFragment" >
 
-	<ListView
+	<GridView
 	    android:id="@+id/rlf_list"
 	    android:layout_height="match_parent"
 	    android:layout_width="match_parent"
-        android:drawSelectorOnTop="true"
-        android:divider="@null"/>
+        android:numColumns="2"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
+        android:background="#fff"
+        android:drawSelectorOnTop="true"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>
