@@ -13,7 +13,7 @@
         android:numColumns="2"
         android:horizontalSpacing="2dp"
         android:verticalSpacing="2dp"
-        android:background="#fff"
+        android:background="?attr/rss_background"
         android:drawSelectorOnTop="true"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -40,6 +40,7 @@
     <!-- Actual themes where stuff happens -->
     <style name="Theme.Light" parent="Theme.Base.Light.Versioned">
         <item name="android:windowBackground">@color/backgroundd</item>  <!-- I recommend using #fffafafa instead -->
+        <item name="rss_background">@color/backgroundd</item>
         <item name="background_card">@drawable/background_card_light</item>
         <item name="title_card">@color/text</item>
         <item name="text_card">@color/card_light_text</item>
@@ -79,6 +80,7 @@
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
         <item name="android:windowBackground">@color/dbackground</item>
+        <item name="rss_background">@color/dbackground</item>
         <item name="background_card">@drawable/background_card_black</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
@@ -118,7 +120,8 @@
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
 
         <!-- These attributes are what makes a "wallpaper" theme "wallpaper". -->
-        <item name="android:windowBackground">@color/tdbackgroundd</item>
+        <item name="android:windowBackground">@color/tdbackground</item>
+        <item name="rss_background">@color/tbackground</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
         <item name="drawer_shadow">@drawable/drawer_shadow_d</item>

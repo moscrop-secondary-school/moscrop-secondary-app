@@ -3,6 +3,7 @@
 ** Important **
 
 Fix attr for banners (aboutfragment.java)
+Make refresh spinner only show when manually refreshing. Having it on startup is too obtrusive. Or make it like the google + refresh or move the spinner to the actionbar.
 Add agenda (for events)
 Add search functions app wide (for posts & teachers)  
 Add newsletter section - force it to pull from the "student bulletin" tag  
