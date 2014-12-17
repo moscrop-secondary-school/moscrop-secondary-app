@@ -1,6 +1,7 @@
 package com.moscropsecondary.official;        //TODO fix error
 
 import android.app.Fragment;
+import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -41,10 +42,16 @@ public class AboutFragment extends Fragment
 
     public ListAdapter setupAdapter() {
         CreditsPeopleAdapter mAdapter = new CreditsPeopleAdapter(getActivity());
+
+        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] {
+                R.attr.credits_ivon_banner,
+                R.attr.credits_allan_banner,
+                R.attr.credits_hazhir_banner
+        });
+
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_ivon))
-                .banner(resToUri(getActivity(), R.attr.credits_ivon_banner))
-                //TODO make attributes work for banner
+                .banner(resToUri(getActivity(), a.getResourceId(0, 0)))
                 .name("Ivon Liu")
                 .tagline("Main Developer")
                 .description("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes")
@@ -52,7 +59,7 @@ public class AboutFragment extends Fragment
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_allan))
-                .banner(resToUri(getActivity(), R.attr.credits_allan_banner))
+                .banner(resToUri(getActivity(), a.getResourceId(1, 0)))
                 .name("Allan Wang")
                 .tagline("Main Developer")
                 .description("Main themer and moderator with a 1% success rate in java")
@@ -60,7 +67,7 @@ public class AboutFragment extends Fragment
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_hazhir))
-                .banner(resToUri(getActivity(), R.attr.credits_hazhir_banner))
+                .banner(resToUri(getActivity(), a.getResourceId(2, 0)))
                 .name("Hazhir Good")
                 .tagline("Backend and Support")
                 .description("10% backing; 20% skill; 15% super duper awesomely chill; 5% design; 50% divine. 100% reason to remember the sign")
