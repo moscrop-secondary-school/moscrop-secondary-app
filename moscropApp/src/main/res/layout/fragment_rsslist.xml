@@ -1,12 +1,19 @@
 <android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlf_swipe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.moscropsecondary.official.MainActivity$RSSFragment" >
 
-	<android.support.v7.widget.RecyclerView
+	<GridView
 	    android:id="@+id/rlf_list"
 	    android:layout_height="match_parent"
-	    android:layout_width="match_parent"/>
+	    android:layout_width="match_parent"
+        android:numColumns="2"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
+        android:background="?attr/rss_background"
+        android:drawSelectorOnTop="true"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>
