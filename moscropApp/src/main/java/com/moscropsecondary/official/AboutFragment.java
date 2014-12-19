@@ -54,14 +54,14 @@ public class AboutFragment extends Fragment
                 .banner(resToUri(getActivity(), a.getResourceId(0, 0)))
                 .name("Ivon Liu")
                 .tagline("Main Developer")
-                .description("Technology enthusiast who does 99% of the work and fixes Allan\'s mistakes")
+                .description("Technology enthusiast who does 99% of the coding and fixes Allan\'s mistakes")
                 .type(TYPE_MAIN)
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
                 .avatar(resToUri(getActivity(), R.drawable.credits_allan))
                 .banner(resToUri(getActivity(), a.getResourceId(1, 0)))
                 .name("Allan Wang")
-                .tagline("Main Developer")
+                .tagline("Side Developer")
                 .description("Main themer and moderator with a 1% success rate in java")
                 .type(TYPE_MAIN)
                 .build());
@@ -73,7 +73,6 @@ public class AboutFragment extends Fragment
                 .description("10% backing; 20% skill; 15% super duper awesomely chill; 5% design; 50% divine. 100% reason to remember the sign")
                 .type(TYPE_TESTER)
                 .build());
-        //TODO Fix TYPE_TESTER
 //        mAdapter.addItem(new CreditsPeopleItem.Builder()
 //                .avatar(resToUri(getActivity(), R.drawable.avatar_dark))
 //                .banner(resToUri(getActivity(), R.drawable.banner_dark))

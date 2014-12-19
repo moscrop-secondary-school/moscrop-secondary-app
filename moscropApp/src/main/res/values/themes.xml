@@ -83,7 +83,8 @@
         <item name="android:windowBackground">@color/dbackground</item>
         <item name="rss_background">@color/dbackground</item>
         <item name="background_card">@drawable/background_card_black</item>
-        <item name="card_picture_alpha">@string/card_picture_alpha_d</item>        <item name="title_card">@color/dtext</item>
+        <item name="card_picture_alpha">@string/card_picture_alpha_d</item>
+        <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
         <item name="card_about">@drawable/selector_card_about_d</item>
         <item name="drawer_shadow">@drawable/drawer_shadow_d</item>
@@ -163,9 +164,9 @@
         <item name="toolbar_color">@color/primary_indigo_t_toolbar</item>
 
         <!--banners-->
-        <item name="credits_allan_banner">@drawable/credits_allan_banner_d</item>
-        <item name="credits_ivon_banner">@drawable/credits_ivon_banner_d</item>
-        <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner_d</item>
+        <item name="credits_allan_banner">@drawable/credits_allan_banner_t</item>
+        <item name="credits_ivon_banner">@drawable/credits_ivon_banner_t</item>
+        <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner_t</item>
     </style>
 
 </resources>
