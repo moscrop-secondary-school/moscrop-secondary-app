@@ -15,6 +15,7 @@
         <attr name="drawer_shadow" format="reference" />
 
         <attr name="background_card" format="reference" />
+        <attr name="card_picture_alpha" format="reference" />
         <attr name="title_card" format="reference" />
         <attr name="text_card" format="reference" />
         <attr name="drawer_divider" format="reference" />

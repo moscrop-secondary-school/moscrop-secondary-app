@@ -42,6 +42,7 @@
         <item name="android:windowBackground">@color/backgroundd</item>  <!-- I recommend using #fffafafa instead -->
         <item name="rss_background">@color/backgroundd</item>
         <item name="background_card">@drawable/background_card_light</item>
+        <item name="card_picture_alpha">@string/card_picture_alpha</item>
         <item name="title_card">@color/text</item>
         <item name="text_card">@color/card_light_text</item>
         <item name="card_about">@drawable/selector_card_about</item>
@@ -82,7 +83,7 @@
         <item name="android:windowBackground">@color/dbackground</item>
         <item name="rss_background">@color/dbackground</item>
         <item name="background_card">@drawable/background_card_black</item>
-        <item name="title_card">@color/dtext</item>
+        <item name="card_picture_alpha">@string/card_picture_alpha_d</item>        <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
         <item name="card_about">@drawable/selector_card_about_d</item>
         <item name="drawer_shadow">@drawable/drawer_shadow_d</item>
@@ -128,6 +129,7 @@
 
         <!-- Other stuff -->
         <item name="background_card">@drawable/background_card_tblack</item>
+        <item name="card_picture_alpha">@string/card_picture_alpha_t</item>
         <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
         <item name="card_about">@drawable/selector_card_about_t</item>
