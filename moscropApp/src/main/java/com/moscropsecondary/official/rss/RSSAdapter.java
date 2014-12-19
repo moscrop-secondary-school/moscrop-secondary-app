@@ -1,21 +1,19 @@
 package com.moscropsecondary.official.rss;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.rss.CardUtil.CardProcessor;
 
 import java.util.List;
 
 /**
  * Created by ivon on 30/06/14.
  */
-public class RSSAdapter extends ArrayAdapter<RSSItem> {
+/*public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
     List<RSSItem> mItems = null;
 
@@ -67,10 +65,57 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         return view;
     }
+}*/
+
+public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ViewHolder> {
+
+    private List<RSSItem> mItems = null;
+
+    public void add(RSSItem item) {
+        mItems.add(item);
+    }
+
+    public void clear() {
+        mItems.clear();
+    }
+
+    public RSSItem getItem(int position) {
+        return mItems.get(position);
+    }
+
+    public RSSAdapter(List<RSSItem> items) {
+        mItems = items;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+
+        public TextView titleText;
+        public TextView descText;
+
+        public ViewHolder(View v) {
+            super(v);
+            titleText = (TextView) v.findViewById(R.id.rlc_title);
+            descText = (TextView) v.findViewById(R.id.rlc_description);
+        }
+    }
 
     @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        //Logger.log("notifyDataSetChanged");
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rss_list_card, parent, false);
+        return new ViewHolder(v);
     }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        RSSItem item = mItems.get(position);
+        holder.titleText.setText(item.title);
+        holder.descText.setText(item.preview);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mItems.size();
+    }
+
 }

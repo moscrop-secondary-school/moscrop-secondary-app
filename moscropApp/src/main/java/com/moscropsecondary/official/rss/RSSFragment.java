@@ -12,7 +12,9 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -65,7 +66,7 @@ public class RSSFragment extends Fragment
     private boolean mHasSpinner = true;
 
     public SwipeRefreshLayout mSwipeLayout = null;
-    public GridView mListView = null;
+    public RecyclerView mListView = null;
     public RSSAdapter mAdapter = null;
 
 	/**
@@ -104,13 +105,21 @@ public class RSSFragment extends Fragment
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
 
-        mListView = (GridView) mContentView.findViewById(R.id.rlf_list);
+        mListView = (RecyclerView) mContentView.findViewById(R.id.rlf_list);
 
         // Set the adapter for the recycler view
-        mAdapter = new RSSAdapter(getActivity(), new ArrayList<RSSItem>());
+        mAdapter = new RSSAdapter(new ArrayList<RSSItem>());
+        mListView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(this);
-        mListView.setOnScrollListener(this);
+        mListView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Toast.makeText(getActivity(), "Item clicked", Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
+        //mListView.setOnItemClickListener(this);
+        //mListView.setOnScrollListener(this);
 
         if (firstLaunch()) {
             loadFeed(false, false, true, false, false);    // No cache to load anyways
@@ -272,7 +281,7 @@ public class RSSFragment extends Fragment
      *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
 	 */
 	private void loadFeed(boolean force, boolean append, boolean onlineEnabled, boolean showCacheWhileLoadingOnline, boolean runEvenIfHasRunningLoaders) {
-		if(force || (mAdapter.getCount() == 0)) {
+		if(force || (mAdapter.getItemCount() == 0)) {
             if(runEvenIfHasRunningLoaders || !getLoaderManager().hasRunningLoaders()) {
 
                 mAppend = append;
@@ -299,8 +308,8 @@ public class RSSFragment extends Fragment
             mSwipeLayout.setRefreshing(true);
         }
         long oldestPostDate = System.currentTimeMillis();
-        if (mAdapter.getCount() > 0 && mAppend) {
-            oldestPostDate = mAdapter.getItem(mAdapter.getCount()-1).date;
+        if (mAdapter.getItemCount() > 0 && mAppend) {
+            oldestPostDate = mAdapter.getItem(mAdapter.getItemCount()-1).date;
         }
 
         return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, oldestPostDate, mOnlineEnabled, mShowCacheWhileLoadingOnline);
@@ -391,7 +400,7 @@ public class RSSFragment extends Fragment
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         //boolean loadMore =  firstVisibleItem + visibleItemCount >= totalItemCount-1;
 
-        if (mScrolling) {
+        /*if (mScrolling) {
             boolean loadMore = false;
             if (mListView != null && mListView.getChildAt(mListView.getChildCount() - 1) != null
                     && mListView.getLastVisiblePosition() == mListView.getAdapter().getCount() - 1
@@ -404,6 +413,6 @@ public class RSSFragment extends Fragment
                 loadFeed(true, true, true, false, false);  // No need to show cache, old posts still there
                 mScrolling = false;
             }
-        }
+        }*/
     }
 }
