@@ -15,6 +15,9 @@ import com.moscropsecondary.official.rss.CardUtil.CardProcessor;
 import com.moscropsecondary.official.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -62,9 +65,9 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         ImageView bgImage = (ImageView) view.findViewById(R.id.CardBgImg);
         CircularImageView tagIcon = (CircularImageView) view.findViewById(R.id.CardTagIcon);
+        TextView tagListText = (TextView) view.findViewById(R.id.CardTagList);
+        TextView timestampText = (TextView) view.findViewById(R.id.CardTimestamp);
         TextView title = (TextView) view.findViewById(R.id.rlc_title);
-        View divider = view.findViewById(R.id.rlc_divider);
-        TextView description = (TextView) view.findViewById(R.id.rlc_description);
 
         // Set background image
         if (bgImage != null) {
@@ -122,22 +125,100 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
                     .into(tagIcon);
         }
 
+        // Set tags list
+        if (tagListText != null) {
+            String tags = "";
+            for (int i=0; i<item.tags.length; i++) {
+                tags += item.tags[i];
+                if (i < item.tags.length-1) {
+                    tags += ", ";
+                }
+            }
+            tagListText.setText(tags);
+        }
+
+        // Set post time
+        if (timestampText != null) {
+            timestampText.setText(getRelativeTime(item.date));
+        }
+
         // Set title
         if (title != null) {
             title.setText(item.title);
         }
 
-        // Set divider color
-        if (divider != null) {
-            divider.setBackgroundColor(0xff33b5e5);
-        }
-
-        // Set description
-        if (description != null) {
-            description.setText(item.preview);
-        }
-
         return view;
+    }
+
+    private String getRelativeTime(long time) {
+
+        String timestamp = "";
+
+        long nowMillis = System.currentTimeMillis();
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(nowMillis);
+
+        long postMillis = time;
+        Calendar post = Calendar.getInstance();
+        post.setTimeInMillis(postMillis);
+
+        long diffMillis = nowMillis - postMillis;
+
+        if (diffMillis < 60*60*1000) {
+            long minAgo = diffMillis / (60*1000);
+            timestamp = minAgo + " minutes ago";
+        } else if (diffMillis < 24*60*60*1000) {
+            long hoursAgo = diffMillis / 60*60*1000;
+            timestamp = hoursAgo + " hours ago";
+        } else if (post.get(Calendar.DAY_OF_MONTH) == calOneDayAgo(now)) {
+            timestamp = "Yesterday";
+        } else {
+            long daysBetween = daysBetween(post, now);
+            if (daysBetween <= 7) {
+                timestamp = daysBetween + " days ago";
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
+                timestamp = sdf.format(new Date(postMillis));
+            }
+        }
+
+        return timestamp;
+    }
+
+    private int calOneDayAgo(Calendar cal) {
+        cal.setTimeInMillis(cal.getTimeInMillis() - 24*60*60*1000);
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTimeInMillis(cal.getTimeInMillis() + 24*60*60*1000);
+        return date;
+    }
+
+    /**
+     * Calculates the number of days between two Calendar dates.
+     * @param cal1
+     *          Calendar date that occurs first
+     * @param cal2
+     *          Calendar object that occurs second
+     * @return  Number of days between cal1 and cal2
+     */
+    private long daysBetween(Calendar cal1, Calendar cal2) {
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTimeInMillis(cal1.getTimeInMillis());
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        long millis1 = cal.getTimeInMillis();
+
+        cal.setTimeInMillis(cal2.getTimeInMillis());
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        long millis2 = cal.getTimeInMillis();
+
+        long numDays = (millis2 - millis1) / 24*60*60*3600;
+        return numDays;
     }
 
     @Override
