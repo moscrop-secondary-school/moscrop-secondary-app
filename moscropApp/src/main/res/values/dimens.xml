@@ -85,4 +85,5 @@
     <dimen name="spinner_title_text">18sp</dimen>
     <dimen name="spinner_left_padding">16dp</dimen>
 
+    <dimen name="rss_card_height">200dp</dimen>
 </resources>
