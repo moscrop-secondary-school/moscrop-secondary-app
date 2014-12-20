@@ -1,6 +1,7 @@
 package com.moscropsecondary.official.rss;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,14 +70,33 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         TextView timestampText = (TextView) view.findViewById(R.id.CardTimestamp);
         TextView title = (TextView) view.findViewById(R.id.rlc_title);
 
+        // Set background color
+        int color = Color.WHITE;
+        Random random = new Random();
+        int randomInt = random.nextInt(4);
+        switch (randomInt) {
+            case 0:
+                color = 0xff16a085;
+                break;
+            case 1:
+                color = 0xff4CAF50;
+                break;
+            case 2:
+                color = 0xffFFC107;
+                break;
+            case 3:
+                color = 0xff673AB7;
+                break;
+        }
+        view.setBackgroundColor(color);
+
         // Set background image
         if (bgImage != null) {
 
             if (view.getTag() != null && ((String) view.getTag()).equals("hasImage")) {
                 String uri = "";
-                Random random = new Random();
-                int i = random.nextInt(4);
-                switch (i) {
+                randomInt = random.nextInt(4);
+                switch (randomInt) {
                     case 0:
                         uri = "https://nsidc.org/sites/nsidc.org/files/images//snowycreek.jpg";
                         break;
@@ -103,9 +123,8 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         if (tagIcon != null) {
 
             String uri = "";
-            Random random = new Random();
-            int i = random.nextInt(4);
-            switch (i) {
+            randomInt = random.nextInt(4);
+            switch (randomInt) {
                 case 0:
                     uri = "https://nsidc.org/sites/nsidc.org/files/images//snowycreek.jpg";
                     break;
@@ -168,7 +187,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             long minAgo = diffMillis / (60*1000);
             timestamp = minAgo + " minutes ago";
         } else if (diffMillis < 24*60*60*1000) {
-            long hoursAgo = diffMillis / 60*60*1000;
+            long hoursAgo = diffMillis / (60*60*1000);
             timestamp = hoursAgo + " hours ago";
         } else if (post.get(Calendar.DAY_OF_MONTH) == calOneDayAgo(now)) {
             timestamp = "Yesterday";
@@ -186,9 +205,9 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
     }
 
     private int calOneDayAgo(Calendar cal) {
-        cal.setTimeInMillis(cal.getTimeInMillis() - 24*60*60*1000);
+        cal.setTimeInMillis(cal.getTimeInMillis() - (24*60*60*1000));
         int date = cal.get(Calendar.DAY_OF_MONTH);
-        cal.setTimeInMillis(cal.getTimeInMillis() + 24*60*60*1000);
+        cal.setTimeInMillis(cal.getTimeInMillis() + (24*60*60*1000));
         return date;
     }
 
@@ -217,7 +236,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         long millis2 = cal.getTimeInMillis();
 
-        long numDays = (millis2 - millis1) / 24*60*60*3600;
+        long numDays = (millis2 - millis1) / (24*60*60*1000);
         return numDays;
     }
 
