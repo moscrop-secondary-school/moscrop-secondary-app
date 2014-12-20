@@ -2,7 +2,7 @@
 
 ** Important **
 
-Fix attr for banners (aboutfragment.java)
+In nav bar, settings to contact do not have ripples
 Make refresh spinner only show when manually refreshing. Having it on startup is too obtrusive. Or make it like the google + refresh or move the spinner to the actionbar.
 Add agenda (for events)
 Add search functions app wide (for posts & teachers)  
