@@ -68,18 +68,15 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         // Set background color
         int color = Color.WHITE;
-        if (metadata.length >= 1) {
-            switch (Integer.parseInt(metadata[0])) {
+        if (metadata.length >= 1 || true) {
+            //switch (Integer.parseInt(metadata[0])) {
+            switch(position % 4) {
                 case 0:
+                case 3:
                     color = 0xff16a085;
                     break;
                 case 1:
-                    color = 0xff4CAF50;
-                    break;
                 case 2:
-                    color = 0xffF44336;
-                    break;
-                case 3:
                     color = 0xff673AB7;
                     break;
             }
