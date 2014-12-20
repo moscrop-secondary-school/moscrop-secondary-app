@@ -38,14 +38,18 @@ public class RSSTagCriteria {
     public static final String TAG_LIST_JSON = "taglist.json";
     public static final String TAG_LIST_URL = "http://pastebin.com/raw.php?i=dMePcZ9e";
 
+    public static final String NO_IMAGE = "no image";
+
     public final String name;
     public final String author;
     public final String category;
+    public final String imageUrl;
 
-    public RSSTagCriteria(String name, String author, String category) {
+    public RSSTagCriteria(String name, String author, String category, String imageUrl) {
         this.name = name;
         this.author = (author.equals("@null")) ? null : author;
         this.category = (category.equals("@null")) ? null : category;
+        this.imageUrl = (imageUrl.equals("@null")) ? NO_IMAGE : imageUrl;
     }
 
     public static File getTagListFile(Context context) {
@@ -70,7 +74,8 @@ public class RSSTagCriteria {
             criteriaList[i] = new RSSTagCriteria(
                     criteriaJSONArray[i].getString("name"),
                     criteriaJSONArray[i].getString("id_author"),
-                    criteriaJSONArray[i].getString("id_category")
+                    criteriaJSONArray[i].getString("id_category"),
+                    criteriaJSONArray[i].getString("icon_img")
             );
         }
         return criteriaList;

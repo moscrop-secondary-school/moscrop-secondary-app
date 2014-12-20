@@ -19,13 +19,14 @@ public class RSSDatabase extends SQLiteOpenHelper {
     private SQLiteDatabase mDB;
     private Context mContext;
 
-    private static final String _ID = "_id";
-    private static final String COLUMN_DATE = "date";
-    private static final String COLUMN_TITLE = "title";
-    private static final String COLUMN_CONTENT = "content";
-    private static final String COLUMN_PREVIEW = "preview";
-    private static final String COLUMN_TAGS = "tags";
-    private static final String COLUMN_URL = "url";
+    private static final String _ID                 = "_id";
+    private static final String COLUMN_DATE         = "date";
+    private static final String COLUMN_TITLE        = "title";
+    private static final String COLUMN_CONTENT      = "content";
+    private static final String COLUMN_PREVIEW      = "preview";
+    private static final String COLUMN_TAGS         = "tags";
+    private static final String COLUMN_URL          = "url";
+    private static final String COLUMN_METADATA     = "metadata";
 
     private static final String NAME = "rssfeeds";
     private static final int VERSION = 1;
@@ -45,7 +46,8 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 COLUMN_CONTENT + " TEXT, " +
                 COLUMN_PREVIEW + " TEXT, " +
                 COLUMN_TAGS + " TEXT, " +
-                COLUMN_URL + " TEXT" + ")");
+                COLUMN_URL + " TEXT, " +
+                COLUMN_METADATA + " TEXT" + ")");
     }
 
     @Override
@@ -97,6 +99,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 }
                 values.put(COLUMN_TAGS, tags);
                 values.put(COLUMN_URL, item.url);
+                values.put(COLUMN_METADATA, item.metadata);
 
                 mDB.insert(NAME, null, values);
             }
@@ -154,7 +157,8 @@ public class RSSDatabase extends SQLiteOpenHelper {
             String preview = c.getString(c.getColumnIndex(COLUMN_PREVIEW));
             String[] tags = c.getString(c.getColumnIndex(COLUMN_TAGS)).split(",");
             String url = c.getString(c.getColumnIndex(COLUMN_URL));
-            RSSItem item = new RSSItem(duration, title, content, preview, tags, url);
+            String metadata = c.getString(c.getColumnIndex(COLUMN_METADATA));
+            RSSItem item = new RSSItem(duration, title, content, preview, tags, url, metadata);
             items.add(item);
         }
 

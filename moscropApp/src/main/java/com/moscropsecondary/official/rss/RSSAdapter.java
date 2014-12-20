@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by ivon on 30/06/14.
@@ -55,11 +54,6 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.rss_list_card, null);
             view.setLayoutParams(new AbsListView.LayoutParams(GridView.AUTO_FIT, RSS_CARD_HEIGHT));
-            Random random = new Random();
-            int i = random.nextInt(5);
-            if (i >= 3) {       // 2/5 chance
-                view.setTag("hasImage");
-            }
         }
 
         RSSItem item = mItems.get(position);
@@ -70,48 +64,34 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         TextView timestampText = (TextView) view.findViewById(R.id.CardTimestamp);
         TextView title = (TextView) view.findViewById(R.id.rlc_title);
 
+        String[] metadata = item.metadata.split(",");
+
         // Set background color
         int color = Color.WHITE;
-        Random random = new Random();
-        int randomInt = random.nextInt(4);
-        switch (randomInt) {
-            case 0:
-                color = 0xff16a085;
-                break;
-            case 1:
-                color = 0xff4CAF50;
-                break;
-            case 2:
-                color = 0xffFFC107;
-                break;
-            case 3:
-                color = 0xff673AB7;
-                break;
+        if (metadata.length >= 1) {
+            switch (Integer.parseInt(metadata[0])) {
+                case 0:
+                    color = 0xff16a085;
+                    break;
+                case 1:
+                    color = 0xff4CAF50;
+                    break;
+                case 2:
+                    color = 0xffF44336;
+                    break;
+                case 3:
+                    color = 0xff673AB7;
+                    break;
+            }
         }
         view.setBackgroundColor(color);
 
         // Set background image
         if (bgImage != null) {
-
-            if (view.getTag() != null && ((String) view.getTag()).equals("hasImage")) {
-                String uri = "";
-                randomInt = random.nextInt(4);
-                switch (randomInt) {
-                    case 0:
-                        uri = "https://nsidc.org/sites/nsidc.org/files/images//snowycreek.jpg";
-                        break;
-                    case 1:
-                        uri = "http://media.komonews.com/images/130129_silverdale_snow_file_lg.jpg";
-                        break;
-                    case 2:
-                        uri = "http://www.voicechronicle.com/wp-content/uploads/2014/11/weather_snow_1234_pg_E1.jpg";
-                        break;
-                    case 3:
-                        uri = "http://michaelpohlman.files.wordpress.com/2012/01/snow_blizzard.jpg";
-                        break;
-                }
+            if (metadata.length >= 2) {
+                bgImage.setVisibility(View.VISIBLE);
                 Picasso.with(getContext())
-                        .load(uri)
+                        .load(metadata[1])
                         .fit().centerCrop()
                         .into(bgImage);
             } else {
@@ -121,33 +101,22 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         // Set icon
         if (tagIcon != null) {
-
-            String uri = "";
-            randomInt = random.nextInt(4);
-            switch (randomInt) {
-                case 0:
-                    uri = "https://nsidc.org/sites/nsidc.org/files/images//snowycreek.jpg";
-                    break;
-                case 1:
-                    uri = "http://media.komonews.com/images/130129_silverdale_snow_file_lg.jpg";
-                    break;
-                case 2:
-                    uri = "http://www.voicechronicle.com/wp-content/uploads/2014/11/weather_snow_1234_pg_E1.jpg";
-                    break;
-                case 3:
-                    uri = "http://michaelpohlman.files.wordpress.com/2012/01/snow_blizzard.jpg";
-                    break;
+            if (!item.tags[0].equals(RSSTagCriteria.NO_IMAGE)) {
+                tagIcon.setVisibility(View.VISIBLE);
+                Picasso.with(getContext())
+                        .load(item.tags[0])
+                        .fit().centerCrop()
+                        .into(tagIcon);
+            } else {
+                tagIcon.setVisibility(View.GONE);
             }
-            Picasso.with(getContext())
-                    .load(uri)
-                    .fit().centerCrop()
-                    .into(tagIcon);
         }
 
         // Set tags list
         if (tagListText != null) {
             String tags = "";
-            for (int i=0; i<item.tags.length; i++) {
+            // Start at i=1 because tags[0] is used to store image url
+            for (int i=1; i<item.tags.length; i++) {
                 tags += item.tags[i];
                 if (i < item.tags.length-1) {
                     tags += ", ";

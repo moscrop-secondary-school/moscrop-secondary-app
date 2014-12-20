@@ -74,12 +74,12 @@ public class RSSParser {
             }
         }
 
-        String[] tags = extractTags(entryObject, title);
+        String[] tags = extractTags(entryObject);
 
         return new RSSItem(date, title, content, tags, url);
     }
 
-    private String[] extractTags(JSONObject entryObject, String title) {
+    private String[] extractTags(JSONObject entryObject) {
 
         // Get a list of categories
         List<String> categories = new ArrayList<String>();
@@ -103,18 +103,24 @@ public class RSSParser {
             //Logger.error("RSSParser.extractTags(): caught JSONException while parsing authors for " + title, e);
         }
 
+        RSSTagCriteria firstMatchedCriteria = null;
+
         // Check if it matches criteria
         ArrayList<String> tags = new ArrayList<String>();
         for (RSSTagCriteria criteria : mCriteria) {
             if ((criteria.category != null && categories.contains(criteria.category)) || (criteria.author != null && authors.contains(criteria.author))) {
                 tags.add(criteria.name);
+                if (firstMatchedCriteria == null) {
+                    firstMatchedCriteria = criteria;
+                }
             }
         }
 
         // Convert list to array
-        String[] tagsArray = new String[tags.size()];
-        for (int i=0; i<tagsArray.length; i++) {
-            tagsArray[i] = tags.get(i);
+        String[] tagsArray = new String[tags.size()+1];
+        tagsArray[0] = firstMatchedCriteria.imageUrl;
+        for (int i=1; i<tagsArray.length; i++) {
+            tagsArray[i] = tags.get(i-1);
         }
 
         return tagsArray;
