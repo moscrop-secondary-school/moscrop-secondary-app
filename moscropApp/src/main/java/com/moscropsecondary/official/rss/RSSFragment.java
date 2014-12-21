@@ -50,7 +50,8 @@ public class RSSFragment extends Fragment
     private static final String KEY_TAG = "tag";
     private static final String KEY_POSITION = "position";
 
-    private static boolean isFirstLaunchOfThisFragmentType = true;
+    private static final long STALE_POST_THRESHOLD = 5*60*1000;
+    private static long lastRefreshMillis = 0;
 
 	private String mBlogId = "";
     private String mTag = "";
@@ -119,12 +120,11 @@ public class RSSFragment extends Fragment
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean autoRefresh = prefs.getBoolean(Preferences.Keys.AUTO_REFRESH, Preferences.Default.AUTO_REFRESH);
-            boolean loadOnline = isFirstLaunchOfThisFragmentType && (autoRefresh && (savedInstanceState == null));
+            boolean existingLoadedPostsAreStale = (System.currentTimeMillis() - lastRefreshMillis) > STALE_POST_THRESHOLD;
+            boolean loadOnline = existingLoadedPostsAreStale && (autoRefresh && (savedInstanceState == null));
             loadFeed(false, false, loadOnline, true, false);
         }
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
-
-        isFirstLaunchOfThisFragmentType = false;
 
         return mContentView;
     }
@@ -282,6 +282,10 @@ public class RSSFragment extends Fragment
                 mAppend = append;
                 mOnlineEnabled = onlineEnabled;
                 mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline && mOnlineEnabled;
+
+                if (mOnlineEnabled) {
+                    lastRefreshMillis = System.currentTimeMillis();
+                }
 
                 getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
