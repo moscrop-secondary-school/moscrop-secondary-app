@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.rss.CardUtil.CardProcessor;
-import com.moscropsecondary.official.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -59,7 +58,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         RSSItem item = mItems.get(position);
 
         ImageView bgImage = (ImageView) view.findViewById(R.id.CardBgImg);
-        CircularImageView tagIcon = (CircularImageView) view.findViewById(R.id.CardTagIcon);
+        ImageView tagIcon = (ImageView) view.findViewById(R.id.CardTagIcon);
         TextView tagListText = (TextView) view.findViewById(R.id.CardTagList);
         TextView timestampText = (TextView) view.findViewById(R.id.CardTimestamp);
         TextView title = (TextView) view.findViewById(R.id.rlc_title);

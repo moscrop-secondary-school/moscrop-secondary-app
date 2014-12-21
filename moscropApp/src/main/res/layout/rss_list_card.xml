@@ -18,11 +18,10 @@
         android:layout_marginLeft="8dp"
         android:orientation="horizontal">
 
-        <com.moscropsecondary.official.view.CircularImageView
+        <ImageView
             android:id="@+id/CardTagIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:border="false"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_gravity="top|left"/>
 
         <LinearLayout
