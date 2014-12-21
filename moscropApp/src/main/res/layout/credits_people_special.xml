@@ -32,16 +32,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
-                <com.moscropsecondary.official.view.CircularImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imgAvatar"
                     android:layout_width="128dp"
                     android:layout_height="128dp"
                     android:layout_centerInParent="true"
-                    android:layout_margin="8dp"
-                    app:border="true"
-                    app:border_color="?attr/text"
-                    app:border_width="2dp"
-                    app:shadow="true" />
+                    android:layout_margin="8dp"/>
 
                 <ImageView
                     android:id="@+id/imgExpCol"

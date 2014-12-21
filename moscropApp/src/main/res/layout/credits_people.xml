@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <com.moscropsecondary.official.view.CircularImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgAvatar"
                 android:layout_width="56dp"
                 android:layout_height="56dp"

@@ -12,11 +12,12 @@ import android.widget.TextView;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.model.CreditsPeopleItem;
 import com.moscropsecondary.official.util.RoundTransform;
-import com.moscropsecondary.official.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreditsPeopleAdapter extends BaseAdapter
 {
@@ -94,7 +95,7 @@ public class CreditsPeopleAdapter extends BaseAdapter
 					convertView = mInflater.inflate(R.layout.credits_people_special, parent, false);
 
 					holder.mCard = (LinearLayout) convertView.findViewById(R.id.Card);
-					holder.imgAvatar = (CircularImageView) convertView.findViewById(R.id.imgAvatar);
+					holder.imgAvatar = (CircleImageView) convertView.findViewById(R.id.imgAvatar);
 					holder.imgBanner = (ImageView) convertView.findViewById(R.id.imgBanner);
 					holder.txtName = (TextView) convertView.findViewById(R.id.txtName);
 					holder.txtTagline = (TextView) convertView.findViewById(R.id.txtTagline);
@@ -105,7 +106,7 @@ public class CreditsPeopleAdapter extends BaseAdapter
 					convertView = mInflater.inflate(R.layout.credits_people, parent, false);
 					
 					holder.mCard = (LinearLayout) convertView.findViewById(R.id.Card);
-					holder.imgAvatar = (CircularImageView) convertView.findViewById(R.id.imgAvatar);
+					holder.imgAvatar = (CircleImageView) convertView.findViewById(R.id.imgAvatar);
 					holder.imgBanner = (ImageView) convertView.findViewById(R.id.imgBanner);
 					holder.txtName = (TextView) convertView.findViewById(R.id.txtName);
 					holder.txtTagline = (TextView) convertView.findViewById(R.id.txtTagline);
@@ -157,7 +158,7 @@ public class CreditsPeopleAdapter extends BaseAdapter
 	private class ViewHolder
 	{
 		public LinearLayout mCard;
-		public CircularImageView imgAvatar;
+		public CircleImageView imgAvatar;
 		public ImageView imgBanner;
 		public TextView txtName;
 		public TextView txtTagline;
