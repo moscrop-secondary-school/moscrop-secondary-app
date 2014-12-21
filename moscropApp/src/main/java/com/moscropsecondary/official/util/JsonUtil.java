@@ -53,9 +53,7 @@ public class JsonUtil {
                 inputStream = entity.getContent();
 
                 // Log downloaded data size
-                if (Logger.DEBUG) {
-                    inputStream = countBytes(inputStream);
-                }
+                //inputStream = countBytes(inputStream);
 
                 // json is UTF-8 by default
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
