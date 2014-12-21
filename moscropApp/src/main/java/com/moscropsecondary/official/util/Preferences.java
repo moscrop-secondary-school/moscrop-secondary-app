@@ -12,7 +12,7 @@ public class Preferences {
     public static class Default {
         public static final String THEME = "0";
         public static final Set<String> TAGS = new HashSet<String>(Arrays.asList(new String[] { "Official" }));
-        public static final int LOAD_LIMIT = 25;
+        public static final int LOAD_LIMIT = 24;
         public static final boolean AUTO_REFRESH = true;
     }
 

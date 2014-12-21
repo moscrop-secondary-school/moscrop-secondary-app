@@ -49,6 +49,9 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         String version = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
 
         if (!mShowCacheWhileLoadingOnline && mOnlineEnabled) {
+
+            // Load online first, then offline if needed
+
             List<RSSItem> list = tryGetFullLoad();
             if (list == null) {
                 list = getListOnly();
@@ -56,25 +59,32 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
 
             int result;
             String newVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
-            if (newVersion.equals(version)) {
+
+            if (!mAppend && newVersion.equals(version)) {
                 result = RSSResult.RESULT_REDUNDANT;
             } else {
                 result = RSSResult.RESULT_OK;
             }
 
             return new RSSResult(version, result, list, mAppend);
+
         } else {
+
+            // Load offline first, then online if needed
+
             List<RSSItem> list = getListOnly();
             if (list.size() == 0) {
                 list = tryGetFullLoad();
             }
 
             int result;
+
             if (mShowCacheWhileLoadingOnline) {
                 result = RSSResult.RESULT_REDO_ONLINE;
             } else {
                 result = RSSResult.RESULT_OK;
             }
+
             return new RSSResult(version, result, list, mAppend);
         }
     }

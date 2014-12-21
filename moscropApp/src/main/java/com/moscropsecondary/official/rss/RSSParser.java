@@ -22,6 +22,8 @@ import java.util.List;
  */
 public class RSSParser {
 
+    public static final int PAGE_SIZE = Preferences.Default.LOAD_LIMIT;
+
     public static final String NEWSLETTER_TAG = "newsletter";
     public static final String STUDENT_SUBS_TAG = "studentsubs";
 
@@ -138,7 +140,7 @@ public class RSSParser {
     }
 
     private String getFeedUrlFromId(String blogId) {
-        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=25";
+        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=" + PAGE_SIZE;
     }
 
     private void saveUpdateInfo(String version) {
