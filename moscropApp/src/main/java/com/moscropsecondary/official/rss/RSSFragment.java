@@ -113,11 +113,12 @@ public class RSSFragment extends Fragment
         mListView.setOnScrollListener(this);
 
         if (firstLaunch()) {
-            loadFeed(false, false, true, false, false);    // No cache to load anyways
+            loadFeed(false, false, true, true, false);      // Just in case there is some cache
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean autoRefresh = prefs.getBoolean(Preferences.Keys.AUTO_REFRESH, Preferences.Default.AUTO_REFRESH);
             boolean loadOnline = autoRefresh && (savedInstanceState == null);
+            //boolean showCacheFirst = loadOnline;
             loadFeed(false, false, loadOnline, true, false);
         }
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
@@ -277,7 +278,7 @@ public class RSSFragment extends Fragment
 
                 mAppend = append;
                 mOnlineEnabled = onlineEnabled;
-                mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline;
+                mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline && mOnlineEnabled;
 
                 getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
