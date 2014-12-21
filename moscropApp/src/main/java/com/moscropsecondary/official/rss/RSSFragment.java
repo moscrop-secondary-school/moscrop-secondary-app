@@ -49,7 +49,9 @@ public class RSSFragment extends Fragment
     private static final String KEY_BLOGID = "blog_id";
     private static final String KEY_TAG = "tag";
     private static final String KEY_POSITION = "position";
-	
+
+    private static boolean isFirstLaunchOfThisFragmentType = true;
+
 	private String mBlogId = "";
     private String mTag = "";
     private boolean mAppend = false;
@@ -117,11 +119,12 @@ public class RSSFragment extends Fragment
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean autoRefresh = prefs.getBoolean(Preferences.Keys.AUTO_REFRESH, Preferences.Default.AUTO_REFRESH);
-            boolean loadOnline = autoRefresh && (savedInstanceState == null);
-            //boolean showCacheFirst = loadOnline;
+            boolean loadOnline = isFirstLaunchOfThisFragmentType && (autoRefresh && (savedInstanceState == null));
             loadFeed(false, false, loadOnline, true, false);
         }
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
+
+        isFirstLaunchOfThisFragmentType = false;
 
         return mContentView;
     }
