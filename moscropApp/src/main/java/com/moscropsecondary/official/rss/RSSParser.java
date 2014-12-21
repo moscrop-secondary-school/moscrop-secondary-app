@@ -34,10 +34,17 @@ public class RSSParser {
         mContext = context;
         mCriteria = RSSTagCriteria.getCriteriaList(context);
     }
+
     private String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
         JSONObject updated = feed.getJSONObject("updated");
         return updated.getString("$t");
+    }
+
+    private int getTotalResultsCount(JSONObject jsonObject) throws JSONException {
+        JSONObject feed = jsonObject.getJSONObject("feed");
+        JSONObject totalResults = feed.getJSONObject("openSearch$totalResults");
+        return Integer.parseInt(totalResults.getString("$t"));
     }
 
     private List<RSSItem> getEntriesListFromJsonObject(JSONObject jsonObject) throws JSONException {
@@ -139,8 +146,38 @@ public class RSSParser {
         }
     }
 
-    private String getFeedUrlFromId(String blogId) {
-        return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=" + PAGE_SIZE;
+    private static class RSSInfo {
+        private final String version;
+        private final int postCount;
+
+        private RSSInfo(String version, int postCount) {
+            this.version = version;
+            this.postCount = postCount;
+        }
+    }
+
+    private RSSInfo getRssInfo(Context context, String url) throws JSONException {
+        JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
+        if (jsonObject != null) {
+            String timestamp = getUpdatedTimeFromJsonObject(jsonObject);
+            int resultCount = getTotalResultsCount(jsonObject);
+            return new RSSInfo(timestamp, resultCount);
+        } else {
+            return null;
+        }
+    }
+
+    private String getStoredVersion() {
+        SharedPreferences prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        return prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
+    }
+
+    private String getFeedUrlFromId(String blogId, boolean headerInfoOnly) {
+        if (headerInfoOnly) {
+            return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=0";
+        } else {
+            return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=" + PAGE_SIZE;
+        }
     }
 
     private void saveUpdateInfo(String version) {
@@ -152,106 +189,119 @@ public class RSSParser {
 
     public void parseAndSave(String blogId, String lastFeedVersion, boolean append) {
 
+        //Logger.log("---");
+
         if (!append) {
 
-            // Get the list of events from the URL
-            RSSFeed feed = null;
+            //Logger.log("Normal load");
+
+            // Determine if a full load is needed
+            RSSInfo info = null;
             try {
-                String url = getFeedUrlFromId(blogId);
-                feed = getRssFeed(mContext, url);
+                String url = getFeedUrlFromId(blogId, true);
+                //Logger.log("Loading info from: " + url);
+                info = getRssInfo(mContext, url);
             } catch (JSONException e) {
-                //Logger.error("RSSParser.parseAndSave()", e);
+                //Logger.error("RSSParser.parseAndSave() info", e);
             }
 
-            if (feed != null) {
+            if (info != null) {
+                //Logger.log("Downloaded version: " + info.version);
+                //Logger.log("Stored version:     " + getStoredVersion());
+            } else {
+                //Logger.log("Info is null!!!");
+            }
 
-                // We just updated, so update records
-                // with current time and the version we
-                // just downloaded regardless of whether
-                // updating the database was needed
+            if (info != null && !info.version.equals(getStoredVersion())) {
 
-                saveUpdateInfo(feed.version);
+                // Get the list of events from the URL
+                RSSFeed feed = null;
+                try {
+                    String url = getFeedUrlFromId(blogId, false);
+                    //Logger.log("Loading feed from: " + url);
+                    feed = getRssFeed(mContext, url);
+                } catch (JSONException e) {
+                    //Logger.error("RSSParser.parseAndSave() feed", e);
+                }
 
-                String newFeedVersion = feed.version;
-                if (!newFeedVersion.equals(lastFeedVersion)) {
+                if (feed != null) {
 
-                    // New version. All our cache is invalid.
-                    // Exterminate! Exterminate the cache!
-                    // Of course, then replace with new data.
+                    // We just updated, so update records
+                    // with current time and the version we
+                    // just downloaded regardless of whether
+                    // updating the database was needed
 
-                    RSSDatabase database = new RSSDatabase(mContext);
-                    database.deleteAll();
-                    database.save(feed.items);
-                    database.close();
+                    saveUpdateInfo(feed.version);
+
+                    String newFeedVersion = feed.version;
+                    if (!newFeedVersion.equals(lastFeedVersion)) {
+
+                        // New version. All our cache is invalid.
+                        // Exterminate! Exterminate the cache!
+                        // Of course, then replace with new data.
+
+                        RSSDatabase database = new RSSDatabase(mContext);
+                        database.deleteAll();
+                        database.save(feed.items);
+                        database.close();
+                    }
                 }
             }
 
         } else {
 
-            RSSFeed feed = null;
+            //Logger.log("Append load");
+
             RSSDatabase database = new RSSDatabase(mContext);
+
+            // Determine if a full load is needed
+            RSSInfo info = null;
             try {
-                String url = getFeedUrlFromId(blogId);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                String publishedMaxStr = sdf.format(new Date(database.getOldestPostDate(null)));
-                url = url + "&published-max=" + publishedMaxStr;
-                feed = getRssFeed(mContext, url);
+                String url = getFeedUrlFromId(blogId, true);
+                info = getRssInfo(mContext, url);
             } catch (JSONException e) {
                 //Logger.error("RSSParser.parseAndSave()", e);
             }
 
-            if (feed != null) {
-                // We just updated, so update records
-                // with current time and the version we
-                // just downloaded regardless of whether
-                // updating the database was needed
-
-                saveUpdateInfo(feed.version);
-
-
-                // New version. All our cache is invalid.
-                // Exterminate! Exterminate the cache!
-                // Of course, then replace with new data.
-
-                database.save(feed.items);
+            if (info != null) {
+                //Logger.log("Downloaded count: " + info.postCount);
+                //Logger.log("Stored count:     " + database.getCount());
+            } else {
+                //Logger.log("Info is null!!!");
             }
-            database.close();
+
+            if (info != null && info.postCount > database.getCount()) {
+
+                RSSFeed feed = null;
+                try {
+                    String url = getFeedUrlFromId(blogId, false);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    String publishedMaxStr = sdf.format(new Date(database.getOldestPostDate(null)));
+                    url = url + "&published-max=" + publishedMaxStr;
+                    feed = getRssFeed(mContext, url);
+                } catch (JSONException e) {
+                    //Logger.error("RSSParser.parseAndSave()", e);
+                }
+
+                if (feed != null) {
+                    // We just updated, so update records
+                    // with current time and the version we
+                    // just downloaded regardless of whether
+                    // updating the database was needed
+
+                    saveUpdateInfo(feed.version);
+
+
+                    // New version. All our cache is invalid.
+                    // Exterminate! Exterminate the cache!
+                    // Of course, then replace with new data.
+
+                    database.save(feed.items);
+                }
+                database.close();
+            }
         }
 
+        //Logger.log("---");
     }
-
-    /**
-     * Download, parse, and store data from a Blogger RSS feed. This method
-     * will load all data from the whole calendar. Unlike parseAndSave(String, long, String),
-     * this method does not check for RSS version and will disregard any previously
-     * saved data. This method will delete all previously saved data and replace it
-     * with freshly downloaded data. Because this takes a long time
-     * and is often unnecessary, it is only recommended to use this method
-     * when loading for the first time. Afterwards it is recommeneded to keep
-     * track of updates and use parseAndSave(String, long, String).
-     *
-     * @param blogId
-     *      ID of the Blogger RSS feed
-     */
-   /* public void parseAndSaveAll(String blogId) {
-
-        Logger.log("Processing all");
-
-        // Get the list of events from the URL
-        RSSFeed feed = null;
-        try {
-            String url = getFeedUrlFromId(blogId);
-            feed = getRssFeed(mContext, url);
-        } catch (JSONException e) {
-            //Logger.error("RSSParser.parseAndSave()", e);
-        }
-
-        if (feed != null) {
-            saveUpdateInfo(feed.version);
-            RSSDatabase database = new RSSDatabase(mContext);
-            database.deleteAll();
-            database.save(feed.items);
-            database.close();
-        }
-    }*/
 }

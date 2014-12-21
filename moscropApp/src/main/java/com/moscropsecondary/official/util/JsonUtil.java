@@ -13,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +51,12 @@ public class JsonUtil {
                 // Read response
                 HttpEntity entity = response.getEntity();
                 inputStream = entity.getContent();
+
+                // Log downloaded data size
+                if (Logger.DEBUG) {
+                    inputStream = countBytes(inputStream);
+                }
+
                 // json is UTF-8 by default
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
                 StringBuilder sb = new StringBuilder();
@@ -75,6 +83,59 @@ public class JsonUtil {
         }
 
         return resultObj;
+    }
+
+    private static byte[] toByteArray(InputStream is) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        try {
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            buffer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return buffer.toByteArray();
+    }
+
+    private static InputStream countBytes(InputStream is) {
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int len;
+            int count = 0;
+            while ((len = is.read(buffer)) > -1) {
+                baos.write(buffer, 0, len);
+                count++;
+            }
+            baos.flush();
+
+            InputStream is1 = new ByteArrayInputStream(baos.toByteArray());
+            InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+
+            byte[] bytes = toByteArray(is1);
+            Logger.log("Downloaded " + bytes.length + " bytes of data");
+
+
+            return is2;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return is;
     }
 
     public static JSONObject getJsonObjectFromFile(File file) throws JSONException, IOException {

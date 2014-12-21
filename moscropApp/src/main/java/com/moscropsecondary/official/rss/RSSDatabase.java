@@ -109,6 +109,14 @@ public class RSSDatabase extends SQLiteOpenHelper {
         }
     }
 
+    public int getCount() {
+        String[] columns = new String[] { _ID };
+        Cursor c = mDB.query(NAME, columns, null, null, null, null, null, null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
+
     /**
      * Get all items stored in the database
      * @return list of RSSItems
