@@ -72,11 +72,11 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             switch(position % 4) {
                 case 0:
                 case 3:
-                    color = 0xff16a085;
+                    color = R.color.backgrounddd;
                     break;
                 case 1:
                 case 2:
-                    color = 0xff673AB7;
+                    color = 0xff34495e;
                     break;
             }
         }
