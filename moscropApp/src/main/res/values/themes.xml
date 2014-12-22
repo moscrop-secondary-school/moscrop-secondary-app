@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.Base.Light" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/pmoscrop</item>
-        <item name="colorPrimaryDark">@color/pmoscrop2</item>
+        <item name="colorPrimary">@color/moscrop</item>
+        <item name="colorPrimaryDark">@color/moscrop2</item>
         <item name="colorAccent">@color/accent_indigo</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -73,12 +73,12 @@
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner</item>
 
-        <item name="toolbar_color">@color/pmoscrop</item>
+        <item name="toolbar_color">@color/moscrop</item>
 
         <item name="rss_card_text_1">@color/text</item>
         <item name="rss_card_text_2">@color/dtext</item>
-        <item name="rss_card_bg_1">@color/backgroundd</item>
-        <item name="rss_card_bg_2">@color/moscrop</item>
+        <item name="rss_card_bg_1">@color/rss_card_bg_1</item>
+        <item name="rss_card_bg_2">@color/rss_card_bg_2</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
