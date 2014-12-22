@@ -9,10 +9,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +26,7 @@ import android.widget.Toast;
 
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
@@ -44,10 +49,15 @@ public class CalendarFragment extends Fragment
     private View mContentView;
     private Date mSelectedDate;
 
+    private View mCaldroidFrame;
     private CaldroidFragment mCaldroid;
     private ListView mListView;
     private TextView mHeaderView;
     private TextView mFooterView;
+    private View mToolbarTitle;
+
+    private boolean mCalendarIsShowing = false;
+    private boolean mSearchViewExpanded = false;
 
     private int mYear = -1;
     private int mMonth = -1;     // java.util.Calendar months. One less than actual month.
@@ -97,6 +107,9 @@ public class CalendarFragment extends Fragment
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.calendar_frame, mCaldroid).commit();
 
+        mCaldroidFrame = mContentView.findViewById(R.id.calendar_frame);
+        mCaldroidFrame.setVisibility(View.GONE);
+
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
@@ -110,6 +123,25 @@ public class CalendarFragment extends Fragment
         }).start();
 
     	return mContentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        addTitleWithArrow();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.removeView(mToolbarTitle);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mSearchViewExpanded = false;
     }
 
     @Override
@@ -133,8 +165,44 @@ public class CalendarFragment extends Fragment
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint("Search events");
+
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                mSearchViewExpanded = true;
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mSearchViewExpanded = false;
+                return true;
+            }
+        });
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void addTitleWithArrow() {
+        if (!mSearchViewExpanded) {
+            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.spinner_actionbar_title, toolbar, false);
+            ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setText("Events");
+            mToolbarTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCalendarIsShowing) {
+                        hideCalendar();
+                    } else {
+                        showCalendar();
+                    }
+                }
+            });
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mToolbarTitle, lp);
+        }
     }
 
     private void downloadCalendar() {
@@ -142,7 +210,6 @@ public class CalendarFragment extends Fragment
         // Check if provider is empty
         CalendarDatabase db = new CalendarDatabase(getActivity());
         int count = db.getCount();
-        db.close();
 
         SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.GCAL_LAST_UPDATED, Preferences.App.Default.GCAL_LAST_UPDATED);
@@ -175,14 +242,22 @@ public class CalendarFragment extends Fragment
 
         // Update UI when done loading
         if (getActivity() != null) {
+            final List<GCalEvent> events = db.getAllEvents();
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
-                    mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
+                    mEvents.clear();
+                    for (GCalEvent event : events) {
+                        mEvents.add(event);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    //mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
+                    //mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
                 }
             });
         }
+
+        db.close();
     }
 
     private void loadEventsIntoCaldroid() {
@@ -206,7 +281,7 @@ public class CalendarFragment extends Fragment
     final CaldroidListener mCaldroidListener = new CaldroidListener() {
         @Override
         public void onSelectDate(Date date, View view) {
-            if (date != null) {
+            /*if (date != null) {
                 // Only update if there isn't an existing selected date or
                 // if the new date differs from the existing selected date
                 if (mSelectedDate == null || !date.equals(mSelectedDate)) {
@@ -215,7 +290,8 @@ public class CalendarFragment extends Fragment
                 }
             } else {
                 Logger.log("Selected day is null");
-            }
+            }*/
+            hideCalendar();
         }
 
         @Override
@@ -234,6 +310,16 @@ public class CalendarFragment extends Fragment
             }, 1000);
         }
     };
+
+    private void showCalendar() {
+        mCalendarIsShowing = true;
+        mCaldroidFrame.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCalendar() {
+        mCalendarIsShowing = false;
+        mCaldroidFrame.setVisibility(View.GONE);
+    }
 
     private void updateEventsList(Date date) {
 

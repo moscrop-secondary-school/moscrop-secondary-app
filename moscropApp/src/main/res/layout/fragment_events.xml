@@ -1,8 +1,11 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ExtendedCalendarView="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/daily_events_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -12,43 +15,7 @@
             android:id="@+id/calendar_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <!-- Change the values of things that begin with ExtendedCalendarView
-             dateTextColor, disabledTextColor are ColorStateLists
-             singleEventIcon, multiEventIcon are Drawables
-             Everything else is a color, as in #AARRGGBB
-             You may use attributes for all the values -->
-
-        <!-- @color/date_number_text_color is the ColorStateList used
-             by the library. I copied it over as a model/template.
-             Feel free to replace that with an attribute that links
-             to multiple ColorStateLists, whatever. You can base them
-             all on date_number_text_color. -->
-
-        <!-- Drawables single_event and multi_event are also models/templates
-             I copied from ExtendedCalendarView. Feel free to replace them
-             with attributes that link to different light/dark drawables,
-             but try to just change the colors of the light/dark drawables
-             and keep the same shape -->
-
-        <!--<com.tyczj.extendedcalendarview.ExtendedCalendarView
-            android:id="@+id/calendar"
-            android:layout_width="match_parent"
-            android:layout_height="316dp"
-            ExtendedCalendarView:backgroundColor="#FF0000FF"
-            ExtendedCalendarView:dateTextColor="@color/date_number_text_color"
-            ExtendedCalendarView:disabledTextColor="#FF00FFFF"
-            ExtendedCalendarView:weekTextColor="#FFFF00FF"
-            ExtendedCalendarView:titleTextColor="#FFFF0000"
-            ExtendedCalendarView:titleBackgroundColor="#FF00FF00"
-            ExtendedCalendarView:singleEventIcon="@drawable/single_event"
-            ExtendedCalendarView:multiEventIcon="@drawable/multi_event"/>-->
 
     </android.support.v7.widget.CardView>
 
-    <ListView
-        android:id="@+id/daily_events_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-</LinearLayout>
+</FrameLayout>
