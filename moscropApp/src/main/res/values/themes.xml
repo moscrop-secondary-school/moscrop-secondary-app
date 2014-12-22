@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.Base.Light" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/primary_indigo</item>
-        <item name="colorPrimaryDark">@color/primary_dark_indigo</item>
+        <item name="colorPrimary">@color/moscrop</item>
+        <item name="colorPrimaryDark">@color/moscrop2</item>
         <item name="colorAccent">@color/accent_indigo</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -22,7 +22,7 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@color/dbackground</item>
         <item name="background_card">@drawable/background_card_black</item>
-        <item name="title_card">@color/text</item>
+        <item name="title_card">@color/dtext</item>
         <item name="text_card">@color/card_black_text</item>
     </style>
 
@@ -73,12 +73,10 @@
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner</item>
 
-        <!-- Toolbar stuff, move wherever you want
-             then delete this comment -->
-        <item name="toolbar_color">?attr/colorPrimary</item>
+        <item name="toolbar_color">@color/moscrop</item>
 
         <item name="rss_card_text_1">@color/text</item>
-        <item name="rss_card_text_2">@color/text</item>
+        <item name="rss_card_text_2">@color/dtext</item>
         <item name="rss_card_bg_1">@color/background</item>
         <item name="rss_card_bg_2">@color/moscrop</item>
     </style>

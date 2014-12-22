@@ -92,8 +92,9 @@
         Primary dark colors: 700
         Accent colors: A200 of accent color
     -->
-
-    <color name="moscrop">#c2c8cf</color>
+<!-- dark: lower brightness by 15-->
+    <color name="moscrop">#ff4892cf</color>
+    <color name="moscrop2">#ff4784c0</color>
 
     <color name="primary_indigo">#34495e</color>
     <color name="primary_dark_indigo">#2c3e50</color>

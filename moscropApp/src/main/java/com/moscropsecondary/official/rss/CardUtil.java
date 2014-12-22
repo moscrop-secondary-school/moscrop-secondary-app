@@ -15,6 +15,7 @@ public class CardUtil {
         public abstract int getMaxLines();
         public abstract int getCardColor();
     }
+    //TODO remove unused lines above?
 
     private static final HtmlCardProcessor mGenericCardProcessor = new HtmlCardProcessor();
     private static final HtmlCardProcessor mNewsCardProcessor = new HtmlCardProcessor(0xff33b5e5);
