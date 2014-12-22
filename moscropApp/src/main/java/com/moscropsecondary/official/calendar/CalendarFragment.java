@@ -25,12 +25,12 @@ import android.widget.Toast;
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
-import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,8 +50,6 @@ public class CalendarFragment extends Fragment
     private View mCaldroidFrame;
     private CaldroidFragment mCaldroid;
     private ListView mListView;
-    private TextView mHeaderView;
-    private TextView mFooterView;
     private View mToolbarTitle;
 
     private boolean mCalendarIsShowing = false;
@@ -85,12 +83,6 @@ public class CalendarFragment extends Fragment
         mAdapter = new EventListAdapter(getActivity(), new ArrayList<GCalEvent>());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
-
-        mHeaderView = new TextView(getActivity());
-        mHeaderView.setTextSize(20);
-        mListView.addHeaderView(mHeaderView, null, false);
-        mFooterView = new TextView(getActivity());
-        mFooterView.setText("No events planned for today");
 
         mCaldroid = new CaldroidFragment();
         Bundle args = new Bundle();
@@ -246,6 +238,8 @@ public class CalendarFragment extends Fragment
                     mAdapter.clear();
                     mAdapter.addAll(events);
                     mAdapter.notifyDataSetChanged();
+                    scrollTo(System.currentTimeMillis());
+
                     //mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
                     //mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
                 }
@@ -253,6 +247,21 @@ public class CalendarFragment extends Fragment
         }
 
         db.close();
+    }
+
+    private void scrollTo(long millis) {
+        int dayNumber = (int) (millis / EventListAdapter.DAY_MILLIS);
+        Logger.log("Today's date is: " + dayNumber);
+
+        int position = mAdapter.getPositionNearestToDay(dayNumber);
+
+        Logger.log("Scrolling to position: " + position + ", which is day " + mAdapter.getItem(position).dayNumber);
+
+        long dayMillis = mAdapter.getItem(position).dayNumber * EventListAdapter.DAY_MILLIS;
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ kk:mm:ss.ssss");
+        Logger.log("This is also known as " + sdf.format(new Date(dayMillis)));
+
+        mListView.setSelection(position);
     }
 
     private void loadEventsIntoCaldroid() {
@@ -286,6 +295,7 @@ public class CalendarFragment extends Fragment
             } else {
                 Logger.log("Selected day is null");
             }*/
+            scrollTo(date.getTime());
             hideCalendar();
         }
 
@@ -318,7 +328,7 @@ public class CalendarFragment extends Fragment
 
     private void updateEventsList(Date date) {
 
-        Logger.log("Updating events list");
+        /*Logger.log("Updating events list");
         mAdapter.clear();
 
         CalendarDatabase db = new CalendarDatabase(getActivity());
@@ -342,7 +352,7 @@ public class CalendarFragment extends Fragment
             mHeaderView.setText(dateStr);
         }
 
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();*/
     }
 
     public void doSearch(String query) {
@@ -351,6 +361,8 @@ public class CalendarFragment extends Fragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        Logger.log("You've clicked on position " + position);
 
         /*if (view != mHeaderView && view != mFooterView) {
 
