@@ -186,17 +186,19 @@ public class CalendarFragment extends Fragment
     }
 
     private void loadEventsIntoCaldroid() {
-        CalendarDatabase db = new CalendarDatabase(getActivity());
-        List<GCalEvent> events = db.getEventsForMonth(mYear, mMonth);
-        db.close();
+        if (getActivity() != null) {
+            CalendarDatabase db = new CalendarDatabase(getActivity());
+            List<GCalEvent> events = db.getEventsForMonth(mYear, mMonth);
+            db.close();
 
-        for (GCalEvent event : events) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(event.startTime);                                           // Set cal to event start time
-            while (cal.getTimeInMillis() < event.endTime-1) {                               // Loop through days within event range
-                Date date = cal.getTime();
-                mCaldroid.setBackgroundResourceForDate(R.color.primary_dark_green, date);   // Set background color of this day
-                cal.setTimeInMillis(cal.getTimeInMillis() + 24*60*60*1000);                 // Increment calendar by a day
+            for (GCalEvent event : events) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(event.startTime);                                               // Set cal to event start time
+                while (cal.getTimeInMillis() < event.endTime - 1) {                                 // Loop through days within event range
+                    Date date = cal.getTime();
+                    mCaldroid.setBackgroundResourceForDate(R.color.primary_dark_green, date);       // Set background color of this day
+                    cal.setTimeInMillis(cal.getTimeInMillis() + 24 * 60 * 60 * 1000);               // Increment calendar by a day
+                }
             }
         }
     }
