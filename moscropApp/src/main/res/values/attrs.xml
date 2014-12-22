@@ -46,5 +46,8 @@
         <attr name="credits_allan_banner" format="reference" />
         <attr name="credits_ivon_banner" format="reference" />
         <attr name="credits_hazhir_banner" format="reference" />
+
+        <attr name="rss_card_text_1" format="reference" />
+        <attr name="rss_card_text_2" format="reference" />
     </declare-styleable>
 </resources>

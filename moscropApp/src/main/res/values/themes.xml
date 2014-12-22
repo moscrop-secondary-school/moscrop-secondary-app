@@ -77,6 +77,8 @@
              then delete this comment -->
         <item name="toolbar_color">?attr/colorPrimary</item>
 
+        <item name="rss_card_text_1">@android:color/white</item>
+        <item name="rss_card_text_2">@android:color/white</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
@@ -117,6 +119,9 @@
         <item name="credits_allan_banner">@drawable/credits_allan_banner_d</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner_d</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner_d</item>
+
+        <item name="rss_card_text_1">@color/primary_orange</item>
+        <item name="rss_card_text_2">@color/accent_orange</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
@@ -167,6 +172,9 @@
         <item name="credits_allan_banner">@drawable/credits_allan_banner_t</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner_t</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner_t</item>
+
+        <item name="rss_card_text_1">@color/primary_orange</item>
+        <item name="rss_card_text_2">@color/accent_orange</item>
     </style>
 
 </resources>

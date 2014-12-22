@@ -1,7 +1,9 @@
 package com.moscropsecondary.official.rss;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +30,21 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
     private final int RSS_CARD_HEIGHT;
     List<RSSItem> mItems = null;
 
+    private final int textColor1;
+    private final int textColor2;
+
     public RSSAdapter(Context context, List<RSSItem> items) {
+
         super(context, android.R.layout.simple_list_item_1, items);
         mItems = items;
         RSS_CARD_HEIGHT = context.getResources().getDimensionPixelSize(R.dimen.rss_card_height);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(R.attr.rss_card_text_1, typedValue, true);
+        textColor1 = typedValue.data;
+        theme.resolveAttribute(R.attr.rss_card_text_2, typedValue, true);
+        textColor2 = typedValue.data;
     }
 
     public static class RSSAdapterItem {
@@ -66,21 +79,30 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         String[] metadata = item.metadata.split(",");
 
         // Set background color
-        int color = Color.WHITE;
-        if (metadata.length >= 1 || true) {
-            //switch (Integer.parseInt(metadata[0])) {
-            switch(position % 4) {
-                case 0:
-                case 3:
-                    color = R.color.backgrounddd;
-                    break;
-                case 1:
-                case 2:
-                    color = 0xff34495e;
-                    break;
-            }
+        int bgColor = Color.WHITE;
+        switch(position % 4) {
+            case 0:
+            case 3:
+                bgColor = R.color.backgrounddd;
+                break;
+            case 1:
+            case 2:
+                bgColor = 0xff34495e;
+                break;
         }
-        view.setBackgroundColor(color);
+        view.setBackgroundColor(bgColor);
+
+        int textColor = Color.WHITE;
+        switch(position % 4) {
+            case 0:
+            case 3:
+                textColor = textColor1;
+                break;
+            case 1:
+            case 2:
+                textColor = textColor2;
+                break;
+        }
 
         // Set background image
         if (bgImage != null) {
@@ -119,16 +141,19 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
                 }
             }
             tagListText.setText(tags);
+            tagListText.setTextColor(textColor);
         }
 
         // Set post time
         if (timestampText != null) {
             timestampText.setText(getRelativeTime(item.date));
+            timestampText.setTextColor(textColor);
         }
 
         // Set title
         if (title != null) {
             title.setText(item.title);
+            title.setTextColor(textColor);
         }
 
         return view;
