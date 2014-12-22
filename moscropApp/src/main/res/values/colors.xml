@@ -93,6 +93,8 @@
         Accent colors: A200 of accent color
     -->
 
+    <color name="moscrop">#c2c8cf</color>
+
     <color name="primary_indigo">#34495e</color>
     <color name="primary_dark_indigo">#2c3e50</color>
     <color name="accent_indigo">#ff4081</color>

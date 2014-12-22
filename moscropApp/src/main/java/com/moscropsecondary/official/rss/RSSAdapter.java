@@ -32,6 +32,8 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
     private final int textColor1;
     private final int textColor2;
+    private final int bgColor1;
+    private final int bgColor2;
 
     public RSSAdapter(Context context, List<RSSItem> items) {
 
@@ -45,6 +47,10 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         textColor1 = typedValue.data;
         theme.resolveAttribute(R.attr.rss_card_text_2, typedValue, true);
         textColor2 = typedValue.data;
+        theme.resolveAttribute(R.attr.rss_card_bg_1, typedValue, true);
+        bgColor1 = typedValue.data;
+        theme.resolveAttribute(R.attr.rss_card_bg_2, typedValue, true);
+        bgColor2 = typedValue.data;
     }
 
     public static class RSSAdapterItem {
@@ -79,30 +85,34 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         String[] metadata = item.metadata.split(",");
 
         // Set background color
-        int bgColor = Color.WHITE;
-        switch(position % 4) {
-            case 0:
-            case 3:
-                bgColor = R.color.backgrounddd;
-                break;
-            case 1:
-            case 2:
-                bgColor = 0xff34495e;
-                break;
-        }
-        view.setBackgroundColor(bgColor);
+//        int bgColor = Color.WHITE;
+//        switch(position % 4) {
+//            case 0:
+//            case 3:
+//                bgColor = R.color.backgrounddd;
+//                break;
+//            case 1:
+//            case 2:
+//                bgColor = 0xff34495e;
+//                break;
+//        }
+//        view.setBackgroundColor(bgColor);
 
-        int textColor = Color.WHITE;
+        int textColor = Color.TRANSPARENT;
+        int bgColor = Color.TRANSPARENT;
         switch(position % 4) {
             case 0:
             case 3:
                 textColor = textColor1;
+                bgColor = bgColor1;
                 break;
             case 1:
             case 2:
                 textColor = textColor2;
+                bgColor = bgColor2;
                 break;
         }
+        view.setBackgroundColor(bgColor);
 
         // Set background image
         if (bgImage != null) {
@@ -142,18 +152,21 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             }
             tagListText.setText(tags);
             tagListText.setTextColor(textColor);
+            tagListText.setBackgroundColor(bgColor);
         }
 
         // Set post time
         if (timestampText != null) {
             timestampText.setText(getRelativeTime(item.date));
             timestampText.setTextColor(textColor);
+            timestampText.setBackgroundColor(bgColor);
         }
 
         // Set title
         if (title != null) {
             title.setText(item.title);
             title.setTextColor(textColor);
+            title.setBackgroundColor(bgColor);
         }
 
         return view;
