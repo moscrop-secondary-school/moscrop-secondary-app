@@ -1,9 +1,7 @@
 package com.moscropsecondary.official.calendar;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,7 +60,6 @@ public class CalendarFragment extends Fragment
     private int mYear = -1;
     private int mMonth = -1;     // java.util.Calendar months. One less than actual month.
 
-    private List<GCalEvent> mEvents = new ArrayList<GCalEvent>();
     private EventListAdapter mAdapter;
     
     public static CalendarFragment newInstance(int position) {
@@ -85,7 +82,7 @@ public class CalendarFragment extends Fragment
         //insertDays();
 
         mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
-        mAdapter = new EventListAdapter(getActivity(), mEvents);
+        mAdapter = new EventListAdapter(getActivity(), new ArrayList<GCalEvent>());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
@@ -246,10 +243,8 @@ public class CalendarFragment extends Fragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mEvents.clear();
-                    for (GCalEvent event : events) {
-                        mEvents.add(event);
-                    }
+                    mAdapter.clear();
+                    mAdapter.addAll(events);
                     mAdapter.notifyDataSetChanged();
                     //mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
                     //mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
@@ -324,16 +319,14 @@ public class CalendarFragment extends Fragment
     private void updateEventsList(Date date) {
 
         Logger.log("Updating events list");
-        mEvents.clear();
+        mAdapter.clear();
 
         CalendarDatabase db = new CalendarDatabase(getActivity());
         List<GCalEvent> events = db.getEventsForDay(date);
-        for (GCalEvent event : events) {
-            mEvents.add(event);
-        }
+        mAdapter.addAll(events);
 
         mListView.removeFooterView(mFooterView);
-        if (mEvents.size() == 0) {
+        if (mAdapter.getCount() == 0) {
             mListView.addFooterView(mFooterView, null, false);
         }
 
@@ -359,7 +352,7 @@ public class CalendarFragment extends Fragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        if (view != mHeaderView && view != mFooterView) {
+        /*if (view != mHeaderView && view != mFooterView) {
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.event_dialog, null);
@@ -410,6 +403,6 @@ public class CalendarFragment extends Fragment
                 }
             });
             builder.create().show();
-        }
+        }*/
     }
 }
