@@ -152,21 +152,18 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             }
             tagListText.setText(tags);
             tagListText.setTextColor(textColor);
-            tagListText.setBackgroundColor(bgColor);
         }
 
         // Set post time
         if (timestampText != null) {
             timestampText.setText(getRelativeTime(item.date));
             timestampText.setTextColor(textColor);
-            timestampText.setBackgroundColor(bgColor);
         }
 
         // Set title
         if (title != null) {
             title.setText(item.title);
             title.setTextColor(textColor);
-            title.setBackgroundColor(bgColor);
         }
 
         return view;

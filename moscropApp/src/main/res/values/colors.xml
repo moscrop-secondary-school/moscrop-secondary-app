@@ -93,6 +93,10 @@
         Accent colors: A200 of accent color
     -->
 <!-- dark: lower brightness by 15-->
+
+    <color name="rss_card_bg_1">#ff94b7c7</color>
+    <color name="rss_card_bg_2">#ff52bacf</color>
+
     <color name="moscrop">#ff4892cf</color>
     <color name="moscrop2">#ff4784c0</color>
 

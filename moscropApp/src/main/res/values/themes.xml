@@ -77,8 +77,8 @@
 
         <item name="rss_card_text_1">@color/text</item>
         <item name="rss_card_text_2">@color/dtext</item>
-        <item name="rss_card_bg_1">@color/background</item>
-        <item name="rss_card_bg_2">@color/moscrop</item>
+        <item name="rss_card_bg_1">@color/rss_card_bg_1</item>
+        <item name="rss_card_bg_2">@color/rss_card_bg_2</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
