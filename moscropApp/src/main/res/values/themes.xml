@@ -26,18 +26,10 @@
         <item name="text_card">@color/card_black_text</item>
     </style>
 
-    <!-- Don't touch these generally. They're only to allow for version
-         specific attributes if needed -->
+    <style name="Theme.Base.Light.Versioned" parent="Theme.Base.Light" />
 
-    <style name="Theme.Base.Light.Versioned" parent="Theme.Base.Light">
-        <!-- Version specific attributes go here -->
-    </style>
+    <style name="Theme.Base.Dark.Versioned" parent="Theme.Base.Dark" />
 
-    <style name="Theme.Base.Dark.Versioned" parent="Theme.Base.Dark">
-        <!-- Version specific attributes go here -->
-    </style>
-
-    <!-- Actual themes where stuff happens -->
     <style name="Theme.Light" parent="Theme.Base.Light.Versioned">
         <item name="android:windowBackground">@color/backgroundd</item>  <!-- I recommend using #fffafafa instead -->
         <item name="rss_background">@color/backgroundd</item>
@@ -56,7 +48,6 @@
         <item name="backgroundd">@color/backgroundd</item>
         <item name="backgrounddd">@color/backgrounddd</item>
 
-        <!--navdrawer-->
         <item name="banner">@drawable/banner</item>
         <item name="drawer_icon_array">@array/drawer_icons_light</item>
 
@@ -69,7 +60,6 @@
         <item name="background_nav">@color/backgroundd</item>
         <item name="avatar">@drawable/avatar</item>
 
-        <!--banners-->
         <item name="credits_allan_banner">@drawable/credits_allan_banner</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner</item>
@@ -101,7 +91,6 @@
         <item name="backgroundd">@color/dbackgroundd</item>
         <item name="backgrounddd">@color/dbackgrounddd</item>
 
-        <!--navdrawer-->
         <item name="banner">@drawable/banner_dark</item>
         <item name="drawer_icon_array">@array/drawer_icons_dark</item>
 
@@ -115,9 +104,8 @@
         <item name="avatar">@drawable/avatar_dark</item>
 
         <item name="status">@color/primary_dark_indigo_d</item>
-        <item name="toolbar_color">?attr/colorPrimary</item>
+        <item name="toolbar_color">@color/primary_indigo_d</item>
 
-        <!--banners-->
         <item name="credits_allan_banner">@drawable/credits_allan_banner_d</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner_d</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner_d</item>
@@ -140,57 +128,30 @@
 
     <style name="Theme.Transparent" parent="Theme.Dark">
 
-        <!-- These attributes are what makes a "wallpaper" theme "wallpaper". -->
         <item name="android:windowBackground">@color/tdbackground</item>
         <item name="rss_background">@color/tdbackgrounddd</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
-        <!--<item name="drawer_shadow">@drawable/drawer_shadow_d</item>-->
 
-        <!-- Other stuff -->
         <item name="background_card">@drawable/background_card_tblack</item>
         <item name="card_picture_alpha">@string/card_picture_alpha_t</item>
-        <!--<item name="title_card">@color/dtext</item>-->
-        <!--<item name="text_card">@color/card_black_text</item>-->
         <item name="card_about">@drawable/selector_card_about_t</item>
 
-        <item name="colorPrimary">@color/primary_indigo_d</item>
-        <item name="colorPrimaryDark">@color/primary_dark_indigo_d</item>
         <item name="colorAccent">@color/accent_indigo_t</item>
 
-        <!--<item name="textm">@color/dtextm</item>-->
-        <!--<item name="text">@color/dtext</item>-->
-        <!--<item name="textt">@color/dtextt</item>-->
-        <!--<item name="texttt">@color/dtexttt</item>-->
         <item name="backgroundorig">@color/tdbackground</item>
         <item name="backgroundd">@color/tdbackgroundd</item>
         <item name="backgrounddd">@color/tdbackgrounddd</item>
 
-        <!--navdrawer-->
-        <!--<item name="banner">@drawable/banner_dark</item>-->
-        <!--<item name="drawer_icon_array">@array/drawer_icons_dark</item>-->
-
-        <!--<item name="settings">@drawable/ic_action_settings_dark</item>-->
-        <!--<item name="about">@drawable/ic_action_about_dev_dark</item>-->
-        <!--<item name="contact">@drawable/ic_action_contact_dark</item>-->
-        <!--<item name="drawer_divider">@drawable/divider_horizontal_dark</item>-->
-        <!--<item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>-->
-        <!--<item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>-->
         <item name="background_nav">@color/tdbackground_nav</item>
-        <!--<item name="avatar">@drawable/avatar_dark</item>-->
 
-        <!-- Toolbar stuff, move wherever you want
-             then delete this comment -->
         <item name="status">@color/primary_dark_indigo_t</item>
         <item name="toolbar_color">@color/primary_indigo_t</item>
 
-        <!--banners-->
         <item name="credits_allan_banner">@drawable/credits_allan_banner_t</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner_t</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner_t</item>
 
-        <!--<item name="rss_card_text_1">@color/dtext</item>-->
-        <!--<item name="rss_card_text_2">@color/dtext</item>-->
         <item name="rss_card_bg_1">@color/tdbackground</item>
         <item name="rss_card_bg_2">@color/tdmoscrop</item>
     </style>
