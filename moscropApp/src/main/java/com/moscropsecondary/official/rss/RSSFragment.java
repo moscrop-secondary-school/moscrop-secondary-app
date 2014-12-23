@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
@@ -71,7 +72,9 @@ public class RSSFragment extends Fragment
     public GridView mListView = null;
     public RSSAdapter mAdapter = null;
 
-	/**
+    private boolean mSearchViewExpanded = false;
+
+    /**
 	 * Create and return a new instance of RSSFragment with given parameters
 	 * 
 	 * @param blogId URL of the RSS feed to load and display
@@ -147,60 +150,64 @@ public class RSSFragment extends Fragment
 
     private void setUpToolbarSpinner() {
 
-        // Add spinner container
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        mSpinnerContainer= LayoutInflater.from(getActivity()).inflate(R.layout.actionbar_spinner, toolbar, false);
-        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        toolbar.addView(mSpinnerContainer, lp);
+        if (!mSearchViewExpanded) {
 
-        // Update tags list
-        String[] spinnerTagsArray = null;
-        try {
-            spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-        if (spinnerTagsArray != null) {
-            mSpinnerAdapter.clear();
-            mSpinnerAdapter.add("Subscribed");
-            mSpinnerAdapter.add("All");
-            for (String tag : spinnerTagsArray) {
-                mSpinnerAdapter.add(tag);
+            // Add spinner container
+            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            toolbar.removeView(mSpinnerContainer);
+            mSpinnerContainer = LayoutInflater.from(getActivity()).inflate(R.layout.actionbar_spinner, toolbar, false);
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mSpinnerContainer, lp);
+
+            // Update tags list
+            String[] spinnerTagsArray = null;
+            try {
+                spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
             }
-        }
-
-        // Initialize spinner and set adapter
-        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
-        spinner.setAdapter(mSpinnerAdapter);
-
-        // Set initial selection
-        int position = 0;
-        for (int i=0; i<mSpinnerAdapter.getCount(); i++) {
-            String tag = mSpinnerAdapter.getItem(i);
-            if (tag.equals(mTag)) {
-                position = i;
-                break;
-            }
-        }
-        spinner.setSelection(position);
-
-        // When item is selected, set mTag and then reload the feed
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
-                String tag = mSpinnerAdapter.getItem(position);
-                if (!tag.equals(mTag)) {
-                    mTag = tag;
-                    loadFeed(true, false, false, false, true);    // Not loading online, so don't worry about cache
-                                                                  // Stop previous loader and start new one
+            if (spinnerTagsArray != null) {
+                mSpinnerAdapter.clear();
+                mSpinnerAdapter.add("Subscribed");
+                mSpinnerAdapter.add("All");
+                for (String tag : spinnerTagsArray) {
+                    mSpinnerAdapter.add(tag);
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            // Initialize spinner and set adapter
+            Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+            spinner.setAdapter(mSpinnerAdapter);
+
+            // Set initial selection
+            int position = 0;
+            for (int i = 0; i < mSpinnerAdapter.getCount(); i++) {
+                String tag = mSpinnerAdapter.getItem(i);
+                if (tag.equals(mTag)) {
+                    position = i;
+                    break;
+                }
             }
-        });
+            spinner.setSelection(position);
+
+            // When item is selected, set mTag and then reload the feed
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+                    String tag = mSpinnerAdapter.getItem(position);
+                    if (!tag.equals(mTag)) {
+                        mTag = tag;
+                        loadFeed(true, false, false, false, true);    // Not loading online, so don't worry about cache
+                        // Stop previous loader and start new one
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+        }
     }
 
     @Override
@@ -214,6 +221,13 @@ public class RSSFragment extends Fragment
         	prefs.apply();
 		}
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mSearchViewExpanded = false;
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -238,6 +252,24 @@ public class RSSFragment extends Fragment
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint("Search news");
+
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                mSearchViewExpanded = true;
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mSearchViewExpanded = false;
+                if (mHasSpinner) {
+                    setUpToolbarSpinner();
+                }
+                return true;
+            }
+        });
 
     	super.onCreateOptionsMenu(menu, inflater);
     }

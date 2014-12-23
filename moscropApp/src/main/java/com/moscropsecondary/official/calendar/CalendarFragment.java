@@ -168,6 +168,7 @@ public class CalendarFragment extends Fragment
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mSearchViewExpanded = false;
+                addTitleWithArrow();
                 return true;
             }
         });
@@ -178,6 +179,7 @@ public class CalendarFragment extends Fragment
     private void addTitleWithArrow() {
         if (!mSearchViewExpanded) {
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            toolbar.removeView(mToolbarTitle);
             mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.spinner_actionbar_title, toolbar, false);
             ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setText("Events");
             mToolbarTitle.setOnClickListener(new View.OnClickListener() {
