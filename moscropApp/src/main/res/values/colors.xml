@@ -37,6 +37,7 @@
     <color name="dtexttt">@color/backgrounddd</color>
     <color name="dtextm">#b3ffffff</color>
 
+    <color name="bbackground">#ff060606</color>
     <color name="dbackground">#ff000000</color>
     <color name="dbackgroundd">#ff101010</color>
     <color name="dbackgrounddd">#ff505050</color>
@@ -107,10 +108,11 @@
     <color name="accent_indigo">#ff4081</color>
 
     <color name="primary_indigo_d">#ff34495e</color>
+    <color name="primary_indigo_t">#8834495e</color>
     <color name="primary_dark_indigo_d">#ff2c3e50</color>
+    <color name="primary_dark_indigo_t">#882c3e50</color>
     <color name="accent_indigo_d">#ffff4081</color>
 
-    <color name="primary_indigo_t_toolbar">#8834495e</color>
     <color name="accent_indigo_t">#80ff4081</color>
 
     <color name="primary_green">#259b24</color>
