@@ -17,8 +17,9 @@ public class ThemesUtil {
     /** Themes Section */
 
     public static final int THEME_LIGHT         = 0;
-    public static final int THEME_BLACK         = 1;
-    public static final int THEME_TRANSPARENT   = 2;
+    public static final int THEME_DARK          = 1;
+    public static final int THEME_BLACK         = 2;
+    public static final int THEME_TRANSPARENT   = 3;
 
     public static int getThemeResFromPreference(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -29,6 +30,8 @@ public class ThemesUtil {
             switch (i) {
                 case THEME_LIGHT:
                     return R.style.Theme_Light;
+                case THEME_DARK:
+                    return R.style.Theme_Dark;
                 case THEME_BLACK:
                     return R.style.Theme_Black;
                 case THEME_TRANSPARENT:

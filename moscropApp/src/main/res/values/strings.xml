@@ -47,8 +47,10 @@
 <!--Themes-->
     <string name="theme_category">Theme</string>
     <string name="theme_light">Light</string>
-    <string name="theme_black">Black</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_black">Black (for AMOLED)</string>
     <string name="theme_tblack">Transparent Black</string>
+
     <string name="card_picture_alpha">0.3</string>
     <string name="card_picture_alpha_d">0.15</string>
     <string name="card_picture_alpha_t">0.1</string>

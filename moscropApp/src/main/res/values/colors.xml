@@ -98,7 +98,7 @@
     <color name="moscrop">#ff4892cf</color>
     <color name="moscrop2">#ff94b7c7</color>
     <color name="dmoscrop">#ff111a23</color>
-    <color name="tmoscrop">#88243241</color>
+    <color name="tdmoscrop">#88243241</color>
     <color name="pmoscrop">#ff4784c0</color>
     <color name="pmoscrop2">#ff427ab1</color>
 
@@ -110,9 +110,7 @@
     <color name="primary_dark_indigo_d">#ff2c3e50</color>
     <color name="accent_indigo_d">#ffff4081</color>
 
-    <color name="primary_indigo_t">#ff34495e</color>
     <color name="primary_indigo_t_toolbar">#8834495e</color>
-    <color name="primary_dark_indigo_t">#ff2c3e50</color>
     <color name="accent_indigo_t">#80ff4081</color>
 
     <color name="primary_green">#259b24</color>

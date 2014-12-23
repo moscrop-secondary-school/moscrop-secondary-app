@@ -74,6 +74,7 @@
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner</item>
 
+        <item name="status">@color/primary_dark_indigo</item>
         <item name="toolbar_color">@color/pmoscrop</item>
 
         <item name="rss_card_text_1">@color/text</item>
@@ -82,7 +83,7 @@
         <item name="rss_card_bg_2">@color/moscrop</item>
     </style>
 
-    <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
+    <style name="Theme.Dark" parent="Theme.Base.Dark.Versioned">
         <item name="android:windowBackground">@color/dbackground</item>
         <item name="rss_background">@color/dbackgrounddd</item>
         <item name="background_card">@drawable/background_card_black</item>
@@ -113,8 +114,7 @@
         <item name="background_nav">@color/dbackgroundd</item>
         <item name="avatar">@drawable/avatar_dark</item>
 
-        <!-- Toolbar stuff, move wherever you want
-             then delete this comment -->
+        <item name="status">@color/primary_dark_indigo_d</item>
         <item name="toolbar_color">?attr/colorPrimary</item>
 
         <!--banners-->
@@ -126,6 +126,15 @@
         <item name="rss_card_text_2">@color/dtext</item>
         <item name="rss_card_bg_1">@color/dmoscrop</item>
         <item name="rss_card_bg_2">@color/dbackgroundd</item>
+    </style>
+
+    <style name="Theme.Black" parent="Theme.Dark">
+        <item name="rss_background">@color/dbackgroundd</item>
+        <item name="status">@color/dbackground</item>
+        <item name="toolbar_color">@color/dbackgroundd</item>
+        <item name="background_nav">@color/dbackground</item>
+        <item name="rss_card_bg_1">@color/dbackground</item>
+        <item name="rss_card_bg_2">@color/dbackground</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Base.Dark.Versioned">
@@ -144,8 +153,8 @@
         <item name="text_card">@color/card_black_text</item>
         <item name="card_about">@drawable/selector_card_about_t</item>
 
-        <item name="colorPrimary">@color/primary_indigo_t</item>
-        <item name="colorPrimaryDark">@color/primary_dark_indigo_t</item>
+        <item name="colorPrimary">@color/primary_indigo_d</item>
+        <item name="colorPrimaryDark">@color/primary_dark_indigo_d</item>
         <item name="colorAccent">@color/accent_indigo_t</item>
 
         <item name="textm">@color/dtextm</item>
@@ -171,6 +180,7 @@
 
         <!-- Toolbar stuff, move wherever you want
              then delete this comment -->
+        <item name="status">@color/primary_dark_indigo_d</item>
         <item name="toolbar_color">@color/primary_indigo_t_toolbar</item>
 
         <!--banners-->
@@ -180,8 +190,8 @@
 
         <item name="rss_card_text_1">@color/dtext</item>
         <item name="rss_card_text_2">@color/dtext</item>
-        <item name="rss_card_bg_1">@color/tbackground</item>
-        <item name="rss_card_bg_2">@color/tmoscrop</item>
+        <item name="rss_card_bg_1">@color/tdbackground</item>
+        <item name="rss_card_bg_2">@color/tdmoscrop</item>
     </style>
 
 </resources>

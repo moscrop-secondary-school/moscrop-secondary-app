@@ -25,6 +25,7 @@
 
     <string-array name="theme_texts" translatable="false">
         <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
         <item>@string/theme_black</item>
         <item>@string/theme_tblack</item>
     </string-array>
