@@ -2,15 +2,10 @@
 
 ** Important **
 
+Theme calendar :D
 In nav bar, settings to contact do not have ripples
-Make refresh spinner only show when manually refreshing. Having it on startup is too obtrusive. Or make it like the google + refresh or move the spinner to the actionbar.
-Add agenda (for events)
-Add search functions app wide (for posts & teachers)  
-Add newsletter section - force it to pull from the "student bulletin" tag  
-Hide "official" and "student bulletin" tag from category selector  
-Change spinner to order tags by "all", "subscribed", "official", then alphabetically  
-Add about section  
-Card - add date stamp, move tags to the right like the google + hashtags in the posts (minus the hashtag), add back description preview (maybe make this a setting)  
+Fix text colors when opening a post
+Add search functions app wide (for posts & teachers)
 Add notifications & settings for pull periods
 
 ** Theme/Design Related **
