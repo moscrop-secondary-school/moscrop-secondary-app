@@ -17,7 +17,6 @@ Add animations when opening cards (ie animup)
 ** Questionable **
 
 Add option to hide a card  
-Change cardview (from full screen to the what the "people credits" thing looks like, where tapping a card opens the card but still allows you to scroll through other cards. Just a thought)  
 Add filters for calendar
 
 ********** Dependencies **********

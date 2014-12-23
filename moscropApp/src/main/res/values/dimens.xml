@@ -88,6 +88,6 @@
     <dimen name="rss_card_height">200dp</dimen>
     <dimen name="rss_divider_size_light">2dp</dimen>
     <dimen name="rss_divider_size_dark">2dp</dimen>
-    <dimen name="rss_divider_size_black">2dp</dimen>
+    <dimen name="rss_divider_size_black">0dp</dimen>
     <dimen name="rss_divider_size_transparent">0dp</dimen>
 </resources>
