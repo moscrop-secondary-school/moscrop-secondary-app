@@ -64,7 +64,7 @@
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
         <item name="credits_hazhir_banner">@drawable/credits_hazhir_banner</item>
 
-        <item name="status">@color/primary_dark_indigo</item>
+        <item name="status">@color/pmoscrop2</item>
         <item name="toolbar_color">@color/pmoscrop</item>
 
         <item name="rss_card_text_1">@color/text</item>
