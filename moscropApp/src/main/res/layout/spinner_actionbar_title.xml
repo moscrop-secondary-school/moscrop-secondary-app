@@ -6,7 +6,6 @@
 
     <TextView
         android:id="@android:id/text1"
-        android:paddingLeft="@dimen/spinner_left_padding"
         android:paddingRight="4dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
