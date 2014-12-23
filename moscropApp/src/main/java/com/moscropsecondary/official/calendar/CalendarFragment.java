@@ -17,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -309,11 +311,19 @@ public class CalendarFragment extends Fragment
 
     private void showCalendar() {
         mCalendarIsShowing = true;
+
+        Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+        mCaldroidFrame.startAnimation(slideIn);
+
         mCaldroidFrame.setVisibility(View.VISIBLE);
     }
 
     private void hideCalendar() {
         mCalendarIsShowing = false;
+
+        Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+        mCaldroidFrame.startAnimation(slideOut);
+
         mCaldroidFrame.setVisibility(View.GONE);
     }
 
