@@ -71,6 +71,8 @@
         <item name="rss_card_text_2">@color/dtext</item>
         <item name="rss_card_bg_1">@color/moscrop2</item>
         <item name="rss_card_bg_2">@color/moscrop</item>
+
+        <item name="rss_divider_size">@dimen/rss_divider_size_light</item>
     </style>
 
     <style name="Theme.Dark" parent="Theme.Base.Dark.Versioned">
@@ -114,6 +116,8 @@
         <item name="rss_card_text_2">@color/dtext</item>
         <item name="rss_card_bg_1">@color/dmoscrop</item>
         <item name="rss_card_bg_2">@color/dbackgroundd</item>
+
+        <item name="rss_divider_size">@dimen/rss_divider_size_dark</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Dark">
@@ -124,6 +128,7 @@
         <item name="background_nav">@color/dbackground</item>
         <item name="rss_card_bg_1">@color/bbackground</item>
         <item name="rss_card_bg_2">@color/dbackground</item>
+        <item name="rss_divider_size">@dimen/rss_divider_size_black</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Dark">
@@ -154,6 +159,8 @@
 
         <item name="rss_card_bg_1">@color/tdbackground</item>
         <item name="rss_card_bg_2">@color/tdmoscrop</item>
+
+        <item name="rss_divider_size">@dimen/rss_divider_size_transparent</item>
     </style>
 
 </resources>

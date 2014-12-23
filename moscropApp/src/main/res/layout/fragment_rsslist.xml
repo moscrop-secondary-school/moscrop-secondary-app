@@ -11,8 +11,8 @@
 	    android:layout_height="match_parent"
 	    android:layout_width="match_parent"
         android:numColumns="2"
-        android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp"
+        android:horizontalSpacing="?attr/rss_divider_size"
+        android:verticalSpacing="?attr/rss_divider_size"
         android:background="?attr/rss_background"
         android:drawSelectorOnTop="true"/>
 
