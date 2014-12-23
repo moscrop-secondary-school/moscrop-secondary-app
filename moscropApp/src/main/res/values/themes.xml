@@ -134,7 +134,7 @@
         <item name="status">@color/dbackground</item>
         <item name="toolbar_color">@color/dbackgroundd</item>
         <item name="background_nav">@color/dbackground</item>
-        <item name="rss_card_bg_1">@color/dbackgroundd</item>
+        <item name="rss_card_bg_1">@color/bbackground</item>
         <item name="rss_card_bg_2">@color/dbackground</item>
     </style>
 
@@ -142,7 +142,7 @@
 
         <!-- These attributes are what makes a "wallpaper" theme "wallpaper". -->
         <item name="android:windowBackground">@color/tdbackground</item>
-        <item name="rss_background">@color/tdbackgroundd</item>
+        <item name="rss_background">@color/tdbackgrounddd</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
         <!--<item name="drawer_shadow">@drawable/drawer_shadow_d</item>-->

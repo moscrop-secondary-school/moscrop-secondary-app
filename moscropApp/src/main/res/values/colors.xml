@@ -37,7 +37,7 @@
     <color name="dtexttt">@color/backgrounddd</color>
     <color name="dtextm">#b3ffffff</color>
 
-    <color name="bbackground">#ff060606</color>
+    <color name="bbackground">#ff090909</color>
     <color name="dbackground">#ff000000</color>
     <color name="dbackgroundd">#ff101010</color>
     <color name="dbackgrounddd">#ff505050</color>
