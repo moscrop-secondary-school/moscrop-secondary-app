@@ -5,27 +5,30 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="144dp"
+        android:layout_width="72dp"
         android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/day_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Display2"/>
+            style="@style/agenda_day_number"/>
 
         <TextView
             android:id="@+id/day_month"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Caption"/>
+            android:paddingBottom="8dp"
+            style="@style/agenda_day_month"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/day_events"
         android:layout_width="0dp"
+        android:padding="8dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"/>

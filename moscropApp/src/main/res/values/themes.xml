@@ -122,7 +122,7 @@
 
         <item name="rss_card_text_1">@color/dtext</item>
         <item name="rss_card_text_2">@color/dtext</item>
-        <item name="rss_card_bg_1">@color/dbackground</item>
+        <item name="rss_card_bg_1">@color/primary_dark_indigo_d</item>
         <item name="rss_card_bg_2">@color/dbackgroundd</item>
     </style>
 
@@ -178,7 +178,7 @@
         <item name="rss_card_text_1">@color/dtext</item>
         <item name="rss_card_text_2">@color/dtext</item>
         <item name="rss_card_bg_1">@color/tbackground</item>
-        <item name="rss_card_bg_2">@color/tbackgroundd</item>
+        <item name="rss_card_bg_2">@color/primary_dark_indigo_t</item>
     </style>
 
 </resources>

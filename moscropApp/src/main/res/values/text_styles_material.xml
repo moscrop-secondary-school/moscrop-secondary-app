@@ -3,6 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="NewApi">
 
+    <style name="agenda_day_number">
+        <item name="android:textColor">?attr/textt</item>
+        <item name="android:textSize">45sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="agenda_day_month">
+        <item name="android:textColor">?attr/texttt</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
     <style name="text_display_4">
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textSize">112sp</item>

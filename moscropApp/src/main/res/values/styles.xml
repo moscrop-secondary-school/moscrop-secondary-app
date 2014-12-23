@@ -21,17 +21,17 @@
         <item name="actionBarSize">@dimen/ab_height</item>
         <item name="android:actionBarSize">@dimen/ab_height</item>
         <item name="android:height">@dimen/ab_height</item>
-        <item name="android:background">@color/background</item>
+        <item name="android:background">?attr/backgroundorig</item>
         <item name="android:titleTextStyle">@style/moscrop.ActionBar.Title</item>
         <item name="android:subtitleTextStyle">@style/moscrop.ActionBar.SubTitle</item>
     </style>
 
     <style name="moscrop.ActionBar.Title" parent="android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/text</item>
+        <item name="android:textColor">?attr/text</item>
     </style>
 
     <style name="moscrop.ActionBar.SubTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
-        <item name="android:textColor">@color/textt</item>
+        <item name="android:textColor">?attr/textt</item>
     </style>
 
     <!-- NO NEED ANYMORE, I deleted the png as well -->
@@ -64,7 +64,7 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:background">@color/transparent</item>
-        <item name="android:textColor">@color/text</item>
+        <item name="android:textColor">?attr/text</item>
     </style>
 
     <style name="TransparentDialog" parent="@android:style/Theme.Holo.Dialog">
@@ -80,7 +80,7 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:background">@color/transparent</item>
-        <item name="android:textColor">@color/text</item>
+        <item name="android:textColor">?attr/text</item>
     </style>
 
     <!--Spinner-->
