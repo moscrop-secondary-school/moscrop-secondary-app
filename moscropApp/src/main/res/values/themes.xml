@@ -48,6 +48,7 @@
         <item name="card_about">@drawable/selector_card_about</item>
         <item name="drawer_shadow">@drawable/drawer_shadow</item>
 
+        <item name="textm">@color/textm</item>
         <item name="text">@color/text</item>
         <item name="textt">@color/textt</item>
         <item name="texttt">@color/texttt</item>
@@ -83,7 +84,7 @@
 
     <style name="Theme.Black" parent="Theme.Base.Dark.Versioned">
         <item name="android:windowBackground">@color/dbackground</item>
-        <item name="rss_background">@color/dbackground</item>
+        <item name="rss_background">@color/dbackgrounddd</item>
         <item name="background_card">@drawable/background_card_black</item>
         <item name="card_picture_alpha">@string/card_picture_alpha_d</item>
         <item name="title_card">@color/dtext</item>
@@ -91,6 +92,7 @@
         <item name="card_about">@drawable/selector_card_about_d</item>
         <item name="drawer_shadow">@drawable/drawer_shadow_d</item>
 
+        <item name="textm">@color/dtextm</item>
         <item name="text">@color/dtext</item>
         <item name="textt">@color/dtextt</item>
         <item name="texttt">@color/dtexttt</item>
@@ -122,7 +124,7 @@
 
         <item name="rss_card_text_1">@color/dtext</item>
         <item name="rss_card_text_2">@color/dtext</item>
-        <item name="rss_card_bg_1">@color/primary_dark_indigo_d</item>
+        <item name="rss_card_bg_1">@color/dmoscrop</item>
         <item name="rss_card_bg_2">@color/dbackgroundd</item>
     </style>
 
@@ -130,7 +132,7 @@
 
         <!-- These attributes are what makes a "wallpaper" theme "wallpaper". -->
         <item name="android:windowBackground">@color/tdbackground</item>
-        <item name="rss_background">@color/tbackground</item>
+        <item name="rss_background">@color/tbackgroundd</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
         <item name="drawer_shadow">@drawable/drawer_shadow_d</item>
@@ -146,6 +148,7 @@
         <item name="colorPrimaryDark">@color/primary_dark_indigo_t</item>
         <item name="colorAccent">@color/accent_indigo_t</item>
 
+        <item name="textm">@color/dtextm</item>
         <item name="text">@color/dtext</item>
         <item name="textt">@color/dtextt</item>
         <item name="texttt">@color/dtexttt</item>
@@ -178,7 +181,7 @@
         <item name="rss_card_text_1">@color/dtext</item>
         <item name="rss_card_text_2">@color/dtext</item>
         <item name="rss_card_bg_1">@color/tbackground</item>
-        <item name="rss_card_bg_2">@color/primary_dark_indigo_t</item>
+        <item name="rss_card_bg_2">@color/tmoscrop</item>
     </style>
 
 </resources>

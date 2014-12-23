@@ -7,6 +7,7 @@
     <color name="text">@color/dbackground</color>
     <color name="textt">@color/dbackgroundd</color>
     <color name="texttt">@color/dbackgrounddd</color>
+    <color name="textm">#8a000000</color>
 
     <color name="background">#ffffffff</color>
     <color name="backgroundd">#ffefefef</color>
@@ -34,6 +35,7 @@
     <color name="dtext">@color/background</color>
     <color name="dtextt">@color/backgroundd</color>
     <color name="dtexttt">@color/backgrounddd</color>
+    <color name="dtextm">#b3ffffff</color>
 
     <color name="dbackground">#ff000000</color>
     <color name="dbackgroundd">#ff101010</color>
@@ -95,6 +97,8 @@
 <!-- dark: lower brightness by 15-->
     <color name="moscrop">#ff4892cf</color>
     <color name="moscrop2">#ff94b7c7</color>
+    <color name="dmoscrop">#ff111a23</color>
+    <color name="tmoscrop">#88243241</color>
     <color name="pmoscrop">#ff4784c0</color>
     <color name="pmoscrop2">#ff427ab1</color>
 

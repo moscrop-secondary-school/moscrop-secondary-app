@@ -22,6 +22,7 @@
         <attr name="nav_drawer_selector" format="reference" />
         <attr name="avatar" format="reference" />
 
+        <attr name="textm" format="reference" />
         <attr name="text" format="reference" />
         <attr name="textt" format="reference" />
         <attr name="texttt" format="reference" />
