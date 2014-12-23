@@ -25,12 +25,12 @@ import android.widget.Toast;
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
+import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -250,17 +250,8 @@ public class CalendarFragment extends Fragment
     }
 
     private void scrollTo(long millis) {
-        int dayNumber = (int) (millis / EventListAdapter.DAY_MILLIS);
-        Logger.log("Today's date is: " + dayNumber);
-
+        int dayNumber = DateUtil.daysFromMillis(millis);
         int position = mAdapter.getPositionNearestToDay(dayNumber);
-
-        Logger.log("Scrolling to position: " + position + ", which is day " + mAdapter.getItem(position).dayNumber);
-
-        long dayMillis = mAdapter.getItem(position).dayNumber * EventListAdapter.DAY_MILLIS;
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ kk:mm:ss.ssss");
-        Logger.log("This is also known as " + sdf.format(new Date(dayMillis)));
-
         mListView.setSelection(position);
     }
 

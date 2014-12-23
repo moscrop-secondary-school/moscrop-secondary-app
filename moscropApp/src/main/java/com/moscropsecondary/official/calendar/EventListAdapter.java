@@ -24,8 +24,6 @@ import java.util.List;
  */
 public class EventListAdapter extends BaseAdapter {
 
-    public static final long DAY_MILLIS = 24 * 60 * 60 * 1000;
-
     public static class Day {
         public final int dayNumber;
         public final List<GCalEvent> events;
@@ -46,66 +44,9 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     public void addAll(List<GCalEvent> events) {
-
         for (GCalEvent event : events) {
             add(event);
         }
-
-        /*if (events.size() > 0) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(events.get(0).startTime);
-            cal.set(Calendar.MILLISECOND, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-
-            // Set starting date to be date of first event
-            int startingDate = (int) (cal.getTimeInMillis() / DAY_MILLIS);
-
-            List<Day> days = new ArrayList<Day>();
-            int listSize = 0;
-            for (GCalEvent event : events) {
-
-                Logger.log("handling new event: " + event.title);
-
-                // Check event is still on the same day
-                int date;
-                if (event.startTime != startingDate) {
-                    startingDate++;
-                }
-                date = startingDate;
-
-                while (date * DAY_MILLIS < event.endTime) {
-                    Day day;
-
-                    // Check if a Day object already exists for this date
-                    Integer position = mDayMap.get(startingDate);
-
-                    if (position == null) {
-
-                        // If not, create a new Day and add it to list and HashMap
-                        day = new Day(startingDate);
-                        days.add(day);
-                        mDayMap.put(startingDate, listSize);
-                        listSize++;
-
-                    } else {
-                        // Else, retrieve existing Day object from list
-                        day = days.get(position);
-                    }
-
-                    // Add this event to Day's event list
-                    day.events.add(event);
-
-                    date++;
-                }
-            }
-
-            return days;
-
-        } else {
-            return new ArrayList<Day>();
-        }*/
     }
 
     public void add(GCalEvent event) {
@@ -118,21 +59,25 @@ public class EventListAdapter extends BaseAdapter {
         cal.set(Calendar.HOUR_OF_DAY, 0);
 
         // Set starting date to be date of first event
-        int date = (int) (cal.getTimeInMillis() / DAY_MILLIS);
+        int dayNumber = DateUtil.daysFromMillis(cal.getTimeInMillis());
+
+        // Convert event end to dayNumber
+        // Subtract 1 to prevent events ending at 0:00:00.000 (midnight) from counting as being on that day
+        int eventEndDayNumber = DateUtil.daysFromMillis(event.endTime-1);
 
         // Make sure to include every day within the span of the event
-        while (date * DAY_MILLIS < event.endTime) {
+        while (dayNumber <= eventEndDayNumber) {
 
             Day day;
 
             // Check if a Day object already exists for this date
-            Integer position = mDayMap.get(date);
+            Integer position = mDayMap.get(dayNumber);
 
             if (position == null) {     // Position will be null if this date has not been added
 
                 // Day object doesn't exist yet, create a new Day and add it to list and HashMap
-                day = new Day(date);
-                mDayMap.put(date, mDays.size());
+                day = new Day(dayNumber);
+                mDayMap.put(dayNumber, mDays.size());
                 mDays.add(day);
 
             } else {                    // Else, the day exists
@@ -143,7 +88,7 @@ public class EventListAdapter extends BaseAdapter {
             // Add this event to Day's event list
             day.events.add(event);
 
-            date++;
+            dayNumber++;
         }
     }
 
@@ -156,7 +101,6 @@ public class EventListAdapter extends BaseAdapter {
         while (day < getItem(mDays.size()-1).dayNumber) {
             Integer position = mDayMap.get(day);
             if (position != null) {
-                Logger.log("Returning position for day " + day);
                 return position;
             }
             day++;
@@ -194,7 +138,7 @@ public class EventListAdapter extends BaseAdapter {
         TextView dayMonthText = (TextView) view.findViewById(R.id.day_month);
         LinearLayout dayEventsGroup = (LinearLayout) view.findViewById(R.id.day_events);
 
-        long dayMillis = day.dayNumber * DAY_MILLIS;
+        long dayMillis = DateUtil.millisFromDays(day.dayNumber);
         Date date = new Date(dayMillis);
 
         SimpleDateFormat sdfDay = new SimpleDateFormat("dd");

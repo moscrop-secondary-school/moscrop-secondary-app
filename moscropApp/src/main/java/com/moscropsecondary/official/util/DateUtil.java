@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class DateUtil {
 
+    public static final long DAY_MILLIS = 24 * 60 * 60 * 1000;
+
     public static int getJulianDayFromCalendar(Calendar calendar) {
         TimeZone tz = TimeZone.getDefault();
         return Time.getJulianDay(calendar.getTimeInMillis(), TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(calendar.getTimeInMillis())));
@@ -241,4 +243,23 @@ public class DateUtil {
 
         return duration;
     }
+
+    /**
+     * Return millis since epoch in UTC time given days since epoch in the default (current) time zone
+     */
+    public static long millisFromDays(int day) {
+        long millis = day * DAY_MILLIS;
+        long offset = TimeZone.getDefault().getOffset(millis);
+        return millis - offset;
+    }
+
+    /**
+     * Returns days since epoch in the default (current) time zone given number of millis since epoch in UTC time
+     */
+    public static int daysFromMillis(long millis) {
+        long offset = TimeZone.getDefault().getOffset(millis);
+        millis += offset;
+        return (int) (millis / DAY_MILLIS);
+    }
+
 }
