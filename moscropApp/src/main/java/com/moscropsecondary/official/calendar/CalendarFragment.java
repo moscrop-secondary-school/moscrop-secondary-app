@@ -122,6 +122,8 @@ public class CalendarFragment extends Fragment
         args.putInt(CaldroidFragment.NORMAL_DAY_TEXT_COLOR, normalDayTextColor);
         args.putInt(CaldroidFragment.DISABLE_DAY_TEXT_COLOR, disableDayTextColor);
 
+        args.putBoolean(CaldroidFragment.SHOW_NAVIGATION_ARROWS, false);
+
         mCaldroid.setArguments(args);
         mCaldroid.setCaldroidListener(mCaldroidListener);
 
