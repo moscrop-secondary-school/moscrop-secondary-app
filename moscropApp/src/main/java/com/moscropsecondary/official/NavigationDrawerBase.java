@@ -85,6 +85,7 @@ public abstract class NavigationDrawerBase extends Fragment {
         // set a custom shadow that overlays the main content when the drawer opens
         TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] {R.attr.drawer_shadow});
         int attributeResourceId = a.getResourceId(0, 0);
+        a.recycle();
         mDrawerLayout.setDrawerShadow(attributeResourceId, GravityCompat.START);
     }
 

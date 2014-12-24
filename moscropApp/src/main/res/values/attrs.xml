@@ -55,5 +55,15 @@
         <attr name="rss_card_bg_2" format="reference" />
 
         <attr name="rss_divider_size" format="reference" />
+
+        <!--Caldroid-->
+        <attr name="caldroid_bg_color" format="reference" />
+        <attr name="caldroid_prev_arrow_resource" format="reference" />
+        <attr name="caldroid_next_arrow_resource" format="reference" />
+        <attr name="caldroid_month_text_color" format="reference" />
+        <attr name="caldroid_week_text_color" format="reference" />
+        <attr name="caldroid_normal_day_text_color" format="reference" />
+        <attr name="caldroid_disable_day_text_color" format="reference" />
+
     </declare-styleable>
 </resources>

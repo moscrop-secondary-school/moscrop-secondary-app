@@ -3,6 +3,8 @@ package com.moscropsecondary.official.calendar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -92,6 +95,33 @@ public class CalendarFragment extends Fragment
         args.putInt(CaldroidFragment.MONTH, today.get(Calendar.MONTH) + 1);
         args.putInt(CaldroidFragment.YEAR, today.get(Calendar.YEAR));
         args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, true);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.caldroid_bg_color, typedValue, true);
+        int caldroidBgColor = typedValue.data;
+        theme.resolveAttribute(R.attr.caldroid_month_text_color, typedValue, true);
+        int monthTextColor = typedValue.data;
+        theme.resolveAttribute(R.attr.caldroid_week_text_color, typedValue, true);
+        int weekTextColor = typedValue.data;
+        theme.resolveAttribute(R.attr.caldroid_normal_day_text_color, typedValue, true);
+        int normalDayTextColor = typedValue.data;
+        theme.resolveAttribute(R.attr.caldroid_disable_day_text_color, typedValue, true);
+        int disableDayTextColor = typedValue.data;
+
+        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] { R.attr.caldroid_prev_arrow_resource, R.attr.caldroid_next_arrow_resource });
+        int prevArrowResource = a.getResourceId(0, 0);
+        int nextArrowResource = a.getResourceId(1, 0);
+        a.recycle();
+
+        args.putInt(CaldroidFragment.BACKGROUND_COLOR, caldroidBgColor);
+        args.putInt(CaldroidFragment.PREV_ARROW_RESOURCE, prevArrowResource);
+        args.putInt(CaldroidFragment.NEXT_ARROW_RESOURCE, nextArrowResource);
+        args.putInt(CaldroidFragment.MONTH_TEXT_COLOR, monthTextColor);
+        args.putInt(CaldroidFragment.WEEK_TEXT_COLOR, weekTextColor);
+        args.putInt(CaldroidFragment.NORMAL_DAY_TEXT_COLOR, normalDayTextColor);
+        args.putInt(CaldroidFragment.DISABLE_DAY_TEXT_COLOR, disableDayTextColor);
+
         mCaldroid.setArguments(args);
         mCaldroid.setCaldroidListener(mCaldroidListener);
 
@@ -100,6 +130,8 @@ public class CalendarFragment extends Fragment
 
         mCaldroidFrame = mContentView.findViewById(R.id.calendar_frame);
         mCaldroidFrame.setVisibility(View.GONE);
+
+
 
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);

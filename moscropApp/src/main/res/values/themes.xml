@@ -73,6 +73,14 @@
         <item name="rss_card_bg_2">@color/moscrop</item>
 
         <item name="rss_divider_size">@dimen/rss_divider_size_light</item>
+
+        <item name="caldroid_bg_color">@color/background</item>
+        <item name="caldroid_prev_arrow_resource">@drawable/ic_action_settings_light</item>
+        <item name="caldroid_next_arrow_resource">@drawable/ic_action_news_light</item>
+        <item name="caldroid_month_text_color">@color/text_color_secondary</item>
+        <item name="caldroid_week_text_color">@color/text_color_secondary</item>
+        <item name="caldroid_normal_day_text_color">@color/text</item>
+        <item name="caldroid_disable_day_text_color">@color/caldroid_darker_gray</item>
     </style>
 
     <style name="Theme.Dark" parent="Theme.Base.Dark.Versioned">
@@ -118,6 +126,14 @@
         <item name="rss_card_bg_2">@color/dbackgroundd</item>
 
         <item name="rss_divider_size">@dimen/rss_divider_size_dark</item>
+
+        <item name="caldroid_bg_color">@color/card_background_black</item>
+        <item name="caldroid_prev_arrow_resource">@drawable/ic_action_settings_dark</item>
+        <item name="caldroid_next_arrow_resource">@drawable/ic_action_news_dark</item>
+        <item name="caldroid_month_text_color">@android:color/white</item>
+        <item name="caldroid_week_text_color">@android:color/white</item>
+        <item name="caldroid_normal_day_text_color">@android:color/white</item>
+        <item name="caldroid_disable_day_text_color">@android:color/white</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Dark">
@@ -162,6 +178,14 @@
         <item name="rss_card_bg_2">@color/tdmoscrop</item>
 
         <item name="rss_divider_size">@dimen/rss_divider_size_transparent</item>
+
+        <item name="caldroid_bg_color">@color/card_background_tblack</item>
+        <item name="caldroid_prev_arrow_resource">@drawable/ic_action_settings_dark</item>
+        <item name="caldroid_next_arrow_resource">@drawable/ic_action_news_dark</item>
+        <item name="caldroid_month_text_color">@android:color/white</item>
+        <item name="caldroid_week_text_color">@android:color/white</item>
+        <item name="caldroid_normal_day_text_color">@android:color/white</item>
+        <item name="caldroid_disable_day_text_color">@android:color/white</item>
     </style>
 
 </resources>
