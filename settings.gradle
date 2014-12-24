@@ -1,1 +1,1 @@
-include ':moscropApp'
+include ':moscropApp',':Caldroid:caldroid'

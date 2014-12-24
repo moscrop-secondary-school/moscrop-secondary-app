@@ -23,7 +23,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:cardview-v7:+'
     compile 'com.android.support:appcompat-v7:+'
-    compile 'com.roomorama:caldroid:1.1.6'
     compile 'com.squareup.picasso:picasso:+'
     compile 'de.hdodenhof:circleimageview:1.2.1'
+    compile project(':Caldroid:caldroid')
 }

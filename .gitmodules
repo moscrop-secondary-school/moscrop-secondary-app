@@ -1,0 +1,3 @@
+[submodule "Caldroid"]
+	path = Caldroid
+	url = https://github.com/roomorama/Caldroid.git
