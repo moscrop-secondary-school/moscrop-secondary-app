@@ -81,6 +81,7 @@
         <item name="caldroid_week_text_color">@color/text_color_secondary</item>
         <item name="caldroid_normal_day_text_color">@color/text</item>
         <item name="caldroid_disable_day_text_color">@color/caldroid_darker_gray</item>
+        <item name="caldroid_event_indicator_color">@android:color/black</item>
     </style>
 
     <style name="Theme.Dark" parent="Theme.Base.Dark.Versioned">
@@ -134,6 +135,7 @@
         <item name="caldroid_week_text_color">@android:color/white</item>
         <item name="caldroid_normal_day_text_color">@android:color/white</item>
         <item name="caldroid_disable_day_text_color">@android:color/white</item>
+        <item name="caldroid_event_indicator_color">@android:color/white</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Dark">
@@ -186,6 +188,7 @@
         <item name="caldroid_week_text_color">@android:color/white</item>
         <item name="caldroid_normal_day_text_color">@android:color/white</item>
         <item name="caldroid_disable_day_text_color">@android:color/white</item>
+        <item name="caldroid_event_indicator_color">@android:color/white</item>
     </style>
 
 </resources>

@@ -64,6 +64,7 @@
         <attr name="caldroid_week_text_color" format="reference" />
         <attr name="caldroid_normal_day_text_color" format="reference" />
         <attr name="caldroid_disable_day_text_color" format="reference" />
+        <attr name="caldroid_event_indicator_color" format="reference" />
 
     </declare-styleable>
 </resources>

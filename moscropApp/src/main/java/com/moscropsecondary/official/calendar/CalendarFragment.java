@@ -109,6 +109,8 @@ public class CalendarFragment extends Fragment
         int normalDayTextColor = typedValue.data;
         theme.resolveAttribute(R.attr.caldroid_disable_day_text_color, typedValue, true);
         int disableDayTextColor = typedValue.data;
+        theme.resolveAttribute(R.attr.caldroid_event_indicator_color, typedValue, true);
+        int eventIndicatorColor = typedValue.data;
 
         TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] { R.attr.caldroid_prev_arrow_resource, R.attr.caldroid_next_arrow_resource });
         int prevArrowResource = a.getResourceId(0, 0);
@@ -123,6 +125,7 @@ public class CalendarFragment extends Fragment
         args.putInt(CaldroidFragment.WEEK_TEXT_COLOR, weekTextColor);
         args.putInt(CaldroidFragment.NORMAL_DAY_TEXT_COLOR, normalDayTextColor);
         args.putInt(CaldroidFragment.DISABLE_DAY_TEXT_COLOR, disableDayTextColor);
+        args.putInt(CaldroidFragment.EVENT_INDICATOR_COLOR, eventIndicatorColor);
 
         //args.putBoolean(CaldroidFragment.SHOW_NAVIGATION_ARROWS, false);
 
@@ -306,7 +309,7 @@ public class CalendarFragment extends Fragment
                 cal.setTimeInMillis(event.startTime);                                               // Set cal to event start time
                 while (cal.getTimeInMillis() < event.endTime - 1) {                                 // Loop through days within event range
                     Date date = cal.getTime();
-                    mCaldroid.setBackgroundResourceForDate(R.color.primary_dark_green, date);       // Set background color of this day
+                    mCaldroid.setHasEventsForDate(true, date);                                      // Set hasEvents flag of this day
                     cal.setTimeInMillis(cal.getTimeInMillis() + 24 * 60 * 60 * 1000);               // Increment calendar by a day
                 }
             }
