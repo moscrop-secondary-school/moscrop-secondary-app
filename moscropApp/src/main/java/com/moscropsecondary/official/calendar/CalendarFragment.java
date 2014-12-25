@@ -95,6 +95,7 @@ public class CalendarFragment extends Fragment
         args.putInt(CaldroidFragment.MONTH, today.get(Calendar.MONTH) + 1);
         args.putInt(CaldroidFragment.YEAR, today.get(Calendar.YEAR));
         args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, true);
+        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, false);
 
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -114,6 +115,7 @@ public class CalendarFragment extends Fragment
         int nextArrowResource = a.getResourceId(1, 0);
         a.recycle();
 
+        args.putBoolean(CaldroidFragment.SHOW_TITLE_BAR, false);
         args.putInt(CaldroidFragment.BACKGROUND_COLOR, caldroidBgColor);
         args.putInt(CaldroidFragment.PREV_ARROW_RESOURCE, prevArrowResource);
         args.putInt(CaldroidFragment.NEXT_ARROW_RESOURCE, nextArrowResource);
