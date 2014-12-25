@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,6 @@ import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.DateUtil;
-import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -42,7 +40,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CalendarFragment extends Fragment
-        implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
+        implements AbsListView.OnScrollListener {
 
     public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
@@ -86,7 +84,7 @@ public class CalendarFragment extends Fragment
         mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), new ArrayList<GCalEvent>());
         mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(this);
+        //mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
 
         mCaldroid = new CaldroidFragment();
@@ -340,7 +338,6 @@ public class CalendarFragment extends Fragment
 
         @Override
         public void onChangeMonth(final int month, final int year) {
-            Logger.log("Change month: " + month + ", " + year);
             if (mCalendarIsShowing) {
                 setToolbarTitle(getTitleStringFromDate(year, month));
             }
@@ -350,7 +347,6 @@ public class CalendarFragment extends Fragment
     private void showCalendar() {
         mCalendarIsShowing = true;
         setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
-
 
         Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
         mCaldroidFrame.startAnimation(slideIn);
@@ -370,65 +366,6 @@ public class CalendarFragment extends Fragment
 
     public void doSearch(String query) {
         Toast.makeText(getActivity(), "Events: " + query, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        Logger.log("You've clicked on position " + position);
-
-        /*if (view != mHeaderView && view != mFooterView) {
-
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.event_dialog, null);
-
-            GCalEvent event = mEvents.get(position - 1);  // -1 to account for header view
-            String title = event.title;
-            String duration = DateUtil.formatEventDuration(event);
-            String description = event.description;
-            String location = event.location;
-
-            if (duration != null && !duration.equals("")) {
-                View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
-                durationGroup.setVisibility(View.VISIBLE);
-                TextView durationText = (TextView) dialogView.findViewById(R.id.view_event_duration);
-                durationText.setText(duration);
-            } else {
-                View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
-                durationGroup.setVisibility(View.GONE);
-            }
-
-            if (description != null && !description.equals("")) {
-                View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
-                descriptionGroup.setVisibility(View.VISIBLE);
-                TextView descriptionText = (TextView) dialogView.findViewById(R.id.view_event_description);
-                descriptionText.setText(description);
-            } else {
-                View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
-                descriptionGroup.setVisibility(View.GONE);
-            }
-
-            if (location != null && !location.equals("")) {
-                View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
-                locationGroup.setVisibility(View.VISIBLE);
-                TextView locationText = (TextView) dialogView.findViewById(R.id.view_event_location);
-                locationText.setText(location);
-            } else {
-                View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
-                locationGroup.setVisibility(View.GONE);
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(title);
-            builder.setView(dialogView);
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
-        }*/
     }
 
     @Override

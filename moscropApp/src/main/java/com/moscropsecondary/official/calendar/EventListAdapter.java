@@ -1,6 +1,8 @@
 package com.moscropsecondary.official.calendar;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,7 +131,7 @@ public class EventListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = convertView;
         if (view == null) {
             view = inflater.inflate(R.layout.day_list_item, null);
@@ -151,7 +153,7 @@ public class EventListAdapter extends BaseAdapter {
         dayMonthText.setText(sdfMonth.format(date));
         dayEventsGroup.removeAllViews();
 
-        for (GCalEvent event : day.events) {
+        for (final GCalEvent event : day.events) {
             View eventView = inflater.inflate(R.layout.event_list_item, null);
 
             TextView titleText = (TextView) eventView.findViewById(R.id.event_title);
@@ -161,9 +163,67 @@ public class EventListAdapter extends BaseAdapter {
             String duration = DateUtil.formatEventDuration(event);
             subtitleText.setText(duration);
 
+            eventView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showEventDialog(inflater, event);
+                }
+            });
+
             dayEventsGroup.addView(eventView);
         }
 
         return view;
+    }
+
+    private void showEventDialog(LayoutInflater inflater, GCalEvent event) {
+
+        View dialogView = inflater.inflate(R.layout.event_dialog, null);
+
+        String title = event.title;
+        String duration = DateUtil.formatEventDuration(event);
+        String description = event.description;
+        String location = event.location;
+
+        if (duration != null && !duration.equals("")) {
+            View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
+            durationGroup.setVisibility(View.VISIBLE);
+            TextView durationText = (TextView) dialogView.findViewById(R.id.view_event_duration);
+            durationText.setText(duration);
+        } else {
+            View durationGroup = dialogView.findViewById(R.id.view_event_duration_group);
+            durationGroup.setVisibility(View.GONE);
+        }
+
+        if (description != null && !description.equals("")) {
+            View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
+            descriptionGroup.setVisibility(View.VISIBLE);
+            TextView descriptionText = (TextView) dialogView.findViewById(R.id.view_event_description);
+            descriptionText.setText(description);
+        } else {
+            View descriptionGroup = dialogView.findViewById(R.id.view_event_description_group);
+            descriptionGroup.setVisibility(View.GONE);
+        }
+
+        if (location != null && !location.equals("")) {
+            View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
+            locationGroup.setVisibility(View.VISIBLE);
+            TextView locationText = (TextView) dialogView.findViewById(R.id.view_event_location);
+            locationText.setText(location);
+        } else {
+            View locationGroup = dialogView.findViewById(R.id.view_event_location_group);
+            locationGroup.setVisibility(View.GONE);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+        builder.setView(dialogView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }
