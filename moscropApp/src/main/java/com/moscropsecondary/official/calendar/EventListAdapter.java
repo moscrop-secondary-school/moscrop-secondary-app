@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.util.DateUtil;
-import com.moscropsecondary.official.util.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,14 +97,18 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     public int getPositionNearestToDay(int day) {
-        while (day < getItem(mDays.size()-1).dayNumber) {
-            Integer position = mDayMap.get(day);
-            if (position != null) {
-                return position;
+        if (mDays.size() > 0) {
+            while (day < getItem(mDays.size() - 1).dayNumber) {
+                Integer position = mDayMap.get(day);
+                if (position != null) {
+                    return position;
+                }
+                day++;
             }
-            day++;
+            return getItem(mDays.size() - 1).dayNumber;
+        } else {
+            return -1;
         }
-        return getItem(mDays.size()-1).dayNumber;
     }
 
     @Override

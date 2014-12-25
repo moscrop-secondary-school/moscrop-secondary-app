@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CalendarFragment extends Fragment
-        implements AdapterView.OnItemClickListener {
+        implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
 
     public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
     public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
@@ -50,7 +50,6 @@ public class CalendarFragment extends Fragment
     private static final String KEY_POSITION = "position";
     private int mPosition;
     private View mContentView;
-    private Date mSelectedDate;
 
     private View mCaldroidFrame;
     private CaldroidFragment mCaldroid;
@@ -88,6 +87,7 @@ public class CalendarFragment extends Fragment
         mAdapter = new EventListAdapter(getActivity(), new ArrayList<GCalEvent>());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+        mListView.setOnScrollListener(this);
 
         mCaldroid = new CaldroidFragment();
         Bundle args = new Bundle();
@@ -127,8 +127,6 @@ public class CalendarFragment extends Fragment
         args.putInt(CaldroidFragment.DISABLE_DAY_TEXT_COLOR, disableDayTextColor);
         args.putInt(CaldroidFragment.EVENT_INDICATOR_COLOR, eventIndicatorColor);
 
-        //args.putBoolean(CaldroidFragment.SHOW_NAVIGATION_ARROWS, false);
-
         mCaldroid.setArguments(args);
         mCaldroid.setCaldroidListener(mCaldroidListener);
 
@@ -137,8 +135,6 @@ public class CalendarFragment extends Fragment
 
         mCaldroidFrame = mContentView.findViewById(R.id.calendar_frame);
         mCaldroidFrame.setVisibility(View.GONE);
-
-
 
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
@@ -220,7 +216,7 @@ public class CalendarFragment extends Fragment
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
             toolbar.removeView(mToolbarTitle);
             mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.spinner_actionbar_title, toolbar, false);
-            ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setText("Events");
+            setToolbarTitle("Events");
             mToolbarTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -234,6 +230,23 @@ public class CalendarFragment extends Fragment
             ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             toolbar.addView(mToolbarTitle, lp);
+        }
+    }
+
+    private String getTitleStringFromDate(int year, int month) {
+        String title = DateUtil.getMonthName(month-1, false);
+
+        Calendar cal = Calendar.getInstance();
+        if (cal.get(Calendar.YEAR) != year) {
+            title = title + " " + year;
+        }
+
+        return title;
+    }
+
+    private void setToolbarTitle(String subtitle) {
+        if (mToolbarTitle != null) {
+            ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setText(subtitle);
         }
     }
 
@@ -295,7 +308,9 @@ public class CalendarFragment extends Fragment
     private void scrollTo(long millis) {
         int dayNumber = DateUtil.daysFromMillis(millis);
         int position = mAdapter.getPositionNearestToDay(dayNumber);
-        mListView.setSelection(position);
+        if (position != -1) {
+            mListView.setSelection(position);
+        }
     }
 
     private void loadEventsIntoCaldroid() {
@@ -319,16 +334,6 @@ public class CalendarFragment extends Fragment
     final CaldroidListener mCaldroidListener = new CaldroidListener() {
         @Override
         public void onSelectDate(Date date, View view) {
-            /*if (date != null) {
-                // Only update if there isn't an existing selected date or
-                // if the new date differs from the existing selected date
-                if (mSelectedDate == null || !date.equals(mSelectedDate)) {
-                    mSelectedDate = date;
-                    updateEventsList(date);
-                }
-            } else {
-                Logger.log("Selected day is null");
-            }*/
             scrollTo(date.getTime());
             hideCalendar();
         }
@@ -336,22 +341,16 @@ public class CalendarFragment extends Fragment
         @Override
         public void onChangeMonth(final int month, final int year) {
             Logger.log("Change month: " + month + ", " + year);
-            mMonth = month-1;
-            mYear = year;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mYear == year && mMonth == month-1) {
-                        loadEventsIntoCaldroid();
-                        mCaldroid.refreshView();
-                    }
-                }
-            }, 1000);
+            if (mCalendarIsShowing) {
+                setToolbarTitle(getTitleStringFromDate(year, month));
+            }
         }
     };
 
     private void showCalendar() {
         mCalendarIsShowing = true;
+        setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
+
 
         Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
         mCaldroidFrame.startAnimation(slideIn);
@@ -361,40 +360,12 @@ public class CalendarFragment extends Fragment
 
     private void hideCalendar() {
         mCalendarIsShowing = false;
+        setToolbarTitle("Events");
 
         Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
         mCaldroidFrame.startAnimation(slideOut);
 
         mCaldroidFrame.setVisibility(View.GONE);
-    }
-
-    private void updateEventsList(Date date) {
-
-        /*Logger.log("Updating events list");
-        mAdapter.clear();
-
-        CalendarDatabase db = new CalendarDatabase(getActivity());
-        List<GCalEvent> events = db.getEventsForDay(date);
-        mAdapter.addAll(events);
-
-        mListView.removeFooterView(mFooterView);
-        if (mAdapter.getCount() == 0) {
-            mListView.addFooterView(mFooterView, null, false);
-        }
-
-        if(mHeaderView != null) {
-            String dateStr;
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            if (cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
-                dateStr = String.format("%s %d", DateUtil.getMonthName(cal.get(Calendar.MONTH), true), cal.get(Calendar.DAY_OF_MONTH));
-            } else {
-                dateStr = String.format("%s %d, %d", DateUtil.getMonthName(cal.get(Calendar.MONTH), true), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR));
-            }
-            mHeaderView.setText(dateStr);
-        }
-
-        mAdapter.notifyDataSetChanged();*/
     }
 
     public void doSearch(String query) {
@@ -458,5 +429,26 @@ public class CalendarFragment extends Fragment
             });
             builder.create().show();
         }*/
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // Do nothing
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (mAdapter != null && mAdapter.getCount() > 0) {
+            EventListAdapter.Day day = mAdapter.getItem(firstVisibleItem);
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(DateUtil.millisFromDays(day.dayNumber));
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            if (month != mMonth || year != mYear) {
+                mMonth = month;
+                mYear = year;
+                mCaldroid.moveToDate(cal.getTime());
+            }
+        }
     }
 }

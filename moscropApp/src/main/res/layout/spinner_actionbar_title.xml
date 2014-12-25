@@ -10,10 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:textColor="#ffffffff"
-        android:textSize="@dimen/spinner_title_text"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif"
+        style="@style/TextAppearance.AppCompat.Title"
         android:drawablePadding="4dp"
+        android:text="Title"
         android:drawableRight="@drawable/spinner_triangle" />
 
 </LinearLayout>
