@@ -80,8 +80,8 @@
         <item name="caldroid_month_text_color">@color/textm</item>
         <item name="caldroid_week_text_color">@color/textm</item>
         <item name="caldroid_normal_day_text_color">@color/text</item>
-        <item name="caldroid_disable_day_text_color">@color/texttt</item>
-        <item name="caldroid_event_indicator_color">@color/text</item>
+        <item name="caldroid_disable_day_text_color">@color/backgrounddd</item>
+        <item name="caldroid_event_indicator_color">@color/textt</item>
     </style>
 
     <style name="Theme.Dark" parent="Theme.Base.Dark.Versioned">
@@ -134,8 +134,8 @@
         <item name="caldroid_month_text_color">@color/dtextm</item>
         <item name="caldroid_week_text_color">@color/dtextm</item>
         <item name="caldroid_normal_day_text_color">@color/dtext</item>
-        <item name="caldroid_disable_day_text_color">@color/dtexttt</item>
-        <item name="caldroid_event_indicator_color">@color/dtext</item>
+        <item name="caldroid_disable_day_text_color">@color/dbackgrounddd</item>
+        <item name="caldroid_event_indicator_color">@color/dtextt</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Dark">

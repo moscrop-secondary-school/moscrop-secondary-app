@@ -16,7 +16,6 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
-    <!-- ActionBar title text -->
     <style name="ActionBar" parent="@android:style/Widget.Holo.ActionBar">
         <item name="actionBarSize">@dimen/ab_height</item>
         <item name="android:actionBarSize">@dimen/ab_height</item>
@@ -32,39 +31,6 @@
 
     <style name="moscrop.ActionBar.SubTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
         <item name="android:textColor">?attr/textt</item>
-    </style>
-
-    <!-- NO NEED ANYMORE, I deleted the png as well -->
-    <!--<style name="moscrop.ActionBar.Overflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_action_overflow</item>
-    </style>-->
-
-    <style name="TranslucentActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">@drawable/ic_actionbar_bg</item>
-        <item name="background">@drawable/ic_actionbar_bg</item>
-    </style>
-
-    <!-- This is your Dialog Window popups. Changing the bg color will change the color of the window. -->
-    <style name="the1dynasty.Dialog" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:windowBackground">@color/transparent</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="moscrop.TransparentDialog" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowBackground">@color/transparent</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
-        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionBarStyle">@style/ActionBar</item>
-        <item name="android:actionBarItemBackground">@drawable/selector_white_transparent_ex</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:background">@color/transparent</item>
-        <item name="android:textColor">?attr/text</item>
     </style>
 
     <style name="TransparentDialog" parent="@android:style/Theme.Holo.Dialog">
@@ -83,34 +49,11 @@
         <item name="android:textColor">?attr/text</item>
     </style>
 
-    <!--Spinner-->
-    <style name="MoscropSpinner" parent="Widget.AppCompat.Spinner.DropDown.ActionBar">
-        <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/btn_dropdown</item>
-        <item name="android:clickable">true</item>
-        <item name="android:dropDownSelector">@drawable/list_selector_background</item>
-        <item name="android:popupBackground">@drawable/spinner_dropdown_background</item>
-        <item name="android:dropDownWidth">wrap_content</item>
-        <!--<item name="android:dropDownHorizontalOffset">0.0dip</item>-->
-        <!--<item name="android:dropDownVerticalOffset">-10.0dip</item>-->
-        <item name="android:spinnerMode">dropdown</item>
-        <!--<item name="android:textAppearance">@style/MoscropText</item>-->
-    </style>
-    <!--<item name="android:popupPromptView">@layout/dropdown_hint</item>-->
-    <style name="MoscropText" parent="TextAppearance.AppCompat.Inverse">
-        <item name="android:textColor">@color/dtext</item>
-        <item name="android:textColorHint">@color/dtextt</item>
-        <!--<item name="android:textColor">@android:color/white</item>-->
-        <!--<item name="android:textColorHint">@android:color/holo_red_dark</item>-->
-    </style>
-
     <style name="Widget.IOSched.HeaderBar.Spinner" parent="Widget.IOSched.HeaderBar.Spinner.Base" />
 
     <style name="Widget.IOSched.HeaderBar.Spinner.Base" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
         <item name="android:background">?android:selectableItemBackground</item>
         <item name="android:dropDownSelector">?android:selectableItemBackground</item>
-        <!--<item name="android:divider">@null</item>
-        <item name="android:dividerHeight">0dp</item>-->
     </style>
 
     <style name="ActionBarThemeOverlay" parent="">
