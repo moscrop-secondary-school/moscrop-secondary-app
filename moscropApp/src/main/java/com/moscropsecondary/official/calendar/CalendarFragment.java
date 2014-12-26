@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +52,7 @@ public class CalendarFragment extends Fragment
 
     private View mCaldroidFrame;
     private CaldroidFragment mCaldroid;
+    private SwipeRefreshLayout mSwipeLayout;
     private ListView mListView;
     private View mToolbarTitle;
 
@@ -80,6 +82,9 @@ public class CalendarFragment extends Fragment
     	mContentView = inflater.inflate(R.layout.fragment_events, container, false);
 
         //insertDays();
+
+        mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.fragment_event_swipe_container);
+        mSwipeLayout.setEnabled(false);
 
         mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), new ArrayList<GCalEvent>());
@@ -294,6 +299,8 @@ public class CalendarFragment extends Fragment
                     mAdapter.notifyDataSetChanged();
                     scrollTo(System.currentTimeMillis());
 
+                    loadEventsIntoCaldroid(events);
+
                     //mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
                     //mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
                 }
@@ -311,11 +318,11 @@ public class CalendarFragment extends Fragment
         }
     }
 
-    private void loadEventsIntoCaldroid() {
-        if (getActivity() != null) {
+    private void loadEventsIntoCaldroid(List<GCalEvent> events) {
+        /*if (getActivity() != null) {
             CalendarDatabase db = new CalendarDatabase(getActivity());
             List<GCalEvent> events = db.getEventsForMonth(mYear, mMonth);
-            db.close();
+            db.close();*/
 
             for (GCalEvent event : events) {
                 Calendar cal = Calendar.getInstance();
@@ -326,7 +333,7 @@ public class CalendarFragment extends Fragment
                     cal.setTimeInMillis(cal.getTimeInMillis() + 24 * 60 * 60 * 1000);               // Increment calendar by a day
                 }
             }
-        }
+        //}
     }
 
     final CaldroidListener mCaldroidListener = new CaldroidListener() {

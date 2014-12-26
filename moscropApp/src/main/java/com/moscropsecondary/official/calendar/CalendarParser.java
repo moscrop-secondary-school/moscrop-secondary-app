@@ -27,6 +27,29 @@ public class CalendarParser {
 
     public static final String API_KEY = "AIzaSyDQgD1es2FQdm4xTA1tU8vFniOglwe4HsE";
 
+    private static class CalendarInfo {
+        private final String version;
+
+        private CalendarInfo(String version) {
+            this.version = version;
+        }
+    }
+
+    private static CalendarInfo getCalendarInfo(Context context, String url) throws JSONException {
+        JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
+        if (jsonObject != null) {
+            String timestamp = getUpdatedTimeFromJsonObject(jsonObject);
+            return new CalendarInfo(timestamp);
+        } else {
+            return null;
+        }
+    }
+
+    private static String getStoredVersion(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+        return prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
+    }
+
     private static String getUpdatedTimeFromJsonObject(JSONObject root) throws JSONException {
         return root.getString("updated");
     }
@@ -118,11 +141,17 @@ public class CalendarParser {
         }
     }
 
-    private static String getCalendarUrlFromId(String id, String timeMin) {
-        if (timeMin == null) {
-            return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&key=" + API_KEY;
+    private static String getCalendarUrlFromId(String id, String timeMin, boolean headerInfoOnly) {
+        if (!headerInfoOnly) {
+            if (timeMin == null) {
+                return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&key=" + API_KEY;
+            } else {
+                return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&timeMin=" + timeMin + "&key=" + API_KEY;
+            }
         } else {
-            return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&timeMin=" + timeMin + "&key=" + API_KEY;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            String now = sdf.format(new Date(System.currentTimeMillis()));
+            return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1&timeMax=" + now + "&timeMax=" + now + "&key=" + API_KEY;
         }
     }
 
@@ -153,7 +182,7 @@ public class CalendarParser {
         // Get the list of events from the URL
         CalendarFeed feed = null;
         try {
-            String url = getCalendarUrlFromId(id, null);
+            String url = getCalendarUrlFromId(id, null, false);
             feed = getCalendarFeed(context, url);
         } catch (JSONException e) {
             Logger.error("CalendarParser.parseAndSaveAll()", e);
@@ -187,58 +216,78 @@ public class CalendarParser {
 
         Logger.log("Processing selectively");
 
-        CalendarFeed feed = null;
+        // Determine if a full load is needed
+        CalendarInfo info = null;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            String timeMinStr = sdf.format(new Date(timeMin));
-            String url = getCalendarUrlFromId(id, timeMinStr);
-            feed = getCalendarFeed(context, url);
+            String url = getCalendarUrlFromId(id, null, true);
+            Logger.log("Loading info from: " + url);
+            info = getCalendarInfo(context, url);
         } catch (JSONException e) {
-            Logger.error("CalendarParser.process()", e);
+            //Logger.error("RSSParser.parseAndSave() info", e);
         }
 
-        if (feed != null) {
+        if (info != null) {
+            //Logger.log("Downloaded version: " + info.version);
+            //Logger.log("Stored version:     " + getStoredVersion(context));
+        } else {
+            //Logger.log("Info is null!!!");
+        }
 
-            // We just updated, so update records
-            // with current time and the version we
-            // just downloaded regardless of whether
-            // updating the database was needed
+        if (info != null && !info.version.equals(getStoredVersion(context))) {
 
-            saveUpdateInfo(context, feed.version);
-            CalendarDatabase db = new CalendarDatabase(context);
-
-            String newGcalVersion = feed.version;
-            if (!newGcalVersion.equals(lastGcalVersion)) {
-
-                // There has been changes! We must update!
-                //
-                // The maintainer of the calendar probably
-                // won't make changes to events that have
-                // already past. Therefore we only need to
-                // update events that begin after the last
-                // update time.
-                //
-                // Begin by deleting those events
-
-                int deleted = db.deleteAfterTime(timeMin);
-
-                if (deleted != feed.events.size()) {
-                    Logger.warn("Processing calendar events: deleted "
-                            + deleted + " events from database, but only inserting "
-                            + feed.events.size() + " new events."
-                    );
-                }
-
-                // Our list of events will already only consist
-                // of events that begin after startMin, so no
-                // overlapping will occur. We can save normally.
-
-                db.saveEventsToProvider(feed.events);
-
-            } else {
-                Logger.log("Existing version is already up to date.");
+            CalendarFeed feed = null;
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                String timeMinStr = sdf.format(new Date(timeMin));
+                String url = getCalendarUrlFromId(id, timeMinStr, false);
+                feed = getCalendarFeed(context, url);
+            } catch (JSONException e) {
+                Logger.error("CalendarParser.process()", e);
             }
-            db.close();
+
+            if (feed != null) {
+
+                // We just updated, so update records
+                // with current time and the version we
+                // just downloaded regardless of whether
+                // updating the database was needed
+
+                saveUpdateInfo(context, feed.version);
+                CalendarDatabase db = new CalendarDatabase(context);
+
+                String newGcalVersion = feed.version;
+                if (!newGcalVersion.equals(lastGcalVersion)) {
+
+                    // There has been changes! We must update!
+                    //
+                    // The maintainer of the calendar probably
+                    // won't make changes to events that have
+                    // already past. Therefore we only need to
+                    // update events that begin after the last
+                    // update time.
+                    //
+                    // Begin by deleting those events
+
+                    int deleted = db.deleteAfterTime(timeMin);
+
+                    if (deleted != feed.events.size()) {
+                        Logger.warn("Processing calendar events: deleted "
+                                        + deleted + " events from database, but only inserting "
+                                        + feed.events.size() + " new events."
+                        );
+                    }
+
+                    // Our list of events will already only consist
+                    // of events that begin after startMin, so no
+                    // overlapping will occur. We can save normally.
+
+                    db.saveEventsToProvider(feed.events);
+
+                } else {
+                    Logger.log("Existing version is already up to date.");
+                }
+                db.close();
+            }
         }
     }
 
