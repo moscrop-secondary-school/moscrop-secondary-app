@@ -77,11 +77,11 @@
         <item name="caldroid_bg_color">@color/background</item>
         <item name="caldroid_prev_arrow_resource">@drawable/calendar_prev_arrow</item>
         <item name="caldroid_next_arrow_resource">@drawable/calendar_next_arrow</item>
-        <item name="caldroid_month_text_color">@color/text_color_secondary</item>
-        <item name="caldroid_week_text_color">@color/text_color_secondary</item>
+        <item name="caldroid_month_text_color">@color/textm</item>
+        <item name="caldroid_week_text_color">@color/textm</item>
         <item name="caldroid_normal_day_text_color">@color/text</item>
-        <item name="caldroid_disable_day_text_color">@color/caldroid_darker_gray</item>
-        <item name="caldroid_event_indicator_color">@android:color/black</item>
+        <item name="caldroid_disable_day_text_color">@color/texttt</item>
+        <item name="caldroid_event_indicator_color">@color/text</item>
     </style>
 
     <style name="Theme.Dark" parent="Theme.Base.Dark.Versioned">
@@ -131,11 +131,11 @@
         <item name="caldroid_bg_color">@color/card_background_black</item>
         <item name="caldroid_prev_arrow_resource">@drawable/calendar_prev_arrow</item>
         <item name="caldroid_next_arrow_resource">@drawable/calendar_next_arrow</item>
-        <item name="caldroid_month_text_color">@android:color/white</item>
-        <item name="caldroid_week_text_color">@android:color/white</item>
-        <item name="caldroid_normal_day_text_color">@android:color/white</item>
-        <item name="caldroid_disable_day_text_color">@android:color/white</item>
-        <item name="caldroid_event_indicator_color">@android:color/white</item>
+        <item name="caldroid_month_text_color">@color/dtextm</item>
+        <item name="caldroid_week_text_color">@color/dtextm</item>
+        <item name="caldroid_normal_day_text_color">@color/dtext</item>
+        <item name="caldroid_disable_day_text_color">@color/dtexttt</item>
+        <item name="caldroid_event_indicator_color">@color/dtext</item>
     </style>
 
     <style name="Theme.Black" parent="Theme.Dark">
@@ -181,14 +181,8 @@
 
         <item name="rss_divider_size">@dimen/rss_divider_size_transparent</item>
 
-        <item name="caldroid_bg_color">@color/card_background_tblack</item>
-        <item name="caldroid_prev_arrow_resource">@drawable/calendar_prev_arrow</item>
-        <item name="caldroid_next_arrow_resource">@drawable/calendar_next_arrow</item>
-        <item name="caldroid_month_text_color">@android:color/white</item>
-        <item name="caldroid_week_text_color">@android:color/white</item>
-        <item name="caldroid_normal_day_text_color">@android:color/white</item>
-        <item name="caldroid_disable_day_text_color">@android:color/white</item>
-        <item name="caldroid_event_indicator_color">@android:color/white</item>
+        <!--<item name="caldroid_bg_color">@color/card_background_tblack</item>-->
+
     </style>
 
 </resources>
