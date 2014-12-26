@@ -70,7 +70,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         View view = convertView;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.rss_list_card, null);
+            view = inflater.inflate(R.layout.rss_list_card_2, null);
             view.setLayoutParams(new AbsListView.LayoutParams(GridView.AUTO_FIT, RSS_CARD_HEIGHT));
         }
 
