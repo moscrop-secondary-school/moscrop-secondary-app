@@ -345,8 +345,11 @@ public class CalendarFragment extends Fragment
     };
 
     private void showCalendar() {
+
         mCalendarIsShowing = true;
+
         setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
+        ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle_up, 0);
 
         Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
         mCaldroidFrame.startAnimation(slideIn);
@@ -355,8 +358,11 @@ public class CalendarFragment extends Fragment
     }
 
     private void hideCalendar() {
+
         mCalendarIsShowing = false;
+
         setToolbarTitle("Events");
+        ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle, 0);
 
         Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
         mCaldroidFrame.startAnimation(slideOut);
