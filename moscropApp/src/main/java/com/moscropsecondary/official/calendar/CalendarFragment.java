@@ -31,7 +31,6 @@ import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.DateUtil;
-import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -487,10 +486,10 @@ public class CalendarFragment extends Fragment
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_TOUCH_SCROLL || scrollState == SCROLL_STATE_FLING) {
-            Logger.log("Scrolling");
+            //Logger.log("Scrolling");
             mScrolling = true;
         } else {
-            Logger.log("Not scrolling");
+            //Logger.log("Not scrolling");
             mScrolling = false;
         }
     }
@@ -514,23 +513,23 @@ public class CalendarFragment extends Fragment
                 if (mListView != null && mListView.getChildAt(mListView.getChildCount() - 1) != null
                         && mListView.getLastVisiblePosition() == mListView.getAdapter().getCount() - 1
                         && mListView.getChildAt(mListView.getChildCount() - 1).getBottom() <= mListView.getHeight()) {
-                    Logger.log("Reached the end of agenda");
+                    //Logger.log("Reached the end of agenda");
                     loadMore = END;
                 } else if (mListView != null && mListView.getChildAt(0) != null
                         && mListView.getFirstVisiblePosition() == 0
                         && mListView.getChildAt(0).getTop() >= 0) {
-                    Logger.log("Reached the top of agenda");
+                    //Logger.log("Reached the top of agenda");
                     loadMore = FRONT;
                 }
 
                 switch (loadMore) {
                     case FRONT:
-                        Logger.log("Processing FRONT case");
+                        //Logger.log("Processing FRONT case");
                         loadMoreCalendar(false);
                         mScrolling = false;
                         break;
                     case END:
-                        Logger.log("Processing END case");
+                        //Logger.log("Processing END case");
                         loadMoreCalendar(true);
                         mScrolling = false;
                         break;
