@@ -102,7 +102,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return events;
     }
 
-    private List<GCalEvent> getEventsForDuration(long lowerBound, long upperBound) {
+    public List<GCalEvent> getEventsForDuration(long lowerBound, long upperBound) {
         // Consider 3 cases:
         // 1. Date contains start of an event
         // 2. Date contains the end of an event

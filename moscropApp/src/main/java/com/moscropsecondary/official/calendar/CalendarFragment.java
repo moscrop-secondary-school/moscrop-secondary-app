@@ -31,6 +31,7 @@ import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.DateUtil;
+import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -61,6 +62,13 @@ public class CalendarFragment extends Fragment
 
     private int mYear = -1;
     private int mMonth = -1;     // java.util.Calendar months. One less than actual month.
+    private long mLowerBound;
+    private long mUpperBound;
+    private static final long ONE_MONTH = 2592000000L;
+    private boolean mScrolling = false;
+
+    private static final int FRONT  = 0;
+    private static final int END    = 1;
 
     private EventListAdapter mAdapter;
     
@@ -147,7 +155,7 @@ public class CalendarFragment extends Fragment
         new Thread(new Runnable() {
             @Override
             public void run() {
-                downloadCalendar();
+                downloadCalendar(true);
             }
         }).start();
 
@@ -253,7 +261,7 @@ public class CalendarFragment extends Fragment
         }
     }
 
-    private void downloadCalendar() {
+    private void downloadCalendar(boolean showCacheWhileLoading) {
 
         // Check if provider is empty
         CalendarDatabase db = new CalendarDatabase(getActivity());
@@ -262,6 +270,37 @@ public class CalendarFragment extends Fragment
         SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.GCAL_LAST_UPDATED, Preferences.App.Default.GCAL_LAST_UPDATED);
         String lastGcalVersion = prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
+
+        if (showCacheWhileLoading) {
+            if (getActivity() != null) {
+
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.add(Calendar.MONTH, -1);
+                mLowerBound = cal.getTimeInMillis();
+                cal.add(Calendar.MONTH, 2);
+                mUpperBound = cal.getTimeInMillis();
+
+                //final List<GCalEvent> events = db.getEventsForDuration(mLowerBound, mUpperBound);
+                final List<GCalEvent> events = db.getAllEvents();
+
+                //final List<GCalEvent> events = db.getAllEvents();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.clear();
+                        mAdapter.addToEnd(events);
+                        mAdapter.notifyDataSetChanged();
+                        scrollTo(System.currentTimeMillis());
+
+                        loadEventsIntoCaldroid(events);
+                    }
+                });
+            }
+        }
 
         if((count == 0)
                 || (lastUpdateMillis == Preferences.App.Default.GCAL_LAST_UPDATED)
@@ -288,26 +327,79 @@ public class CalendarFragment extends Fragment
             CalendarParser.parseAndSave(getActivity(), MOSCROP_CALENDAR_ID, lastUpdateMillis, lastGcalVersion);
         }
 
+        String newGcalVersion = prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
+
         // Update UI when done loading
-        if (getActivity() != null) {
-            final List<GCalEvent> events = db.getAllEvents();
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.clear();
-                    mAdapter.addAll(events);
-                    mAdapter.notifyDataSetChanged();
-                    scrollTo(System.currentTimeMillis());
+        if (showCacheWhileLoading && !newGcalVersion.equals(lastGcalVersion)) {
+            if (getActivity() != null) {
 
-                    loadEventsIntoCaldroid(events);
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.add(Calendar.MONTH, -1);
+                mLowerBound = cal.getTimeInMillis();
+                cal.add(Calendar.MONTH, 2);
+                mUpperBound = cal.getTimeInMillis();
 
-                    //mCaldroidListener.onChangeMonth(mMonth + 1, mYear);
-                    //mCaldroidListener.onSelectDate(Calendar.getInstance().getTime(), null);
-                }
-            });
+                //final List<GCalEvent> events = db.getEventsForDuration(mLowerBound, mUpperBound);
+                final List<GCalEvent> events = db.getAllEvents();
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.clear();
+                        mAdapter.addToEnd(events);
+                        mAdapter.notifyDataSetChanged();
+                        scrollTo(System.currentTimeMillis());
+
+                        loadEventsIntoCaldroid(events);
+                    }
+                });
+            }
         }
 
         db.close();
+    }
+
+    private void loadMoreCalendar(boolean addToEnd) {
+
+        /*Logger.log("-------------------------");
+
+        Logger.log("Loading more calendar from database");
+
+        CalendarDatabase db = new CalendarDatabase(getActivity());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd @ kk:mm:ss.SSS");
+
+        if (addToEnd) {
+            Logger.log("Loading more from end of list");
+            long newUpperBound = mUpperBound + ONE_MONTH;
+            List<GCalEvent> events = db.getEventsForDuration(mUpperBound, newUpperBound);
+            Logger.log("Loading from " + mUpperBound + " to " + newUpperBound);
+            Logger.log("Also known as " + sdf.format(new Date(mUpperBound)) + " to " + sdf.format(new Date(newUpperBound)));
+            Logger.log("Query returned " + events.size() + " items");
+            mUpperBound = newUpperBound;
+            mAdapter.addToEnd(events);
+            mAdapter.notifyDataSetChanged();
+            loadEventsIntoCaldroid(events);
+        } else {
+            Logger.log("Loading more from front of list");
+            long newLowerBound = mLowerBound - ONE_MONTH;
+            List<GCalEvent> events = db.getEventsForDuration(newLowerBound, mLowerBound);
+            Logger.log("Loading from " + newLowerBound + " to " + mLowerBound);
+            Logger.log("Also known as " + sdf.format(new Date(newLowerBound)) + " to " + sdf.format(new Date(mLowerBound)));
+            Logger.log("Query returned " + events.size() + " items");
+            mLowerBound = newLowerBound;
+            mAdapter.addToFront(events);
+            mAdapter.notifyDataSetChanged();
+            loadEventsIntoCaldroid(events);
+        }
+
+        db.close();
+
+        Logger.log("-------------------------");*/
+
     }
 
     private void scrollTo(long millis) {
@@ -324,8 +416,8 @@ public class CalendarFragment extends Fragment
             List<GCalEvent> events = db.getEventsForMonth(mYear, mMonth);
             db.close();*/
 
+            Calendar cal = Calendar.getInstance();
             for (GCalEvent event : events) {
-                Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(event.startTime);                                               // Set cal to event start time
                 while (cal.getTimeInMillis() < event.endTime - 1) {                                 // Loop through days within event range
                     Date date = cal.getTime();
@@ -347,6 +439,17 @@ public class CalendarFragment extends Fragment
         public void onChangeMonth(final int month, final int year) {
             if (mCalendarIsShowing) {
                 setToolbarTitle(getTitleStringFromDate(year, month));
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month, 1);
+            if (cal.getTimeInMillis() < mLowerBound) {
+                loadMoreCalendar(false);
+            } else {
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                if (cal.getTimeInMillis() > mUpperBound) {
+                    loadMoreCalendar(true);
+                }
             }
         }
     };
@@ -383,7 +486,13 @@ public class CalendarFragment extends Fragment
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        // Do nothing
+        if (scrollState == SCROLL_STATE_TOUCH_SCROLL || scrollState == SCROLL_STATE_FLING) {
+            Logger.log("Scrolling");
+            mScrolling = true;
+        } else {
+            Logger.log("Not scrolling");
+            mScrolling = false;
+        }
     }
 
     @Override
@@ -398,6 +507,34 @@ public class CalendarFragment extends Fragment
                 mMonth = month;
                 mYear = year;
                 mCaldroid.moveToDate(cal.getTime());
+            }
+
+            if (mScrolling) {
+                int loadMore = -1;
+                if (mListView != null && mListView.getChildAt(mListView.getChildCount() - 1) != null
+                        && mListView.getLastVisiblePosition() == mListView.getAdapter().getCount() - 1
+                        && mListView.getChildAt(mListView.getChildCount() - 1).getBottom() <= mListView.getHeight()) {
+                    Logger.log("Reached the end of agenda");
+                    loadMore = END;
+                } else if (mListView != null && mListView.getChildAt(0) != null
+                        && mListView.getFirstVisiblePosition() == 0
+                        && mListView.getChildAt(0).getTop() >= 0) {
+                    Logger.log("Reached the top of agenda");
+                    loadMore = FRONT;
+                }
+
+                switch (loadMore) {
+                    case FRONT:
+                        Logger.log("Processing FRONT case");
+                        loadMoreCalendar(false);
+                        mScrolling = false;
+                        break;
+                    case END:
+                        Logger.log("Processing END case");
+                        loadMoreCalendar(true);
+                        mScrolling = false;
+                        break;
+                }
             }
         }
     }

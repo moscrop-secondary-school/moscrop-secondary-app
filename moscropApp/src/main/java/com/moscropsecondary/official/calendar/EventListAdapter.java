@@ -41,16 +41,23 @@ public class EventListAdapter extends BaseAdapter {
 
     public EventListAdapter(Context context, List<GCalEvent> events) {
         mContext = context;
-        addAll(events);
+        addToEnd(events);
     }
 
-    public void addAll(List<GCalEvent> events) {
+    public void addToEnd(List<GCalEvent> events) {
         for (GCalEvent event : events) {
-            add(event);
+            add(event, false);
         }
     }
 
-    public void add(GCalEvent event) {
+    public void addToFront(List<GCalEvent> events) {
+        for (int i=events.size()-1; i>=0; i--) {
+            GCalEvent event = events.get(i);
+            add(event, true);
+        }
+    }
+
+    public void add(GCalEvent event, boolean addToFront) {
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(event.startTime);
@@ -79,7 +86,11 @@ public class EventListAdapter extends BaseAdapter {
                 // Day object doesn't exist yet, create a new Day and add it to list and HashMap
                 day = new Day(dayNumber);
                 mDayMap.put(dayNumber, mDays.size());
-                mDays.add(day);
+                if (addToFront) {
+                    mDays.add(0, day);
+                } else {
+                    mDays.add(day);
+                }
 
             } else {                    // Else, the day exists
                 // Retrieve existing Day object from list
