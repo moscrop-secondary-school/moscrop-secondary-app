@@ -487,6 +487,11 @@ public class CalendarFragment extends Fragment
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_TOUCH_SCROLL || scrollState == SCROLL_STATE_FLING) {
             //Logger.log("Scrolling");
+
+            if (mCalendarIsShowing) {
+                hideCalendar();
+            }
+
             mScrolling = true;
         } else {
             //Logger.log("Not scrolling");
