@@ -181,7 +181,7 @@
 
         <item name="rss_divider_size">@dimen/rss_divider_size_transparent</item>
 
-        <!--<item name="caldroid_bg_color">@color/card_background_tblack</item>-->
+        <item name="caldroid_bg_color">@color/card_background_tblack</item>
 
     </style>
 
