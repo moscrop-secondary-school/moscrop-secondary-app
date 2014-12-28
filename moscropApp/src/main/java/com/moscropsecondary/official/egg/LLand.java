@@ -691,7 +691,7 @@ public class LLand extends FrameLayout {
 
             setBackgroundResource(R.drawable.android);
             getBackground().setTintMode(PorterDuff.Mode.SRC_ATOP);
-            getBackground().setTint(0xFF000000);
+            getBackground().setTint(0xFF00FF00);
             setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
@@ -782,12 +782,12 @@ public class LLand extends FrameLayout {
         }
 
         public boolean intersects(Player p) {
-            final int N = p.corners.length/2;
+            /*final int N = p.corners.length/2;
             for (int i=0; i<N; i++) {
                 final int x = (int) p.corners[i*2];
                 final int y = (int) p.corners[i*2+1];
                 if (hitRect.contains(x, y)) return true;
-            }
+            }*/
             return false;
         }
 
@@ -826,12 +826,12 @@ public class LLand extends FrameLayout {
         }
 
         public boolean intersects(Player p) {
-            final int N = p.corners.length/2;
+            /*final int N = p.corners.length/2;
             for (int i=0; i<N; i++) {
                 final int x = (int) p.corners[i*2];
                 final int y = (int) p.corners[i*2+1];
                 if (Math.hypot(x-cx, y-cy) <= r) return true;
-            }
+            }*/
             return false;
         }
 
