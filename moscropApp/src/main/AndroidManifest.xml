@@ -35,6 +35,11 @@
         <activity
             android:name="com.moscropsecondary.official.GenericActivity"
             android:label="@string/activity_settings" />
+
+        <activity
+            android:name="com.moscropsecondary.official.egg.LLandActivity"
+            android:label="Panther Land" />
+
     </application>
 
 </manifest>
