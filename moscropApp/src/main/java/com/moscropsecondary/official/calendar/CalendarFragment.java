@@ -122,7 +122,7 @@ public class CalendarFragment extends Fragment
         theme.resolveAttribute(R.attr.caldroid_event_indicator_color, typedValue, true);
         int eventIndicatorColor = typedValue.data;
 
-        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] { R.attr.caldroid_prev_arrow_resource, R.attr.caldroid_next_arrow_resource });
+        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[]{R.attr.caldroid_prev_arrow_resource, R.attr.caldroid_next_arrow_resource});
         int prevArrowResource = a.getResourceId(0, 0);
         int nextArrowResource = a.getResourceId(1, 0);
         a.recycle();
@@ -141,7 +141,7 @@ public class CalendarFragment extends Fragment
         mCaldroid.setCaldroidListener(mCaldroidListener);
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.calendar_frame, mCaldroid).commit();
+        transaction.replace(R.id.calendar_frame, mCaldroid, "CaldroidFragment").commit();
 
         mCaldroidFrame = mContentView.findViewById(R.id.calendar_frame);
         mCaldroidFrame.setVisibility(View.GONE);
