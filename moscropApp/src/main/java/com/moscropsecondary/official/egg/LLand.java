@@ -15,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,6 +53,8 @@ public class LLand extends FrameLayout {
 
     public static final float DEBUG_SPEED_MULTIPLIER = 1f; // 0.1f;
     public static final boolean DEBUG_IDDQD = false;
+
+    private final boolean mUserIsAGoat;
 
     final static int[] POPS = {
             // resid                // spinny!
@@ -151,6 +154,9 @@ public class LLand extends FrameLayout {
         setFocusable(true);
         PARAMS = new Params(getResources());
         mTimeOfDay = irand(0, SKIES.length);
+
+        UserManager um = (UserManager) getContext().getSystemService(Context.USER_SERVICE);
+        mUserIsAGoat = um.isUserAGoat();
     }
 
     @Override
@@ -405,8 +411,14 @@ public class LLand extends FrameLayout {
 
         // 2. Check for altitude
         if (mPlaying && mDroid.below(mHeight)) {
-            if (DEBUG_IDDQD) {
+            if (DEBUG_IDDQD || mUserIsAGoat) {
                 poke();
+                mDroid.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        unpoke();
+                    }
+                }, 50);
             } else {
                 L("player hit the floor");
                 stop();
@@ -782,12 +794,17 @@ public class LLand extends FrameLayout {
         }
 
         public boolean intersects(Player p) {
-            /*final int N = p.corners.length/2;
+
+            if (mUserIsAGoat) {
+                return false;
+            }
+
+            final int N = p.corners.length/2;
             for (int i=0; i<N; i++) {
                 final int x = (int) p.corners[i*2];
                 final int y = (int) p.corners[i*2+1];
                 if (hitRect.contains(x, y)) return true;
-            }*/
+            }
             return false;
         }
 
@@ -802,7 +819,7 @@ public class LLand extends FrameLayout {
 
         @Override
         public void step(long t_ms, long dt_ms, float t, float dt) {
-            setTranslationX(getTranslationX()-PARAMS.TRANSLATION_PER_SEC*dt);
+            setTranslationX(getTranslationX() - PARAMS.TRANSLATION_PER_SEC * dt);
             getHitRect(hitRect);
         }
     }
@@ -826,12 +843,17 @@ public class LLand extends FrameLayout {
         }
 
         public boolean intersects(Player p) {
-            /*final int N = p.corners.length/2;
+
+            if (mUserIsAGoat) {
+                return false;
+            }
+
+            final int N = p.corners.length/2;
             for (int i=0; i<N; i++) {
                 final int x = (int) p.corners[i*2];
                 final int y = (int) p.corners[i*2+1];
                 if (Math.hypot(x-cx, y-cy) <= r) return true;
-            }*/
+            }
             return false;
         }
 
