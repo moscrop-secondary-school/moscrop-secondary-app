@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.util.Logger;
+import com.moscropsecondary.official.util.ThemesUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -68,8 +69,16 @@ public class NewsDisplayFragment extends Fragment {
 	}
 	
 	private String getHtmlData(String bodyHTML) {
-	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;}</style></head>";
-	    return "<html>" + head + "<body style=\"background-color:transparent\" text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
+	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;} a:link {color: " + getTextColor() + ";} a:visited {color: " + getTextColor() + ";}</style></head>";
+	    String content = "<html>" + head + "<body style=\"background-color:transparent\" text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
+
+        if (ThemesUtil.isDarkTheme(getActivity())) {
+            content = content.replace("color:black", "color:white");
+            content = content.replace("background:white", "background:transparent");
+            content = content.replace("windowtext", "white");
+        }
+
+        return content;
 	}
 
     private int getBgColor() {
@@ -86,6 +95,14 @@ public class NewsDisplayFragment extends Fragment {
     }
 
     private String getTextColor() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.text, typedValue, true);
+        int textcolorInt = typedValue.data;
+        return String.format("#%06X", (0xFFFFFF & textcolorInt));
+    }
+
+    private String getLinkColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(R.attr.text, typedValue, true);
@@ -118,7 +135,7 @@ public class NewsDisplayFragment extends Fragment {
 	
 	private void showSource() {
 		TextView tv = new TextView(getActivity());
-		tv.setText(htmlContent);
+		tv.setText(getHtmlData(htmlContent));
 		tv.setMovementMethod(new ScrollingMovementMethod());
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setPositiveButton("export", new OnClickListener() {
@@ -149,7 +166,7 @@ public class NewsDisplayFragment extends Fragment {
 			PrintWriter pw = new PrintWriter(new BufferedWriter(
 					new OutputStreamWriter(fos)));
 			
-			pw.println(htmlContent);
+			pw.println(getHtmlData(htmlContent));
 			
 			pw.flush();
 			pw.close();
