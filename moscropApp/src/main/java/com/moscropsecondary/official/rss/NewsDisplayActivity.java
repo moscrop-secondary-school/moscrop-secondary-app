@@ -1,10 +1,15 @@
 package com.moscropsecondary.official.rss;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
@@ -12,10 +17,13 @@ import com.moscropsecondary.official.util.ThemesUtil;
 
 public class NewsDisplayActivity extends ToolbarActivity
         implements ThemesUtil.ThemeChangedListener {
-	
+
+    public static final String SHARED_ELEMENT_NAME = "sharedElementName";
+
 	public static final String EXTRA_URL = "url";
 	public static final String EXTRA_CONTENT = "content";
 	public static final String EXTRA_TITLE = "abTitle";
+
     private boolean mThemeRequiresUpdate = false;
 
 	@Override
@@ -31,6 +39,10 @@ public class NewsDisplayActivity extends ToolbarActivity
 		String url = getIntent().getStringExtra(EXTRA_URL) + "?m=1";
 		String htmlContent = getIntent().getStringExtra(EXTRA_CONTENT);
 		String title = getIntent().getStringExtra(EXTRA_TITLE);
+
+        // Retrieve shared element
+        FrameLayout contentFrame = (FrameLayout) findViewById(R.id.content_frame);
+        ViewCompat.setTransitionName(contentFrame, SHARED_ELEMENT_NAME);
 
         // Display the fragment as the main content.
         getSupportFragmentManager().beginTransaction()
@@ -75,8 +87,18 @@ public class NewsDisplayActivity extends ToolbarActivity
         }
         return super.onKeyDown(keyCode, keyEvent);
     }
+
     @Override
     public void onThemeChanged() {
         mThemeRequiresUpdate = true;
+    }
+
+    public static void launch(ToolbarActivity activity, View transitionView, String url, String content, String title) {
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionView, SHARED_ELEMENT_NAME);
+        Intent intent = new Intent(activity, NewsDisplayActivity.class);
+        intent.putExtra(EXTRA_URL, url);
+        intent.putExtra(EXTRA_CONTENT, content);
+        intent.putExtra(EXTRA_TITLE, title);
+        ActivityCompat.startActivity(activity, intent, options.toBundle());
     }
 }

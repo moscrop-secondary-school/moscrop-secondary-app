@@ -2,7 +2,6 @@ package com.moscropsecondary.official.rss;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -287,15 +286,17 @@ public class RSSFragment extends Fragment
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-		RSSItem r = mAdapter.getItem(position);
+        RSSItem r = mAdapter.getItem(position);
 
+        NewsDisplayActivity.launch((ToolbarActivity) getActivity(), view, r.url, r.content, r.title);
+/*
 		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
 
 		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
 		intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
 		intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
 
-        getActivity().startActivity(intent);
+        getActivity().startActivity(intent);*/
 	}
 
 	/**
