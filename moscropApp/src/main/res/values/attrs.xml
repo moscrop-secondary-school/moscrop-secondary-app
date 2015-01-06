@@ -26,6 +26,7 @@
         <attr name="backgroundorig" format="reference" />
         <attr name="backgroundd" format="reference" />
         <attr name="backgrounddd" format="reference" />
+        <attr name="linkTextColor" format="reference" />
 
         <!--navdrawer-->
         <attr name="banner" format="reference" />

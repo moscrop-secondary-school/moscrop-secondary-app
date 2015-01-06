@@ -9,6 +9,9 @@
     <color name="texttt">@color/dbackgrounddd</color>
     <color name="textm">#8a000000</color>
 
+    <color name="linkColorLight">#ff0000</color>
+    <color name="linkColorDark">#00ff00</color>
+
     <color name="background">#ffffffff</color>
     <color name="backgroundd">#ffefefef</color>
     <color name="backgrounddd">#ffafafaf</color>

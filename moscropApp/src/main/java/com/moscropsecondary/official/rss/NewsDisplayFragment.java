@@ -69,7 +69,7 @@ public class NewsDisplayFragment extends Fragment {
 	}
 	
 	private String getHtmlData(String bodyHTML) {
-	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;} a:link {color: " + getTextColor() + ";} a:visited {color: " + getTextColor() + ";}</style></head>";
+	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;} a:link {color: " + getLinkColor() + ";} a:visited {color: " + getLinkColor() + ";}</style></head>";
 	    String content = "<html>" + head + "<body style=\"background-color:transparent\" text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
 
         if (ThemesUtil.isDarkTheme(getActivity())) {
@@ -105,7 +105,7 @@ public class NewsDisplayFragment extends Fragment {
     private String getLinkColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(R.attr.text, typedValue, true);
+        theme.resolveAttribute(R.attr.linkTextColor, typedValue, true);
         int textcolorInt = typedValue.data;
         return String.format("#%06X", (0xFFFFFF & textcolorInt));
     }

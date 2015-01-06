@@ -47,6 +47,7 @@
         <item name="backgroundorig">@color/background</item>
         <item name="backgroundd">@color/backgroundd</item>
         <item name="backgrounddd">@color/backgrounddd</item>
+        <item name="linkTextColor">@color/linkColorLight</item>
 
         <item name="banner">@drawable/banner</item>
         <item name="drawer_icon_array">@array/drawer_icons_light</item>
@@ -101,6 +102,7 @@
         <item name="backgroundorig">@color/dbackground</item>
         <item name="backgroundd">@color/dbackgroundd</item>
         <item name="backgrounddd">@color/dbackgrounddd</item>
+        <item name="linkTextColor">@color/linkColorDark</item>
 
         <item name="banner">@drawable/banner_dark</item>
         <item name="drawer_icon_array">@array/drawer_icons_dark</item>
