@@ -94,6 +94,7 @@ public class NewsDisplayFragment extends Fragment {
 		
 		mWebView = (WebView) mContentView.findViewById(R.id.fnd_webview);
 		if(mWebView != null) {
+            mWebView.setVisibility(View.GONE);
             mWebView.setBackgroundColor(Color.TRANSPARENT);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 mWebView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
@@ -167,6 +168,11 @@ public class NewsDisplayFragment extends Fragment {
                             mTextView.animate().setDuration(duration / 2).
                                     translationY(0).alpha(1).
                                     setInterpolator(sDecelerator);*/
+                            mWebView.setAlpha(0);
+                            mWebView.animate().setDuration(duration*5)
+                                    .alpha(1)
+                                    .setInterpolator(sDecelerator);
+                            mWebView.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
@@ -176,13 +182,15 @@ public class NewsDisplayFragment extends Fragment {
                     setInterpolator(sDecelerator).
                     withEndAction(new Runnable() {
                         public void run() {
-                            /*// Animate the description in after the image animation
-                            // is done. Slide and fade the text in from underneath
-                            // the picture.
-                            mTextView.setTranslationY(-mTextView.getHeight());
+                            /*mTextView.setTranslationY(-mTextView.getHeight());
                             mTextView.animate().setDuration(duration / 2).
                                     translationY(0).alpha(1).
                                     setInterpolator(sDecelerator);*/
+                            mWebView.setAlpha(0);
+                            mWebView.animate().setDuration(duration*5)
+                                    .alpha(1)
+                                    .setInterpolator(sDecelerator);
+                            mWebView.setVisibility(View.VISIBLE);
                         }
                     });
         }
@@ -246,20 +254,26 @@ public class NewsDisplayFragment extends Fragment {
         };
 
         // First, slide/fade text out of the way
-        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mTextView.animate().translationY(-mTextView.getHeight()).alpha(0).
-                    setDuration(duration / 2).setInterpolator(sAccelerator).
-                    setListener(new AnimatorListenerAdapter() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            mWebView.setAlpha(1);
+            mWebView.animate().setDuration(duration/2)
+                    .alpha(0)
+                    .setInterpolator(sDecelerator)
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
-                        public void onAnimationEnd(Animator animation) {*/
+                        public void onAnimationEnd(Animator animation) {
                             firstEndAction.run();
-                        /*}
+                        }
                     });
         } else {
-            mTextView.animate().translationY(-mTextView.getHeight()).alpha(0).
-                    setDuration(duration / 2).setInterpolator(sAccelerator).
-                    withEndAction(firstEndAction);
-        }*/
+            mWebView.setAlpha(1);
+            mWebView.animate().setDuration(duration/2)
+                    .alpha(0)
+                    .setInterpolator(sDecelerator)
+                    .withEndAction(firstEndAction);
+
+            mWebView.setVisibility(View.VISIBLE);
+        }
 
     }
 
