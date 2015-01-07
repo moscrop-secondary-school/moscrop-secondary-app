@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -61,9 +62,15 @@ public class NewsDisplayFragment extends Fragment {
 		
 		WebView wv = (WebView) mContentView.findViewById(R.id.fnd_webview);
 		if(wv != null) {
+            Logger.log("bgcolor is " + getBgColor());
             wv.setBackgroundColor(getBgColor());
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                wv.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+            }
 			wv.loadDataWithBaseURL(null, getHtmlData(htmlContent), "text/html", "UTF-8", null);
-		}
+		} else {
+            Logger.log("webview is null");
+        }
 		
 	    return mContentView;
 	}
