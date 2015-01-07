@@ -45,6 +45,23 @@ public class ThemesUtil {
         }
     }
 
+    public static int getDetailThemeResFromPreference(Context context) {
+        int theme = getThemeResFromPreference(context);
+
+        switch (theme) {
+            case R.style.Theme_Light:
+                return R.style.Theme_Detail_Light;
+            case R.style.Theme_Dark:
+                return R.style.Theme_Detail_Dark;
+            case R.style.Theme_Black:
+                return R.style.Theme_Detail_Black;
+            case R.style.Theme_Transparent:
+                return R.style.Theme_Detail_Transparent;
+            default:
+                return R.style.Theme_Detail_Light;
+        }
+    }
+
     public static boolean isDarkTheme(Context context) {
         int theme = getThemeResFromPreference(context);
 

@@ -2,6 +2,7 @@ package com.moscropsecondary.official.rss;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -75,7 +76,7 @@ public class RSSFragment extends Fragment
 
     /**
 	 * Create and return a new instance of RSSFragment with given parameters
-	 * 
+	 *
 	 * @param blogId URL of the RSS feed to load and display
 	 * @return New instance of RSSFragment
 	 */
@@ -91,10 +92,10 @@ public class RSSFragment extends Fragment
         }
 		return fragment;
 	}
-	
+
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	
+
     	setHasOptionsMenu(true);
 
     	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
@@ -272,7 +273,7 @@ public class RSSFragment extends Fragment
 
     	super.onCreateOptionsMenu(menu, inflater);
     }
-    
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -282,21 +283,35 @@ public class RSSFragment extends Fragment
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         RSSItem r = mAdapter.getItem(position);
 
-        NewsDisplayActivity.launch((ToolbarActivity) getActivity(), view, r.url, r.content, r.title);
-/*
+        //NewsDisplayActivity.launch((ToolbarActivity) getActivity(), view, r.url, r.content, r.title);
+
 		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
 
 		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
 		intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
 		intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
 
-        getActivity().startActivity(intent);*/
+
+        int orientation = getResources().getConfiguration().orientation;
+        int[] screenLocation = new int[2];
+        view.getLocationOnScreen(screenLocation);
+        intent.putExtra(NewsDisplayActivity.EXTRA_ORIENTATION, orientation)
+                .putExtra(NewsDisplayActivity.EXTRA_LEFT, screenLocation[0])
+                .putExtra(NewsDisplayActivity.EXTRA_TOP, screenLocation[1])
+                .putExtra(NewsDisplayActivity.EXTRA_WIDTH, view.getWidth())
+                .putExtra(NewsDisplayActivity.EXTRA_HEIGHT, view.getHeight());
+
+        getActivity().startActivity(intent);
+
+        // Override transitions: we don't want the normal window animation in addition
+        // to our custom one
+        getActivity().overridePendingTransition(0, 0);
 	}
 
 	/**
