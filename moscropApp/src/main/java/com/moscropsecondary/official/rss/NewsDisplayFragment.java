@@ -96,9 +96,9 @@ public class NewsDisplayFragment extends Fragment {
 		if(mWebView != null) {
             mWebView.setVisibility(View.GONE);
             mWebView.setBackgroundColor(Color.TRANSPARENT);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 mWebView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-            }
+            //}
             mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
 		}
 
