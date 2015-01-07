@@ -83,6 +83,8 @@ public class NewsDisplayFragment extends Fragment {
             content = content.replace("color:black", "color:white");
             content = content.replace("background:white", "background:transparent");
             content = content.replace("windowtext", "white");
+        } else {
+            content = content.replace("windowtext", "black");
         }
 
         return content;
