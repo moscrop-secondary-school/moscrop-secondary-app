@@ -31,7 +31,7 @@
         <activity
             android:name="com.moscropsecondary.official.rss.NewsDisplayActivity"
             android:theme="@style/Theme.Detail.Light"
-            android:label="@string/activity_displaynews" />
+            android:label="" />
 
         <activity
             android:name="com.moscropsecondary.official.GenericActivity"
