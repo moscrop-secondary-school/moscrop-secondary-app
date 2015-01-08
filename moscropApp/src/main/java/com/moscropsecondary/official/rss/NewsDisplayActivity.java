@@ -67,7 +67,7 @@ public class NewsDisplayActivity extends ToolbarActivity
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_toolbar;
+        return R.layout.activity_newsdisplay;
     }
 
     @Override

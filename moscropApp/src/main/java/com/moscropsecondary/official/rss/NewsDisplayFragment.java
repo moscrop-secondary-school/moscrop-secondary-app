@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.ThemesUtil;
 
@@ -42,6 +44,9 @@ import java.io.PrintWriter;
 
 public class NewsDisplayFragment extends Fragment {
 
+    public static final long DURATION = 300L;
+    public static final long FADE_DURATION = 300L;
+
     private static final TimeInterpolator sDecelerator = new DecelerateInterpolator();
     private static final TimeInterpolator sAccelerator = new AccelerateInterpolator();
 
@@ -54,10 +59,13 @@ public class NewsDisplayFragment extends Fragment {
     private int mTopDelta;
     private float mWidthScale;
     private float mHeightScale;
+    private Toolbar mToolbar;
 
     private View mTopLevelLayout;
+    private View mTitleContainer;
     private TextView mTitleView;
     private WebView mWebView;
+    private ColorDrawable mTitleBackground;
     private ColorDrawable mBackground;
 
     public static NewsDisplayFragment newInstance(Bundle args) {
@@ -87,8 +95,17 @@ public class NewsDisplayFragment extends Fragment {
         final int thumbnailWidth = getArguments().getInt(NewsDisplayActivity.EXTRA_WIDTH);
         final int thumbnailHeight = getArguments().getInt(NewsDisplayActivity.EXTRA_HEIGHT);
 
+        mTitleContainer = mContentView.findViewById(R.id.fnd_title_container);
+        mTitleBackground = new ColorDrawable(getResources().getColor(R.color.pmoscrop));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            mTitleContainer.setBackgroundDrawable(mTitleBackground);
+        } else {
+            mTitleContainer.setBackground(mTitleBackground);
+        }
+
 		mTitleView = (TextView) mContentView.findViewById(R.id.fnd_title);
 		if(mTitleView != null) {
+            mTitleView.setVisibility(View.INVISIBLE);
             mTitleView.setText(mTitle);
 		}
 		
@@ -96,9 +113,7 @@ public class NewsDisplayFragment extends Fragment {
 		if(mWebView != null) {
             mWebView.setVisibility(View.GONE);
             mWebView.setBackgroundColor(Color.TRANSPARENT);
-            //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                mWebView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-            //}
+            mWebView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
             mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
 		}
 
@@ -113,23 +128,23 @@ public class NewsDisplayFragment extends Fragment {
         // Only run the animation if we're coming from the parent activity, not if
         // we're recreated automatically by the window manager (e.g., device rotation)
         if (savedInstanceState == null) {
-            ViewTreeObserver observer = mTopLevelLayout.getViewTreeObserver();
+            ViewTreeObserver observer = mTitleContainer.getViewTreeObserver();
             observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 
                 @Override
                 public boolean onPreDraw() {
-                    mTopLevelLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                    mTitleContainer.getViewTreeObserver().removeOnPreDrawListener(this);
 
                     // Figure out where the thumbnail and full size versions are, relative
                     // to the screen and each other
                     int[] screenLocation = new int[2];
-                    mTopLevelLayout.getLocationOnScreen(screenLocation);
+                    mTitleContainer.getLocationOnScreen(screenLocation);
                     mLeftDelta = thumbnailLeft - screenLocation[0];
                     mTopDelta = thumbnailTop - screenLocation[1];
 
                     // Scale factors to make the large version the same size as the thumbnail
-                    mWidthScale = (float) thumbnailWidth / mTopLevelLayout.getWidth();
-                    mHeightScale = (float) thumbnailHeight / mTopLevelLayout.getHeight();
+                    mWidthScale = (float) thumbnailWidth / mTitleContainer.getWidth();
+                    mHeightScale = (float) thumbnailHeight / mTitleContainer.getHeight();
 
                     runEnterAnimation();
 
@@ -143,21 +158,19 @@ public class NewsDisplayFragment extends Fragment {
 
     private void runEnterAnimation() {
 
-        final long duration = 500L;
-
         // Set starting values for properties we're going to animate. These
         // values scale and position the full size version down to the thumbnail
         // size/location, from which we'll animate it back up
-        mTopLevelLayout.setPivotX(0);
-        mTopLevelLayout.setPivotY(0);
-        mTopLevelLayout.setScaleX(mWidthScale);
-        mTopLevelLayout.setScaleY(mHeightScale);
-        mTopLevelLayout.setTranslationX(mLeftDelta);
-        mTopLevelLayout.setTranslationY(mTopDelta);
+        mTitleContainer.setPivotX(0);
+        mTitleContainer.setPivotY(0);
+        mTitleContainer.setScaleX(mWidthScale);
+        mTitleContainer.setScaleY(mHeightScale);
+        mTitleContainer.setTranslationX(mLeftDelta);
+        mTitleContainer.setTranslationY(mTopDelta);
 
         // Animate scale and translation to go from thumbnail to full size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mTopLevelLayout.animate().setDuration(duration).
+            mTitleContainer.animate().setDuration(DURATION).
                     scaleX(1).scaleY(1).
                     translationX(0).translationY(0).
                     setInterpolator(sDecelerator).
@@ -168,15 +181,29 @@ public class NewsDisplayFragment extends Fragment {
                             mTextView.animate().setDuration(duration / 2).
                                     translationY(0).alpha(1).
                                     setInterpolator(sDecelerator);*/
+
+                            /*Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+                            toolbar.setAlpha(0);
+                            toolbar.animate().setDuration(FADE_DURATION)
+                                    .alpha(1)
+                                    .setInterpolator(sDecelerator);
+                            toolbar.setVisibility(View.VISIBLE);*/
+
+                            mTitleView.setAlpha(0);
+                            mTitleView.animate().setDuration(FADE_DURATION)
+                                    .alpha(1)
+                                    .setInterpolator(sDecelerator);
+                            mTitleView.setVisibility(View.VISIBLE);
+
                             mWebView.setAlpha(0);
-                            mWebView.animate().setDuration(duration*5)
+                            mWebView.animate().setDuration(FADE_DURATION)
                                     .alpha(1)
                                     .setInterpolator(sDecelerator);
                             mWebView.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
-            mTopLevelLayout.animate().setDuration(duration).
+            mTitleContainer.animate().setDuration(DURATION).
                     scaleX(1).scaleY(1).
                     translationX(0).translationY(0).
                     setInterpolator(sDecelerator).
@@ -186,8 +213,22 @@ public class NewsDisplayFragment extends Fragment {
                             mTextView.animate().setDuration(duration / 2).
                                     translationY(0).alpha(1).
                                     setInterpolator(sDecelerator);*/
+
+                            /*Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+                            toolbar.setAlpha(0);
+                            toolbar.animate().setDuration(FADE_DURATION)
+                                    .alpha(1)
+                                    .setInterpolator(sDecelerator);
+                            toolbar.setVisibility(View.VISIBLE);*/
+
+                            mTitleView.setAlpha(0);
+                            mTitleView.animate().setDuration(FADE_DURATION)
+                                    .alpha(1)
+                                    .setInterpolator(sDecelerator);
+                            mTitleView.setVisibility(View.VISIBLE);
+
                             mWebView.setAlpha(0);
-                            mWebView.animate().setDuration(duration*5)
+                            mWebView.animate().setDuration(FADE_DURATION)
                                     .alpha(1)
                                     .setInterpolator(sDecelerator);
                             mWebView.setVisibility(View.VISIBLE);
@@ -195,15 +236,25 @@ public class NewsDisplayFragment extends Fragment {
                     });
         }
 
-        // Fade in the black background
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.setAlpha(0);
+        toolbar.animate().setDuration(FADE_DURATION)
+                .alpha(1)
+                .setInterpolator(sDecelerator);
+        toolbar.setVisibility(View.VISIBLE);
+
+        // Fade in the title background
+        ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0, 255);
+        titleBgAnim.setDuration(DURATION);
+        titleBgAnim.start();
+
+        // Fade in the overall background
         ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
-        bgAnim.setDuration(duration);
+        bgAnim.setDuration(DURATION);
         bgAnim.start();
     }
 
     public void runExitAnimation(final Runnable endAction) {
-
-        final long duration = 500L;
 
         // No need to set initial values for the reverse animation; the image is at the
         // starting size/location that we want to start from. Just animate to the
@@ -214,8 +265,8 @@ public class NewsDisplayFragment extends Fragment {
         // whatever's actually in the center
         final boolean fadeOut;
         if (getResources().getConfiguration().orientation != mOriginalOrientation) {
-            mTopLevelLayout.setPivotX(mTopLevelLayout.getWidth() / 2);
-            mTopLevelLayout.setPivotY(mTopLevelLayout.getHeight() / 2);
+            mTitleContainer.setPivotX(mTitleContainer.getWidth() / 2);
+            mTitleContainer.setPivotY(mTitleContainer.getHeight() / 2);
             mLeftDelta = 0;
             mTopDelta = 0;
             fadeOut = true;
@@ -227,7 +278,7 @@ public class NewsDisplayFragment extends Fragment {
             public void run() {
                 // Animate image back to thumbnail size/location
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    mTopLevelLayout.animate().setDuration(duration).
+                    mTitleContainer.animate().setDuration(DURATION).
                             scaleX(mWidthScale).scaleY(mHeightScale).
                             translationX(mLeftDelta).translationY(mTopDelta).
                             setListener(new AnimatorListenerAdapter() {
@@ -237,26 +288,44 @@ public class NewsDisplayFragment extends Fragment {
                                 }
                             });
                 } else {
-                    mTopLevelLayout.animate().setDuration(duration).
+                    mTitleContainer.animate().setDuration(DURATION).
                             scaleX(mWidthScale).scaleY(mHeightScale).
                             translationX(mLeftDelta).translationY(mTopDelta).
                             withEndAction(endAction);
                 }
 
                 if (fadeOut) {
-                    mTopLevelLayout.animate().alpha(0);
+                    mTitleContainer.animate().alpha(0);
                 }
-                // Fade out background
+
+                // Fade out the title background
+                ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0);
+                titleBgAnim.setDuration(DURATION);
+                titleBgAnim.start();
+
+                // Fade out the overall background
                 ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0);
-                bgAnim.setDuration(duration);
+                bgAnim.setDuration(DURATION);
                 bgAnim.start();
             }
         };
 
         // First, slide/fade text out of the way
+
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.setAlpha(1);
+        toolbar.animate().setDuration(FADE_DURATION)
+                .alpha(0)
+                .setInterpolator(sDecelerator);
+
+        mTitleView.setAlpha(1);
+        mTitleView.animate().setDuration(FADE_DURATION)
+                .alpha(0)
+                .setInterpolator(sDecelerator);
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             mWebView.setAlpha(1);
-            mWebView.animate().setDuration(duration/2)
+            mWebView.animate().setDuration(FADE_DURATION)
                     .alpha(0)
                     .setInterpolator(sDecelerator)
                     .setListener(new AnimatorListenerAdapter() {
@@ -267,7 +336,7 @@ public class NewsDisplayFragment extends Fragment {
                     });
         } else {
             mWebView.setAlpha(1);
-            mWebView.animate().setDuration(duration/2)
+            mWebView.animate().setDuration(FADE_DURATION)
                     .alpha(0)
                     .setInterpolator(sDecelerator)
                     .withEndAction(firstEndAction);

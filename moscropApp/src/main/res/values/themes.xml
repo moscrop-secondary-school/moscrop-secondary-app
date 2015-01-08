@@ -188,22 +188,26 @@
     </style>
 
     <style name="Theme.Detail.Light" parent="Theme.Light">
+        <item name="toolbar_color">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Theme.Detail.Dark" parent="Theme.Dark">
+        <item name="toolbar_color">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Theme.Detail.Black" parent="Theme.Black">
+        <item name="toolbar_color">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <!-- Based off of dark theme because true transparent will show underlying activity -->
     <style name="Theme.Detail.Transparent" parent="Theme.Dark">
+        <item name="toolbar_color">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
