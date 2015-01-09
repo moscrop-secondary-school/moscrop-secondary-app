@@ -41,14 +41,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import android.view.animation.*;
 
 public class NewsDisplayFragment extends Fragment {
 
     public static final long DURATION = 300L;
     public static final long FADE_DURATION = 300L;
 
-    private static final TimeInterpolator sDecelerator = new DecelerateInterpolator();
-    private static final TimeInterpolator sAccelerator = new AccelerateInterpolator();
+    private static final TimeInterpolator sDecelerator = new AccelerateDecelerateInterpolator();
 
 	private String mUrl = null;
 	private String mRawHtmlContent = "";
