@@ -24,6 +24,8 @@ public class NewsDisplayActivity extends ToolbarActivity
     public static final String EXTRA_TOP = "top";
     public static final String EXTRA_WIDTH = "width";
     public static final String EXTRA_HEIGHT = "height";
+	public static final String EXTRA_TOOLBAR_FROM = "toolbarFrom";
+	public static final String EXTRA_TOOLBAR_TO= "toolbarTo";
 
     private boolean mThemeRequiresUpdate = false;
 

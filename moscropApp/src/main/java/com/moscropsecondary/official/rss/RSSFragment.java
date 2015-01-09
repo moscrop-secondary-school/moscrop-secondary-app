@@ -39,6 +39,8 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import android.util.*;
+import android.content.res.*;
 
 public class RSSFragment extends Fragment
         implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>, AbsListView.OnScrollListener {
@@ -305,7 +307,9 @@ public class RSSFragment extends Fragment
                 .putExtra(NewsDisplayActivity.EXTRA_LEFT, screenLocation[0])
                 .putExtra(NewsDisplayActivity.EXTRA_TOP, screenLocation[1])
                 .putExtra(NewsDisplayActivity.EXTRA_WIDTH, view.getWidth())
-                .putExtra(NewsDisplayActivity.EXTRA_HEIGHT, view.getHeight());
+                .putExtra(NewsDisplayActivity.EXTRA_HEIGHT, view.getHeight())
+				.putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_FROM, getToolbarColor())
+				.putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_TO, getToolbarColor());
 
         getActivity().startActivity(intent);
 
@@ -313,6 +317,21 @@ public class RSSFragment extends Fragment
         // to our custom one
         getActivity().overridePendingTransition(0, 0);
 	}
+	
+
+    private int getToolbarColor() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.toolbar_color, typedValue, true);
+        int bgcolor = typedValue.data;
+        return bgcolor;
+        /*int a = (bgcolor >> 24) & 0xFF;
+		 int r = (bgcolor >> 16) & 0xFF;
+		 int g = (bgcolor >> 8) & 0xFF;
+		 int b = (bgcolor >> 0) & 0xFF;
+		 return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
+		 return Color.TRANSPARENT;*/
+    }
 
 	/**
 	 * Perform a refresh of the feed.

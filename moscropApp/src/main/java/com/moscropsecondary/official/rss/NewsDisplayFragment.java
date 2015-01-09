@@ -96,7 +96,7 @@ public class NewsDisplayFragment extends Fragment {
         final int thumbnailHeight = getArguments().getInt(NewsDisplayActivity.EXTRA_HEIGHT);
 
         mTitleContainer = mContentView.findViewById(R.id.fnd_title_container);
-        mTitleBackground = new ColorDrawable(getResources().getColor(R.color.pmoscrop));
+        mTitleBackground = new ColorDrawable(getArguments().getInt(NewsDisplayActivity.EXTRA_TOOLBAR_TO));
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             mTitleContainer.setBackgroundDrawable(mTitleBackground);
         } else {
@@ -370,6 +370,20 @@ public class NewsDisplayFragment extends Fragment {
         return content;
 	}
 
+    private int getToolbarColor() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.toolbar_color, typedValue, true);
+        int bgcolor = typedValue.data;
+        return bgcolor;
+        /*int a = (bgcolor >> 24) & 0xFF;
+		 int r = (bgcolor >> 16) & 0xFF;
+		 int g = (bgcolor >> 8) & 0xFF;
+		 int b = (bgcolor >> 0) & 0xFF;
+		 return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
+		 return Color.TRANSPARENT;*/
+    }
+	
     private int getBgColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
