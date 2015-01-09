@@ -54,7 +54,7 @@ public class AboutFragment extends Fragment
                 .banner(resToUri(getActivity(), a.getResourceId(0, 0)))
                 .name("Ivon Liu")
                 .tagline("Main Developer")
-                .description("Technology enthusiast who does 99% of the coding and fixes Allan\'s mistakes")
+                .description(getString(R.string.ivon_description))
                 .type(TYPE_MAIN)
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
@@ -62,7 +62,7 @@ public class AboutFragment extends Fragment
                 .banner(resToUri(getActivity(), a.getResourceId(1, 0)))
                 .name("Allan Wang")
                 .tagline("Side Developer")
-                .description("Main themer and moderator with a 1% success rate in java")
+                .description(getString(R.string.allan_description))
                 .type(TYPE_MAIN)
                 .build());
         mAdapter.addItem(new CreditsPeopleItem.Builder()
@@ -70,7 +70,7 @@ public class AboutFragment extends Fragment
                 .banner(resToUri(getActivity(), a.getResourceId(2, 0)))
                 .name("Hazhir Good")
                 .tagline("Backend and Support")
-                .description("10% backing; 20% skill; 15% super duper awesomely chill; 5% design; 50% divine. 100% reason to remember the sign")
+                .description(getString(R.string.hazhir_description))
                 .type(TYPE_TESTER)
                 .build());
 //        mAdapter.addItem(new CreditsPeopleItem.Builder()
