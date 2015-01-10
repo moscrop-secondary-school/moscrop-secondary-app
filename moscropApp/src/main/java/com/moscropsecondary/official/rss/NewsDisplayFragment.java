@@ -82,7 +82,7 @@ public class NewsDisplayFragment extends Fragment {
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+            final Bundle savedInstanceState) {
 
 		setHasOptionsMenu(true);
 		
@@ -134,7 +134,7 @@ public class NewsDisplayFragment extends Fragment {
 
         // Only run the animation if we're coming from the parent activity, not if
         // we're recreated automatically by the window manager (e.g., device rotation)
-        if (savedInstanceState == null) {
+        //if (savedInstanceState == null) {
             ViewTreeObserver observer = mTitleContainer.getViewTreeObserver();
             observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 
@@ -153,17 +153,21 @@ public class NewsDisplayFragment extends Fragment {
                     mWidthScale = (float) thumbnailWidth / mTitleContainer.getWidth();
                     mHeightScale = (float) thumbnailHeight / mTitleContainer.getHeight();
 
-                    runEnterAnimation();
+                    runEnterAnimation(savedInstanceState == null);
 
                     return true;
                 }
             });
-        }
+        //}
 
         return mContentView;
 	}
 
-    private void runEnterAnimation() {
+    private void runEnterAnimation(boolean showFullAnimation) {
+
+        final long duration = showFullAnimation ? DURATION : 0;
+        final long fadeDuration = showFullAnimation ? FADE_DURATION : 0;
+
 
         // Set starting values for properties we're going to animate. These
         // values scale and position the full size version down to the thumbnail
@@ -177,7 +181,7 @@ public class NewsDisplayFragment extends Fragment {
 
         // Animate scale and translation to go from thumbnail to full size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mTitleContainer.animate().setDuration(DURATION).
+            mTitleContainer.animate().setDuration(duration).
                     scaleX(1).scaleY(1).
                     translationX(0).translationY(0).
                     setInterpolator(sDecelerator).
@@ -197,20 +201,20 @@ public class NewsDisplayFragment extends Fragment {
                             toolbar.setVisibility(View.VISIBLE);*/
 
                             mTitleView.setAlpha(0);
-                            mTitleView.animate().setDuration(FADE_DURATION)
+                            mTitleView.animate().setDuration(fadeDuration)
                                     .alpha(1)
                                     .setInterpolator(sDecelerator);
                             mTitleView.setVisibility(View.VISIBLE);
 
                             mWebView.setAlpha(0);
-                            mWebView.animate().setDuration(FADE_DURATION)
+                            mWebView.animate().setDuration(fadeDuration)
                                     .alpha(1)
                                     .setInterpolator(sDecelerator);
                             mWebView.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
-            mTitleContainer.animate().setDuration(DURATION).
+            mTitleContainer.animate().setDuration(duration).
                     scaleX(1).scaleY(1).
                     translationX(0).translationY(0).
                     setInterpolator(sDecelerator).
@@ -229,13 +233,13 @@ public class NewsDisplayFragment extends Fragment {
                             toolbar.setVisibility(View.VISIBLE);*/
 
                             mTitleView.setAlpha(0);
-                            mTitleView.animate().setDuration(FADE_DURATION)
+                            mTitleView.animate().setDuration(fadeDuration)
                                     .alpha(1)
                                     .setInterpolator(sDecelerator);
                             mTitleView.setVisibility(View.VISIBLE);
 
                             mWebView.setAlpha(0);
-                            mWebView.animate().setDuration(FADE_DURATION)
+                            mWebView.animate().setDuration(fadeDuration)
                                     .alpha(1)
                                     .setInterpolator(sDecelerator);
                             mWebView.setVisibility(View.VISIBLE);
@@ -245,7 +249,7 @@ public class NewsDisplayFragment extends Fragment {
 
         Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
         toolbar.setAlpha(0);
-        toolbar.animate().setDuration(FADE_DURATION)
+        toolbar.animate().setDuration(fadeDuration)
                 .alpha(1)
                 .setInterpolator(sDecelerator);
         toolbar.setVisibility(View.VISIBLE);
@@ -255,12 +259,13 @@ public class NewsDisplayFragment extends Fragment {
         titleBgAnim.setDuration(DURATION);
         titleBgAnim.start();*/
         ValueAnimator colorAnim = ObjectAnimator.ofInt(mTitleContainer, "backgroundColor", mColorFrom, mColorTo);
+        colorAnim.setDuration(duration);
         colorAnim.setEvaluator(new ArgbEvaluator());
         colorAnim.start();
 
         // Fade in the overall background
         ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
-        bgAnim.setDuration(DURATION);
+        bgAnim.setDuration(duration);
         bgAnim.start();
     }
 
@@ -283,78 +288,102 @@ public class NewsDisplayFragment extends Fragment {
         } else {
             fadeOut = false;
         }
+        if (fadeOut) {
 
-        final Runnable firstEndAction = new Runnable() {
-            public void run() {
-                // Animate image back to thumbnail size/location
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    mTitleContainer.animate().setDuration(DURATION).
-                            scaleX(mWidthScale).scaleY(mHeightScale).
-                            translationX(mLeftDelta).translationY(mTopDelta).
-                            setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    endAction.run();
-                                }
-                            });
-                } else {
-                    mTitleContainer.animate().setDuration(DURATION).
-                            scaleX(mWidthScale).scaleY(mHeightScale).
-                            translationX(mLeftDelta).translationY(mTopDelta).
-                            withEndAction(endAction);
-                }
+            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            toolbar.setAlpha(1);
+            toolbar.animate().setDuration(FADE_DURATION)
+                    .alpha(0)
+                    .setInterpolator(sDecelerator);
 
-                if (fadeOut) {
-                    mTitleContainer.animate().alpha(0);
-                }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                mTopLevelLayout.animate().setDuration(FADE_DURATION)
+                        .alpha(0)
+                        .setInterpolator(sDecelerator)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                endAction.run();
+                            }
+                        });
+            } else {
+                mTopLevelLayout.animate().setDuration(FADE_DURATION)
+                        .alpha(0)
+                        .setInterpolator(sDecelerator)
+                        .withEndAction(endAction);
+            }
 
-                // Fade out the title background
+        } else {
+
+            final Runnable firstEndAction = new Runnable() {
+                public void run() {
+                    // Animate image back to thumbnail size/location
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        mTitleContainer.animate().setDuration(DURATION).
+                                scaleX(mWidthScale).scaleY(mHeightScale).
+                                translationX(mLeftDelta).translationY(mTopDelta).
+                                setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        endAction.run();
+                                    }
+                                });
+                    } else {
+                        mTitleContainer.animate().setDuration(DURATION).
+                                scaleX(mWidthScale).scaleY(mHeightScale).
+                                translationX(mLeftDelta).translationY(mTopDelta).
+                                withEndAction(endAction);
+                    }
+
+                    // Fade out the title background
                 /*ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0);
                 titleBgAnim.setDuration(DURATION);
                 titleBgAnim.start();*/
-                ValueAnimator colorAnim = ObjectAnimator.ofInt(mTitleContainer, "backgroundColor", mColorTo, mColorFrom);
-                colorAnim.setEvaluator(new ArgbEvaluator());
-                colorAnim.start();
+                    ValueAnimator colorAnim = ObjectAnimator.ofInt(mTitleContainer, "backgroundColor", mColorTo, mColorFrom);
+                    colorAnim.setDuration(DURATION);
+                    colorAnim.setEvaluator(new ArgbEvaluator());
+                    colorAnim.start();
 
-                // Fade out the overall background
-                ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0);
-                bgAnim.setDuration(DURATION);
-                bgAnim.start();
+                    // Fade out the overall background
+                    ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0);
+                    bgAnim.setDuration(DURATION);
+                    bgAnim.start();
+                }
+            };
+
+            // First, slide/fade text out of the way
+
+            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            toolbar.setAlpha(1);
+            toolbar.animate().setDuration(FADE_DURATION)
+                    .alpha(0)
+                    .setInterpolator(sDecelerator);
+
+            mTitleView.setAlpha(1);
+            mTitleView.animate().setDuration(FADE_DURATION)
+                    .alpha(0)
+                    .setInterpolator(sDecelerator);
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                mWebView.setAlpha(1);
+                mWebView.animate().setDuration(FADE_DURATION)
+                        .alpha(0)
+                        .setInterpolator(sDecelerator)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                firstEndAction.run();
+                            }
+                        });
+            } else {
+                mWebView.setAlpha(1);
+                mWebView.animate().setDuration(FADE_DURATION)
+                        .alpha(0)
+                        .setInterpolator(sDecelerator)
+                        .withEndAction(firstEndAction);
+
+                mWebView.setVisibility(View.VISIBLE);
             }
-        };
-
-        // First, slide/fade text out of the way
-
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.setAlpha(1);
-        toolbar.animate().setDuration(FADE_DURATION)
-                .alpha(0)
-                .setInterpolator(sDecelerator);
-
-        mTitleView.setAlpha(1);
-        mTitleView.animate().setDuration(FADE_DURATION)
-                .alpha(0)
-                .setInterpolator(sDecelerator);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mWebView.setAlpha(1);
-            mWebView.animate().setDuration(FADE_DURATION)
-                    .alpha(0)
-                    .setInterpolator(sDecelerator)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            firstEndAction.run();
-                        }
-                    });
-        } else {
-            mWebView.setAlpha(1);
-            mWebView.animate().setDuration(FADE_DURATION)
-                    .alpha(0)
-                    .setInterpolator(sDecelerator)
-                    .withEndAction(firstEndAction);
-
-            mWebView.setVisibility(View.VISIBLE);
         }
 
     }
