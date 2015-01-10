@@ -2,8 +2,10 @@ package com.moscropsecondary.official.rss;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -24,8 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -41,7 +42,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import android.view.animation.*;
 
 public class NewsDisplayFragment extends Fragment {
 
@@ -59,8 +59,11 @@ public class NewsDisplayFragment extends Fragment {
     private int mTopDelta;
     private float mWidthScale;
     private float mHeightScale;
-    private Toolbar mToolbar;
+    private int mColorFrom;
+    private int mColorTo;
 
+
+    private Toolbar mToolbar;
     private View mTopLevelLayout;
     private View mTitleContainer;
     private TextView mTitleView;
@@ -95,13 +98,17 @@ public class NewsDisplayFragment extends Fragment {
         final int thumbnailWidth = getArguments().getInt(NewsDisplayActivity.EXTRA_WIDTH);
         final int thumbnailHeight = getArguments().getInt(NewsDisplayActivity.EXTRA_HEIGHT);
 
+        mColorFrom = getArguments().getInt(NewsDisplayActivity.EXTRA_TOOLBAR_FROM);
+        mColorTo = getArguments().getInt(NewsDisplayActivity.EXTRA_TOOLBAR_TO);
+
         mTitleContainer = mContentView.findViewById(R.id.fnd_title_container);
-        mTitleBackground = new ColorDrawable(getArguments().getInt(NewsDisplayActivity.EXTRA_TOOLBAR_TO));
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+        //mTitleBackground = new ColorDrawable(getArguments().getInt(NewsDisplayActivity.EXTRA_TOOLBAR_TO));
+        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             mTitleContainer.setBackgroundDrawable(mTitleBackground);
         } else {
             mTitleContainer.setBackground(mTitleBackground);
-        }
+        }*/
+        mTitleContainer.setBackgroundColor(Color.TRANSPARENT);
 
 		mTitleView = (TextView) mContentView.findViewById(R.id.fnd_title);
 		if(mTitleView != null) {
@@ -244,9 +251,12 @@ public class NewsDisplayFragment extends Fragment {
         toolbar.setVisibility(View.VISIBLE);
 
         // Fade in the title background
-        ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0, 255);
+/*        ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0, 255);
         titleBgAnim.setDuration(DURATION);
-        titleBgAnim.start();
+        titleBgAnim.start();*/
+        ValueAnimator colorAnim = ObjectAnimator.ofInt(mTitleContainer, "backgroundColor", mColorFrom, mColorTo);
+        colorAnim.setEvaluator(new ArgbEvaluator());
+        colorAnim.start();
 
         // Fade in the overall background
         ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
@@ -299,9 +309,12 @@ public class NewsDisplayFragment extends Fragment {
                 }
 
                 // Fade out the title background
-                ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0);
+                /*ObjectAnimator titleBgAnim = ObjectAnimator.ofInt(mTitleBackground, "alpha", 0);
                 titleBgAnim.setDuration(DURATION);
-                titleBgAnim.start();
+                titleBgAnim.start();*/
+                ValueAnimator colorAnim = ObjectAnimator.ofInt(mTitleContainer, "backgroundColor", mColorTo, mColorFrom);
+                colorAnim.setEvaluator(new ArgbEvaluator());
+                colorAnim.start();
 
                 // Fade out the overall background
                 ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0);
