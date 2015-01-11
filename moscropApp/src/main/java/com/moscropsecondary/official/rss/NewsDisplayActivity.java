@@ -53,8 +53,10 @@ public class NewsDisplayActivity extends ToolbarActivity
         if (savedInstanceState == null) {
             mFragment = NewsDisplayFragment.newInstance(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, mFragment)
+                    .replace(R.id.content_frame, mFragment, "NewsDisplayFragment")
                     .commit();
+        } else {
+            mFragment = (NewsDisplayFragment) getSupportFragmentManager().findFragmentByTag("NewsDisplayFragment");
         }
 	}
 

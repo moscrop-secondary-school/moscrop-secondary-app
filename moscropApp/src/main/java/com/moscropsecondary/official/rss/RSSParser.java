@@ -127,7 +127,9 @@ public class RSSParser {
 
         // Convert list to array
         String[] tagsArray = new String[tags.size()+1];
-        tagsArray[0] = firstMatchedCriteria.imageUrl;
+        if (firstMatchedCriteria != null) { // Prevent crash in the event there are no matched tags
+            tagsArray[0] = firstMatchedCriteria.imageUrl;
+        }
         for (int i=1; i<tagsArray.length; i++) {
             tagsArray[i] = tags.get(i-1);
         }
