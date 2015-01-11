@@ -3,7 +3,6 @@
 ** Important **
 
 In nav bar, settings to contact do not have ripples
-Fix text colors when opening a post
 Add search functions app wide (for posts & teachers)
 Add notifications & settings for pull periods
 
