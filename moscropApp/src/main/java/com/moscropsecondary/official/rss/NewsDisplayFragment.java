@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
@@ -62,6 +63,7 @@ public class NewsDisplayFragment extends Fragment {
     private int mColorFrom;
     private int mColorTo;
 
+    private boolean mAlreadyExiting = false;
 
     private Toolbar mToolbar;
     private View mTopLevelLayout;
@@ -121,6 +123,31 @@ public class NewsDisplayFragment extends Fragment {
             mWebView.setVisibility(View.GONE);
             mWebView.setBackgroundColor(Color.TRANSPARENT);
             mWebView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+            //mWebView.setLongClickable(false);
+            mWebView.setWebViewClient(new WebViewClient() {
+
+                boolean scaleChangedRunnablePending = false;
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Logger.log("Loading " + url);
+                    return mAlreadyExiting;
+                }
+
+                @Override
+                public void onScaleChanged(final WebView webView, float oldScale, float newScale) {
+                    if (scaleChangedRunnablePending) return;
+                    webView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.evaluateJavascript("recalculateWidth();", null);
+                            scaleChangedRunnablePending = false;
+                        }
+                    }, 100);
+                }
+            });
+            mWebView.getSettings().setBuiltInZoomControls(true);
+            mWebView.getSettings().setDisplayZoomControls(false);
             mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
 		}
 
@@ -271,6 +298,8 @@ public class NewsDisplayFragment extends Fragment {
 
     public void runExitAnimation(final Runnable endAction) {
 
+        mAlreadyExiting = true;
+
         // No need to set initial values for the reverse animation; the image is at the
         // starting size/location that we want to start from. Just animate to the
         // thumbnail size/location that we retrieved earlier
@@ -388,17 +417,37 @@ public class NewsDisplayFragment extends Fragment {
 
     }
 
-    public void onPreExit() {
-        runExitAnimation(new Runnable() {
-            public void run() {
-                // *Now* go ahead and exit the activity
-                getActivity().finish();
+    public void onToolbarBackPressed() {
+        onPreExit();
+    }
+
+    public void onBackKeyPressed() {
+        if(mWebView.canGoBack()){
+            mWebView.goBack();
+            if (!mWebView.canGoBack()) {    // We have reached the first page. This page is locally loaded, we must load it again
+                mWebView.clearHistory();
+                mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
             }
-        });
+        } else {
+            onPreExit();
+        }
+    }
+
+    public void onPreExit() {
+        if (!mAlreadyExiting) {
+            runExitAnimation(new Runnable() {
+                public void run() {
+                    // *Now* go ahead and exit the activity
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
+                }
+            });
+        }
     }
 
 	private String getHtmlData(String bodyHTML) {
-	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;} a:link {color: " + getLinkColor() + ";} a:visited {color: " + getLinkColor() + ";}</style></head>";
+	    String head = "<head><style>img{max-width: 90%; width:auto; height: auto;} a:link {color: " + getLinkColor() + ";} a:visited {color: " + getLinkColor() + ";} * {-webkit-user-select: none;}</style></head>";
 	    String content = "<html>" + head + "<body style=\"background-color:transparent\" text=\"" + getTextColor() + "\">" + bodyHTML + "</body></html>";
 
         if (ThemesUtil.isDarkTheme(getActivity())) {

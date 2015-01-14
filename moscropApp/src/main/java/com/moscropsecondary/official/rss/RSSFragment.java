@@ -57,6 +57,8 @@ public class RSSFragment extends Fragment
     private static final long STALE_POST_THRESHOLD = 5*60*1000;
     private static long lastRefreshMillis = 0;
 
+    private boolean mAlreadyStartingDetailActivity = false;
+
 	private String mBlogId = "";
     private String mTag = "";
     private boolean mAppend = false;
@@ -144,6 +146,7 @@ public class RSSFragment extends Fragment
     public void onResume() {
         super.onResume();
         Logger.log("onresume");
+        mAlreadyStartingDetailActivity = false;
         if (mHasSpinner) {
             setUpToolbarSpinner();
         } else {
@@ -290,33 +293,38 @@ public class RSSFragment extends Fragment
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        RSSItem r = mAdapter.getItem(position);
+        if (!mAlreadyStartingDetailActivity) {
 
-        //NewsDisplayActivity.launch((ToolbarActivity) getActivity(), view, r.url, r.content, r.title);
+            mAlreadyStartingDetailActivity = true;
 
-		Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
+            RSSItem r = mAdapter.getItem(position);
 
-		intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
-		intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
-		intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
+            //NewsDisplayActivity.launch((ToolbarActivity) getActivity(), view, r.url, r.content, r.title);
+
+            Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
+
+            intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
+            intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
+            intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
 
 
-        int orientation = getResources().getConfiguration().orientation;
-        int[] screenLocation = new int[2];
-        view.getLocationOnScreen(screenLocation);
-        intent.putExtra(NewsDisplayActivity.EXTRA_ORIENTATION, orientation)
-                .putExtra(NewsDisplayActivity.EXTRA_LEFT, screenLocation[0])
-                .putExtra(NewsDisplayActivity.EXTRA_TOP, screenLocation[1])
-                .putExtra(NewsDisplayActivity.EXTRA_WIDTH, view.getWidth())
-                .putExtra(NewsDisplayActivity.EXTRA_HEIGHT, view.getHeight())
-				.putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_FROM, getFromColor(position))
-				.putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_TO, getToolbarColor());
+            int orientation = getResources().getConfiguration().orientation;
+            int[] screenLocation = new int[2];
+            view.getLocationOnScreen(screenLocation);
+            intent.putExtra(NewsDisplayActivity.EXTRA_ORIENTATION, orientation)
+                    .putExtra(NewsDisplayActivity.EXTRA_LEFT, screenLocation[0])
+                    .putExtra(NewsDisplayActivity.EXTRA_TOP, screenLocation[1])
+                    .putExtra(NewsDisplayActivity.EXTRA_WIDTH, view.getWidth())
+                    .putExtra(NewsDisplayActivity.EXTRA_HEIGHT, view.getHeight())
+                    .putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_FROM, getFromColor(position))
+                    .putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_TO, getToolbarColor());
 
-        getActivity().startActivity(intent);
+            getActivity().startActivity(intent);
 
-        // Override transitions: we don't want the normal window animation in addition
-        // to our custom one
-        getActivity().overridePendingTransition(0, 0);
+            // Override transitions: we don't want the normal window animation in addition
+            // to our custom one
+            getActivity().overridePendingTransition(0, 0);
+        }
 	}
 
     private int getFromColor(int position) {

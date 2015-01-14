@@ -83,7 +83,7 @@ public class NewsDisplayActivity extends ToolbarActivity
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mFragment.onPreExit();
+            mFragment.onToolbarBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -92,7 +92,7 @@ public class NewsDisplayActivity extends ToolbarActivity
 	@Override
     public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            mFragment.onPreExit();
+            mFragment.onBackKeyPressed();
             return true;
         }
         return super.onKeyDown(keyCode, keyEvent);
