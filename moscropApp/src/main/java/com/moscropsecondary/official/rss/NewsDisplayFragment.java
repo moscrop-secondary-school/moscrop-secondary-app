@@ -1,48 +1,28 @@
 package com.moscropsecondary.official.rss;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
+import android.animation.*;
+import android.app.*;
+import android.content.*;
+import android.content.DialogInterface.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.net.*;
+import android.os.*;
+import android.support.v4.app.*;
+import android.support.v7.widget.*;
+import android.text.method.*;
+import android.util.*;
+import android.view.*;
+import android.view.animation.*;
+import android.webkit.*;
+import android.widget.*;
+import com.moscropsecondary.official.*;
+import com.moscropsecondary.official.util.*;
+import java.io.*;
+
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.TextView;
-
-import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.ToolbarActivity;
-import com.moscropsecondary.official.util.Logger;
-import com.moscropsecondary.official.util.ThemesUtil;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 
 public class NewsDisplayFragment extends Fragment {
 
@@ -134,20 +114,22 @@ public class NewsDisplayFragment extends Fragment {
                     return mAlreadyExiting;
                 }
 
-                @Override
+                /*@Override
                 public void onScaleChanged(final WebView webView, float oldScale, float newScale) {
                     if (scaleChangedRunnablePending) return;
                     webView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            webView.evaluateJavascript("recalculateWidth();", null);
+//							Toast.makeText(getActivity(), "attempting resize", Toast.LENGTH_SHORT).show();
+                            webView.evaluateJavascript("document.getElementById('body').style.width = window.innerWidth;", null);
                             scaleChangedRunnablePending = false;
                         }
                     }, 100);
-                }
+                }*/
             });
             mWebView.getSettings().setBuiltInZoomControls(true);
             mWebView.getSettings().setDisplayZoomControls(false);
+			//mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
 		}
 
