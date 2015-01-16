@@ -2,6 +2,32 @@ package com.ivon.jsontagtool;
 
 public class TagObject {
 	
+	public static class InvalidNameException extends RuntimeException {
+		private static final long serialVersionUID = -7461375040342668295L;
+		public InvalidNameException() { super(); }
+		public InvalidNameException(String message) { super(message); }
+		public InvalidNameException(String message, Throwable cause) { super(message, cause); }
+		public InvalidNameException(Throwable cause) { super(cause); }
+		protected InvalidNameException(String message, Throwable cause,
+                boolean enableSuppression,
+                boolean writableStackTrace) {
+			super(message, cause, enableSuppression, writableStackTrace);
+		}
+	}
+	
+	public static class InvalidCriteriaException extends RuntimeException {
+		private static final long serialVersionUID = 1068142240712211856L;
+		public InvalidCriteriaException() { super(); }
+		public InvalidCriteriaException(String message) { super(message); }
+		public InvalidCriteriaException(String message, Throwable cause) { super(message, cause); }
+		public InvalidCriteriaException(Throwable cause) { super(cause); }
+		protected InvalidCriteriaException(String message, Throwable cause,
+                boolean enableSuppression,
+                boolean writableStackTrace) {
+			super(message, cause, enableSuppression, writableStackTrace);
+		}
+	}
+	
 	public static final String EMPTY_FIELD = "@null";
 	public static final String DEFAULT_ICON = "https://copy.com/orrImpof8iSJFJWt";
 	
@@ -12,7 +38,7 @@ public class TagObject {
 	
 	public TagObject(String name, String author, String category, String image) {
 		if (isStringEmpty(name)) {
-			throw new IllegalArgumentException("Name field cannot be empty!");
+			throw new InvalidNameException("Name field cannot be empty!");
 		} else {
 			this.name = name;
 		}
@@ -33,6 +59,10 @@ public class TagObject {
 			this.icon_img = DEFAULT_ICON;
 		} else {
 			this.icon_img = image;
+		}
+		
+		if (this.id_author.equals(EMPTY_FIELD) && this.id_category.equals(EMPTY_FIELD)) {
+			throw new InvalidCriteriaException("You must specify either a name or category to match for!");
 		}
 	}
 	

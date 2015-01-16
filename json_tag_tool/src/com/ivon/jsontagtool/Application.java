@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.ivon.jsontagtool.TagObject.InvalidCriteriaException;
+import com.ivon.jsontagtool.TagObject.InvalidNameException;
+
 public class Application {
 	
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -152,8 +155,10 @@ public class Application {
 					try {
 						log("Reading " + fields[0] + " (row " + lineCount + ")");
 						tags.add(new TagObject(fields[0], fields[1], fields[2], fields[3]));
-					} catch (IllegalArgumentException e) {
-						warn("'name' field of row " + lineCount + " is empty");
+					} catch (InvalidNameException e) {
+						warn("skipping row " + lineCount + " because 'name' field is empty");
+					} catch (InvalidCriteriaException e) {
+						warn("skipping row " + lineCount + " because 'id_author' and 'id_category' fields are both empty");
 					}
 				}
 			}
@@ -164,22 +169,25 @@ public class Application {
 		PrintWriter writer = new PrintWriter(jsonFile);
 		log("\n---Begin write---");
 		
-		writer.println("{\"tags\":[");
+		writer.println("{");
+		writer.println("	\"updated\":\"" + System.currentTimeMillis() + "\"");
+		writer.println("	\"tags\":[");
 		for (int i=0; i<tags.size(); i++) {
 			TagObject tag = tags.get(i);
 			log("Writing " + tag.name);
-			writer.println("        {");
-			writer.println("                \"name\":\"" + tag.name + "\"");
-			writer.println("                \"id_author\":\"" + tag.id_author + "\"");
-			writer.println("                \"id_category\":\"" + tag.id_category + "\"");
-			writer.println("                \"icon_img\":\"" + tag.icon_img + "\"");
+			writer.println("        	{");
+			writer.println("                	\"name\":\"" + tag.name + "\"");
+			writer.println("                	\"id_author\":\"" + tag.id_author + "\"");
+			writer.println("                	\"id_category\":\"" + tag.id_category + "\"");
+			writer.println("                	\"icon_img\":\"" + tag.icon_img + "\"");
 			if (i < tags.size()-1) {
-				writer.println("        },");
+				writer.println("        	},");
 			} else {
-				writer.println("        }");
+				writer.println("        	}");
 			}
 		}
-		writer.println("]}");
+		writer.println("	]");
+		writer.println("}");
 		writer.close();
 		
 		log("\nFinish!\n");
