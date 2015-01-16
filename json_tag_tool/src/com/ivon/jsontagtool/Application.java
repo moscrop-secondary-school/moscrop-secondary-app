@@ -9,44 +9,48 @@ import java.util.Scanner;
 
 public class Application {
 	
+	public static final String ANSI_RESET = "\u001B[0m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_PURPLE = "\u001B[35m";
+	public static final String ANSI_CYAN = "\u001B[36m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+	
+	
 	private static boolean showLogs = true;
 	private static File csvFile = null;
 	private static File jsonFile = null;
 	
-	private static boolean parseArgs(String[] args) {
+	private static boolean parseArgs(String[] args) throws FileNotFoundException {
+		
+		boolean containsSpecifiedFiles = false;
 		
 		boolean requestShowUsage = false;
 		boolean requestStopProgram = false;
 		
 		for (int i=0; i<args.length; i++) {
 	
-			if (args[i].equals("-i") || args[i].equals("--input")) {
+			if (args[i].equals("-x") || args[i].equals("--execute")) {
 
-				// In-file
-				if (i < args.length-1) {
+				containsSpecifiedFiles = true;
+				
+				// Operate on specified input/output files
+				if (i < args.length-2) {
 					File testFile = new File(args[i+1]);
 					if (!testFile.exists()) {
-						System.out.println("Error: invalid source file location");
+						error("invalid source file location");
 						requestShowUsage = true;
 						requestStopProgram = true;						
 					} else {			
 						csvFile = testFile;
+						jsonFile = new File(args[i+2]);
 					}
-					i++;	// Skip over the "value" of the -i flag
+					i = i+2;
 				} else {
-					System.out.println("Error: invalid source file location");
-					requestShowUsage = true;
-					requestStopProgram = true;	
-				}
-				
-			} else if (args[i].equals("-o") || args[i].equals("--output")) {
-				
-				// Out-file
-				if (i < args.length-1) {
-					jsonFile = new File(args[i+1]);
-					i++;	// Skip over the "value" of the -o flag
-				} else {
-					System.out.println("Error: invalid destination file location");
+					error("invalid arguments for '-x'");
 					requestShowUsage = true;
 					requestStopProgram = true;	
 				}
@@ -64,9 +68,58 @@ public class Application {
 			} else {
 				
 				// Other arguments
-				System.out.println("Invalid argument " + args[i] + " ignored");
+				warn("invalid argument " + args[i] + " ignored");
 				requestShowUsage = true;
 				
+			}
+		}
+		
+		if (!containsSpecifiedFiles) {
+			
+			// Read config files
+			File configFile = new File("json-tag-tool_config.txt");
+			if (!configFile.exists()) {
+				error("Please either specify files to execute on using '-x' or create a config file");
+				requestShowUsage = true;
+				requestStopProgram = true;
+			} else {
+			
+				boolean hasInputLocation = false;
+				boolean hasOutputLocation = false;
+				
+				Scanner reader = new Scanner(configFile);
+				while (reader.hasNextLine()) {
+					String line = reader.nextLine();
+					String[] cmds = line.split(":");
+					if (cmds.length > 0) {
+						switch (cmds[0]) {
+							case "input": {
+								File testFile = new File(cmds[1]);
+								if (!testFile.exists()) {
+									error("invalid source file location specified in json-tag-tool_config.txt (" + cmds[1] + ")");
+									requestShowUsage = true;
+									requestStopProgram = true;;					
+								} else {
+									csvFile = testFile;
+									hasInputLocation = true;
+								}
+								break;
+							}
+							case "output": {
+								jsonFile = new File(cmds[1]);
+								hasOutputLocation = true;
+								break;
+							}
+						}
+					}
+				}
+				reader.close();
+				
+				if (!hasInputLocation || !hasOutputLocation) {
+					error("json-tag-tool_config.txt is incomplete!");
+					requestShowUsage = true;
+					requestStopProgram = true;
+				}
 			}
 		}
 		
@@ -100,7 +153,7 @@ public class Application {
 						log("Reading " + fields[0] + " (row " + lineCount + ")");
 						tags.add(new TagObject(fields[0], fields[1], fields[2], fields[3]));
 					} catch (IllegalArgumentException e) {
-						System.out.println("Warning: 'name' field of row " + lineCount + " is empty");
+						warn("'name' field of row " + lineCount + " is empty");
 					}
 				}
 			}
@@ -134,16 +187,16 @@ public class Application {
 	
 	private static void showUsageHelp() {
 		System.out.printf("%n");
-		System.out.printf("usage: json-tag-tool [options] <commands>%n");
-		System.out.printf("%n");
-		System.out.printf("mandatory commamds (must include all):%n");
-		System.out.printf("    %-24s%-1s%n", "-i, --input", "The location of the source .csv file");
-		System.out.printf("    %-24s%-1s%n", "-o, --output", "The location of the destination .json file");
+		System.out.printf("usage: json-tag-tool [options] -x <csv file path> <json file path>%n");
 		System.out.printf("%n");
 		System.out.printf("options:%n");
 		System.out.printf("    %-24s%-1s%n", "-s, --silent", "Silence all progress messages");
 		System.out.printf("%n");
-		System.out.printf("%'json-tag-tool -h' or 'json-tag-tool --help' to show this message again.%n");
+		System.out.printf("Alternatively, you may create a config file to save you from having to enter\nthe paths every time. You can do this by creating 'json-tag-tool_config.txt'\nin the same directory as the jar and add the following lines:%n%n");
+		System.out.printf("    %-24s%-1s%n", "input:<path>", "Specify the path of the source .csv file");
+		System.out.printf("    %-24s%-1s%n", "output:<path>", "Specify the path of the destination .json file");
+		System.out.printf("%n");
+		System.out.printf("Use 'json-tag-tool -h' or 'json-tag-tool --help' to show this message again.%n");
 		System.out.printf("%n");
 	}
 	
@@ -151,5 +204,13 @@ public class Application {
 		if (showLogs) {
 			System.out.println(msg);
 		}
+	}
+	
+	private static void warn(String msg) {
+		System.out.println(ANSI_YELLOW + "Warning: " + msg + ANSI_RESET);
+	}
+	
+	private static void error(String msg) {
+		System.out.println(ANSI_RED + "Error: " + msg + ANSI_RESET);
 	}
 }
