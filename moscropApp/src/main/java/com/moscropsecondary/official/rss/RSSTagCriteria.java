@@ -183,6 +183,23 @@ public class RSSTagCriteria {
 
             // Copy data from HTTP InputStream to file OutputStream
             Util.copy(inputStream, outputStream);
+
+            try {
+                // Check if it is a newer version
+                SharedPreferences prefs = context.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
+                String oldVersion = prefs.getString(Preferences.App.Keys.TAG_LIST_VERSION, Preferences.App.Default.TAG_LIST_VERSION);
+                JSONObject tagListObject = getTagListJsonObject(context);
+                String newVersion = tagListObject.getString("updated");
+                if (!newVersion.equals(oldVersion)) {
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString(Preferences.App.Keys.RSS_VERSION, "update required");
+                    editor.putString(Preferences.App.Keys.TAG_LIST_VERSION, newVersion);
+                    editor.commit();
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
