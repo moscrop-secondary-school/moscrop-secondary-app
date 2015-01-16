@@ -170,15 +170,15 @@ public class Application {
 		log("\n---Begin write---");
 		
 		writer.println("{");
-		writer.println("	\"updated\":\"" + System.currentTimeMillis() + "\"");
+		writer.println("	\"updated\":\"" + System.currentTimeMillis() + "\",");
 		writer.println("	\"tags\":[");
 		for (int i=0; i<tags.size(); i++) {
 			TagObject tag = tags.get(i);
 			log("Writing " + tag.name);
 			writer.println("        	{");
-			writer.println("                	\"name\":\"" + tag.name + "\"");
-			writer.println("                	\"id_author\":\"" + tag.id_author + "\"");
-			writer.println("                	\"id_category\":\"" + tag.id_category + "\"");
+			writer.println("                	\"name\":\"" + tag.name + "\",");
+			writer.println("                	\"id_author\":\"" + tag.id_author + "\",");
+			writer.println("                	\"id_category\":\"" + tag.id_category + "\",");
 			writer.println("                	\"icon_img\":\"" + tag.icon_img + "\"");
 			if (i < tags.size()-1) {
 				writer.println("        	},");
