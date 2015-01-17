@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <WebView
+        android:id="@+id/fnd_webview"
+        android:layout_below="@+id/fnd_title_container"
+        android:layout_marginLeft="@dimen/card_side_padding"
+        android:layout_marginRight="@dimen/card_side_padding"
+        android:layout_marginTop="@dimen/card_side_padding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <include android:id="@+id/rss_card_copy"
+        layout="@layout/rss_list_card_copy"/>
+
     <FrameLayout
         android:id="@+id/fnd_title_container"
         android:layout_width="match_parent"
@@ -29,14 +41,5 @@
             android:text="Some Title Here"/>
 
     </FrameLayout>
-
-    <WebView
-        android:id="@+id/fnd_webview"
-        android:layout_below="@id/fnd_title_container"
-        android:layout_marginLeft="@dimen/card_side_padding"
-        android:layout_marginRight="@dimen/card_side_padding"
-        android:layout_marginTop="@dimen/card_side_padding"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </RelativeLayout>    

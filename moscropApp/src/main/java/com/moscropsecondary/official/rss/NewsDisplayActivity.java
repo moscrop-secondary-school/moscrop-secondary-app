@@ -25,10 +25,11 @@ public class NewsDisplayActivity extends ToolbarActivity
     public static final String EXTRA_WIDTH = "width";
     public static final String EXTRA_HEIGHT = "height";
 	public static final String EXTRA_TOOLBAR_FROM = "toolbarFrom";
-	public static final String EXTRA_TOOLBAR_TO= "toolbarTo";
+	public static final String EXTRA_TOOLBAR_TO = "toolbarTo";
+    public static final String EXTRA_TITLE_COLOR = "titleColor";
+    public static final String EXTRA_RSS_ITEM = "rssItem";
 
     private boolean mThemeRequiresUpdate = false;
-
     private NewsDisplayFragment mFragment;
 
 	@Override

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -317,7 +316,9 @@ public class RSSFragment extends Fragment
                     .putExtra(NewsDisplayActivity.EXTRA_WIDTH, view.getWidth())
                     .putExtra(NewsDisplayActivity.EXTRA_HEIGHT, view.getHeight())
                     .putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_FROM, getFromColor(position))
-                    .putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_TO, getToolbarColor());
+                    .putExtra(NewsDisplayActivity.EXTRA_TOOLBAR_TO, getToolbarColor())
+                    .putExtra(NewsDisplayActivity.EXTRA_TITLE_COLOR, getRssTitleColor(position))
+                    .putExtra(NewsDisplayActivity.EXTRA_RSS_ITEM, r);
 
             getActivity().startActivity(intent);
 
@@ -344,7 +345,8 @@ public class RSSFragment extends Fragment
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(resID, typedValue, true);
         int color = typedValue.data;
-        return Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
+        //return Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
+        return color;
     }
 
 
@@ -360,6 +362,27 @@ public class RSSFragment extends Fragment
 		 int b = (bgcolor >> 0) & 0xFF;
 		 return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
 		 return Color.TRANSPARENT;*/
+    }
+
+    private int getRssTitleColor(int position) {
+        int resID = R.attr.rss_card_text_1;
+        switch(position % 4) {
+            case 0:
+            case 3:
+                resID = R.attr.rss_card_text_1;
+                break;
+            case 1:
+            case 2:
+                resID = R.attr.rss_card_text_2;
+                break;
+        }
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(resID, typedValue, true);
+        int color = typedValue.data;
+        //return Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
+        return color;
     }
 
 	/**

@@ -262,4 +262,75 @@ public class DateUtil {
         return (int) (millis / DAY_MILLIS);
     }
 
+    public static String getRelativeTime(long time) {
+
+        String timestamp = "";
+
+        long nowMillis = System.currentTimeMillis();
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(nowMillis);
+
+        long postMillis = time;
+        Calendar post = Calendar.getInstance();
+        post.setTimeInMillis(postMillis);
+
+        long diffMillis = nowMillis - postMillis;
+
+        if (diffMillis < 60*60*1000) {
+            long minAgo = diffMillis / (60*1000);
+            timestamp = minAgo + " minutes ago";
+        } else if (diffMillis < 24*60*60*1000) {
+            long hoursAgo = diffMillis / (60*60*1000);
+            timestamp = hoursAgo + " hours ago";
+        } else if (post.get(Calendar.DAY_OF_MONTH) == calOneDayAgo(now)) {
+            timestamp = "Yesterday";
+        } else {
+            long daysBetween = daysBetween(post, now);
+            if (daysBetween <= 7) {
+                timestamp = daysBetween + " days ago";
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
+                timestamp = sdf.format(new Date(postMillis));
+            }
+        }
+
+        return timestamp;
+    }
+
+    private static int calOneDayAgo(Calendar cal) {     // Helper method for getRelativeTime()
+        cal.setTimeInMillis(cal.getTimeInMillis() - (24*60*60*1000));
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTimeInMillis(cal.getTimeInMillis() + (24*60*60*1000));
+        return date;
+    }
+
+    /**
+     * Calculates the number of days between two Calendar dates.
+     * @param cal1
+     *          Calendar date that occurs first
+     * @param cal2
+     *          Calendar object that occurs second
+     * @return  Number of days between cal1 and cal2
+     */
+    private static long daysBetween(Calendar cal1, Calendar cal2) {     // Helper method for getRelativeTime()
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTimeInMillis(cal1.getTimeInMillis());
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        long millis1 = cal.getTimeInMillis();
+
+        cal.setTimeInMillis(cal2.getTimeInMillis());
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        long millis2 = cal.getTimeInMillis();
+
+        long numDays = (millis2 - millis1) / (24*60*60*1000);
+        return numDays;
+    }
+
 }

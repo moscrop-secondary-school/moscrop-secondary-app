@@ -15,11 +15,9 @@ import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.rss.CardUtil.CardProcessor;
+import com.moscropsecondary.official.util.DateUtil;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,6 +74,27 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         RSSItem item = mItems.get(position);
 
+        int textColor = Color.TRANSPARENT;
+        int bgColor = Color.TRANSPARENT;
+        switch(position % 4) {
+            case 0:
+            case 3:
+                textColor = textColor1;
+                bgColor = bgColor1;
+                break;
+            case 1:
+            case 2:
+                textColor = textColor2;
+                bgColor = bgColor2;
+                break;
+        }
+
+        loadCardWithRssItem(getContext(), view, item, bgColor, textColor);
+
+        return view;
+    }
+
+    public static void loadCardWithRssItem(Context context, View view, RSSItem item, int bgColor, int textColor) {
         ImageView bgImage = (ImageView) view.findViewById(R.id.CardBgImg);
         ImageView tagIcon = (ImageView) view.findViewById(R.id.CardTagIcon);
         TextView tagListText = (TextView) view.findViewById(R.id.CardTagList);
@@ -98,27 +117,13 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 //        }
 //        view.setBackgroundColor(bgColor);
 
-        int textColor = Color.TRANSPARENT;
-        int bgColor = Color.TRANSPARENT;
-        switch(position % 4) {
-            case 0:
-            case 3:
-                textColor = textColor1;
-                bgColor = bgColor1;
-                break;
-            case 1:
-            case 2:
-                textColor = textColor2;
-                bgColor = bgColor2;
-                break;
-        }
         view.setBackgroundColor(bgColor);
 
         // Set background image
         if (bgImage != null) {
             if (metadata.length >= 2) {
                 bgImage.setVisibility(View.VISIBLE);
-                Picasso.with(getContext())
+                Picasso.with(context)
                         .load(metadata[1])
                         .fit().centerCrop()
                         .into(bgImage);
@@ -131,7 +136,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         if (tagIcon != null) {
             if (!item.tags[0].equals(RSSTagCriteria.NO_IMAGE)) {
                 tagIcon.setVisibility(View.VISIBLE);
-                Picasso.with(getContext())
+                Picasso.with(context)
                         .load(item.tags[0])
                         .fit().centerCrop()
                         .into(tagIcon);
@@ -156,7 +161,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         // Set post time
         if (timestampText != null) {
-            timestampText.setText(getRelativeTime(item.date));
+            timestampText.setText(DateUtil.getRelativeTime(item.date));
             timestampText.setTextColor(textColor);
         }
 
@@ -165,80 +170,9 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             title.setText(item.title);
             title.setTextColor(textColor);
         }
-
-        return view;
     }
 
-    private String getRelativeTime(long time) {
 
-        String timestamp = "";
-
-        long nowMillis = System.currentTimeMillis();
-        Calendar now = Calendar.getInstance();
-        now.setTimeInMillis(nowMillis);
-
-        long postMillis = time;
-        Calendar post = Calendar.getInstance();
-        post.setTimeInMillis(postMillis);
-
-        long diffMillis = nowMillis - postMillis;
-
-        if (diffMillis < 60*60*1000) {
-            long minAgo = diffMillis / (60*1000);
-            timestamp = minAgo + " minutes ago";
-        } else if (diffMillis < 24*60*60*1000) {
-            long hoursAgo = diffMillis / (60*60*1000);
-            timestamp = hoursAgo + " hours ago";
-        } else if (post.get(Calendar.DAY_OF_MONTH) == calOneDayAgo(now)) {
-            timestamp = "Yesterday";
-        } else {
-            long daysBetween = daysBetween(post, now);
-            if (daysBetween <= 7) {
-                timestamp = daysBetween + " days ago";
-            } else {
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-                timestamp = sdf.format(new Date(postMillis));
-            }
-        }
-
-        return timestamp;
-    }
-
-    private int calOneDayAgo(Calendar cal) {
-        cal.setTimeInMillis(cal.getTimeInMillis() - (24*60*60*1000));
-        int date = cal.get(Calendar.DAY_OF_MONTH);
-        cal.setTimeInMillis(cal.getTimeInMillis() + (24*60*60*1000));
-        return date;
-    }
-
-    /**
-     * Calculates the number of days between two Calendar dates.
-     * @param cal1
-     *          Calendar date that occurs first
-     * @param cal2
-     *          Calendar object that occurs second
-     * @return  Number of days between cal1 and cal2
-     */
-    private long daysBetween(Calendar cal1, Calendar cal2) {
-        Calendar cal = Calendar.getInstance();
-
-        cal.setTimeInMillis(cal1.getTimeInMillis());
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        long millis1 = cal.getTimeInMillis();
-
-        cal.setTimeInMillis(cal2.getTimeInMillis());
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        long millis2 = cal.getTimeInMillis();
-
-        long numDays = (millis2 - millis1) / (24*60*60*1000);
-        return numDays;
-    }
 
     @Override
     public void notifyDataSetChanged() {
