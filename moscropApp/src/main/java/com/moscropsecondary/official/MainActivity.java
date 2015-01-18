@@ -110,8 +110,8 @@ public class MainActivity extends ToolbarActivity
         if(!fromSavedInstanceState) {
             // determine which fragment to load
             Fragment mNextFragment = null;
+            String mNextTag = "";
             switch (position) {
-
                 case NavigationDrawerFragment.NEWS:
                     if (mNewsFragment == null) {
                         SharedPreferences prefs = getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
@@ -119,19 +119,22 @@ public class MainActivity extends ToolbarActivity
                         mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, lastTag);
                     }
                     mNextFragment = mNewsFragment;
+                    mNextTag = "mNewsFragment";
                     break;
                 case NavigationDrawerFragment.EMAIL:
                     if (mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(NavigationDrawerFragment.EMAIL, RSSFragment.FEED_NEWS, "Student Bulletin");
                     mNextFragment = mEmailFragment;
+                    mNextTag = "mEmailFragment";
                     break;
                 case NavigationDrawerFragment.EVENTS:
                     if (mEventsFragment == null) mEventsFragment = CalendarFragment.newInstance(NavigationDrawerFragment.EVENTS);
                     mNextFragment = mEventsFragment;
+                    mNextTag = "mEventsFragment";
                     break;
                 case NavigationDrawerFragment.TEACHERS:
-                    if (mTeachersFragment == null)
-                        mTeachersFragment = StaffInfoFragment.newInstance(NavigationDrawerFragment.TEACHERS);
+                    if (mTeachersFragment == null) mTeachersFragment = StaffInfoFragment.newInstance(NavigationDrawerFragment.TEACHERS);
                     mNextFragment = mTeachersFragment;
+                    mNextTag = "mTeachersFragment";
                     break;
                 case NavigationDrawerFragment.SETTINGS:
                     Intent settingsIntent = new Intent(this, GenericActivity.class);
@@ -156,10 +159,27 @@ public class MainActivity extends ToolbarActivity
             if (mNextFragment != null) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, mNextFragment)
+                        .replace(R.id.content_frame, mNextFragment, mNextTag)
                         .commit();
             }
             mCurrentFragment = position;
+
+        } else {
+            // Fragment will already be loaded, but we must obtain a reference to it
+            switch (position) {
+                case NavigationDrawerFragment.NEWS:
+                    mNewsFragment = (RSSFragment) getSupportFragmentManager().findFragmentByTag("mNewsFragment");
+                    break;
+                case NavigationDrawerFragment.EMAIL:
+                    mEmailFragment = (RSSFragment) getSupportFragmentManager().findFragmentByTag("mEmailFragment");
+                    break;
+                case NavigationDrawerFragment.EVENTS:
+                    mEventsFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag("mEventsFragment");
+                    break;
+                case NavigationDrawerFragment.TEACHERS:
+                    mTeachersFragment = (StaffInfoFragment) getSupportFragmentManager().findFragmentByTag("mTeachersFragment");
+                    break;
+            }
         }
     }
 
