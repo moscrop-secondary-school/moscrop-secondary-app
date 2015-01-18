@@ -71,6 +71,7 @@ public class RSSFragment extends Fragment
     private View mSpinnerContainer;
     private ToolbarSpinnerAdapter mSpinnerAdapter;
     private boolean mHasSpinner = true;
+    private boolean mSpinnerAdded = false;
 
     public SwipeRefreshLayout mSwipeLayout = null;
     public GridView mListView = null;
@@ -133,6 +134,10 @@ public class RSSFragment extends Fragment
         }
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
 
+        if (mHasSpinner) {
+            setUpToolbarSpinner();
+        }
+
         return mContentView;
     }
 
@@ -147,7 +152,9 @@ public class RSSFragment extends Fragment
         Logger.log("onresume");
         mAlreadyStartingDetailActivity = false;
         if (mHasSpinner) {
-            setUpToolbarSpinner();
+            if (!mSpinnerAdded) {
+                setUpToolbarSpinner();
+            }
         } else {
             ((MainActivity) getActivity()).onSectionAttached(mPosition);
         }
@@ -164,6 +171,8 @@ public class RSSFragment extends Fragment
             ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             toolbar.addView(mSpinnerContainer, lp);
+
+            mSpinnerAdded = true;
 
             // Update tags list
             String[] spinnerTagsArray = null;
@@ -216,21 +225,17 @@ public class RSSFragment extends Fragment
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.removeView(mSpinnerContainer);
-        if (mHasSpinner) {
-        	SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
-        	prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
-        	prefs.apply();
-		}
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         mSearchViewExpanded = false;
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.removeView(mSpinnerContainer);
+        mSpinnerAdded = false;
+        if (mHasSpinner) {
+            SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
+            prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
+            prefs.apply();
+        }
     }
 
 

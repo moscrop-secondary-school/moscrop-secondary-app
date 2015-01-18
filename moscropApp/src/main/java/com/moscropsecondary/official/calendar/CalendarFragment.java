@@ -58,6 +58,7 @@ public class CalendarFragment extends Fragment
 
     private boolean mCalendarIsShowing = false;
     private boolean mSearchViewExpanded = false;
+    private boolean mCustomTitleAdded = false;
 
     private int mYear = -1;
     private int mMonth = -1;     // java.util.Calendar months. One less than actual month.
@@ -158,26 +159,26 @@ public class CalendarFragment extends Fragment
             }
         }).start();
 
-    	return mContentView;
+        addTitleWithArrow();
+
+        return mContentView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        addTitleWithArrow();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.removeView(mToolbarTitle);
+        if (!mCustomTitleAdded) {
+            addTitleWithArrow();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mSearchViewExpanded = false;
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.removeView(mToolbarTitle);
+        mCustomTitleAdded = false;
     }
 
     @Override
@@ -240,6 +241,8 @@ public class CalendarFragment extends Fragment
             ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             toolbar.addView(mToolbarTitle, lp);
+
+            mCustomTitleAdded = true;
         }
     }
 
