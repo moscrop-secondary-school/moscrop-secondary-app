@@ -28,6 +28,10 @@
         android:background="@color/pmoscrop"
         android:minHeight="56dp">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"/>
+
         <TextView
             android:id="@+id/fnd_title"
             style="@style/TextAppearance.AppCompat.Title"

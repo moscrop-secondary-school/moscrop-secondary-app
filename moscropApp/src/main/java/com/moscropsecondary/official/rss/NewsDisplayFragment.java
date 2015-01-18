@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
@@ -33,7 +34,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.ThemesUtil;
 
@@ -60,6 +60,11 @@ public class NewsDisplayFragment extends Fragment {
     private int mColorFrom;
     private int mColorTo;
 
+    private int mTitleLeftDelta;
+    private int mTitleTopDelta;
+    private float mTitleWidthScale;
+    private float mTitleHeightScale;
+
     private int mCardLeftDelta;
     private int mCardTopDelta;
     private float mCardWidthScale;
@@ -75,6 +80,7 @@ public class NewsDisplayFragment extends Fragment {
     private View mTopLevelLayout;
     private View mCardCopy;
     private View mTitleContainer;
+    private Toolbar mToolbar;
     private TextView mTitleView;
     private WebView mWebView;
     private ColorDrawable mBackground;
@@ -108,6 +114,12 @@ public class NewsDisplayFragment extends Fragment {
 
         mTitleContainer = mContentView.findViewById(R.id.fnd_title_container);
         mTitleContainer.setBackgroundColor(Color.TRANSPARENT);
+
+        mToolbar = (Toolbar) mContentView.findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
+            mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        }
 
 		mTitleView = (TextView) mContentView.findViewById(R.id.fnd_title);
 		if(mTitleView != null) {
@@ -159,17 +171,16 @@ public class NewsDisplayFragment extends Fragment {
             public boolean onPreDraw() {
                 mTopLevelLayout.getViewTreeObserver().removeOnPreDrawListener(this);
 
-                // Figure out where the thumbnail and full size versions are, relative
-                // to the screen and each other
+                // Card calculations
                 int[] cardScreenLocation = new int[2];
                 mTitleContainer.getLocationOnScreen(cardScreenLocation);
                 mCardLeftDelta = thumbnailLeft - cardScreenLocation[0];
                 mCardTopDelta = thumbnailTop - cardScreenLocation[1];
 
-                // Scale factors to make the large version the same size as the thumbnail
                 mCardWidthScale = (float) mTitleContainer.getWidth() / thumbnailWidth;
                 mCardHeightScale = (float) mTitleContainer.getHeight() / thumbnailHeight;
 
+                // WebView calculations
                 int[] webViewScreenLocation = new int[2];
                 mWebViewContainer.getLocationOnScreen(webViewScreenLocation);
                 mWebViewLeftDelta = thumbnailLeft - webViewScreenLocation[0];
@@ -177,6 +188,16 @@ public class NewsDisplayFragment extends Fragment {
 
                 mWebViewWidthScale = (float) thumbnailWidth / mWebViewContainer.getWidth();
                 mWebViewHeightScale = (float) thumbnailHeight / mWebViewContainer.getHeight();
+
+                // Title calculations
+                int[] titleScreenLocation = new int[2];
+                mTitleContainer.getLocationOnScreen(titleScreenLocation);
+                mTitleLeftDelta = thumbnailLeft - titleScreenLocation[0];
+                mTitleTopDelta = thumbnailTop - titleScreenLocation[1];
+
+                mTitleWidthScale = (float) thumbnailWidth / mTitleContainer.getWidth();
+                mTitleHeightScale = (float) thumbnailHeight / mTitleContainer.getHeight();
+
 
                 runEnterAnimation(savedInstanceState == null);
 
@@ -207,6 +228,13 @@ public class NewsDisplayFragment extends Fragment {
         mWebViewContainer.setScaleY(mWebViewHeightScale);
         mWebViewContainer.setTranslationX(mWebViewLeftDelta);
         mWebViewContainer.setTranslationY(mWebViewTopDelta);
+
+        mTitleContainer.setPivotX(0);
+        mTitleContainer.setPivotY(0);
+        mTitleContainer.setScaleX(mTitleWidthScale);
+        mTitleContainer.setScaleY(mTitleHeightScale);
+        mTitleContainer.setTranslationX(mTitleLeftDelta);
+        mTitleContainer.setTranslationY(mTitleTopDelta);
 
         // Animate scale and translation to go from thumbnail to full size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
@@ -243,22 +271,14 @@ public class NewsDisplayFragment extends Fragment {
         mWebViewContainer.animate().setDuration(primaryDuration)
                 .scaleX(1).scaleY(1)
                 .translationX(0).translationY(0)
-                .setInterpolator(mInterpolator)
                 .setInterpolator(mInterpolator);
 
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.setAlpha(0);
-        toolbar.animate()
-                .setDuration(primaryDuration)
-                .setInterpolator(mInterpolator)
-                .alpha(1);
-        toolbar.setVisibility(View.VISIBLE);
-
-        mTitleView.setAlpha(0);
-        mTitleView.animate()
-                .setDuration(primaryDuration)
-                .setInterpolator(mInterpolator)
-                .alpha(1);
+        mTitleContainer.setAlpha(0);
+        mTitleContainer.animate().setDuration(primaryDuration)
+                .scaleX(1).scaleY(1)
+                .translationX(0).translationY(0)
+                .alpha(1)
+                .setInterpolator(mInterpolator);
 
         mCardCopyContentContainer.setAlpha(1);
         mCardCopyContentContainer.animate()
@@ -297,9 +317,8 @@ public class NewsDisplayFragment extends Fragment {
         }
         if (fadeOut) {
 
-            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-            toolbar.setAlpha(1);
-            toolbar.animate()
+            mToolbar.setAlpha(1);
+            mToolbar.animate()
                     .setDuration(primaryDuration)
                     .setInterpolator(mInterpolator)
                     .alpha(0);
@@ -346,21 +365,14 @@ public class NewsDisplayFragment extends Fragment {
             mWebViewContainer.animate().setDuration(primaryDuration)
                     .scaleX(mWebViewWidthScale).scaleY(mWebViewHeightScale)
                     .translationX(mWebViewLeftDelta).translationY(mWebViewTopDelta)
-                    .setInterpolator(mInterpolator)
                     .setInterpolator(mInterpolator);
 
-            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-            toolbar.setAlpha(1);
-            toolbar.animate()
-                    .setDuration(primaryDuration)
-                    .setInterpolator(mInterpolator)
-                    .alpha(0);
-
-            mTitleView.setAlpha(1);
-            mTitleView.animate()
-                    .setDuration(primaryDuration)
-                    .setInterpolator(mInterpolator)
-                    .alpha(0);
+            mTitleContainer.setAlpha(1);
+            mTitleContainer.animate().setDuration(primaryDuration)
+                    .scaleX(mTitleWidthScale).scaleY(mTitleHeightScale)
+                    .translationX(mTitleLeftDelta).translationY(mTitleTopDelta)
+                    .alpha(0)
+                    .setInterpolator(mInterpolator);
 
             mCardCopyContentContainer.setAlpha(0);
             mCardCopyContentContainer.animate()

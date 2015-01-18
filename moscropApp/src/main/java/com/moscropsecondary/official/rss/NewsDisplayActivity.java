@@ -2,15 +2,15 @@ package com.moscropsecondary.official.rss;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.ThemesUtil;
 
-public class NewsDisplayActivity extends ToolbarActivity
+public class NewsDisplayActivity extends ActionBarActivity
         implements ThemesUtil.ThemeChangedListener {
 
     public static final String SHARED_ELEMENT_NAME = "sharedElementName";
@@ -41,6 +41,7 @@ public class NewsDisplayActivity extends ToolbarActivity
         ThemesUtil.registerThemeChangedListener(this);
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_newsdisplay);
 
 		/*String url = getIntent().getStringExtra(EXTRA_URL) + "?m=1";
 		String htmlContent = getIntent().getStringExtra(EXTRA_CONTENT);
@@ -70,10 +71,10 @@ public class NewsDisplayActivity extends ToolbarActivity
         }
     }
 
-    @Override
+    /*@Override
     protected int getLayoutResource() {
         return R.layout.activity_newsdisplay;
-    }
+    }*/
 
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
