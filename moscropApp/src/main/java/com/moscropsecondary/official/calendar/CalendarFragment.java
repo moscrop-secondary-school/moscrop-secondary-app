@@ -176,6 +176,11 @@ public class CalendarFragment extends Fragment
     public void onStop() {
         super.onStop();
         mSearchViewExpanded = false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
         toolbar.removeView(mToolbarTitle);
         mCustomTitleAdded = false;

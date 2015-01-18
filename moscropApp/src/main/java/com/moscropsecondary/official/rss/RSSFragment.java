@@ -51,6 +51,7 @@ public class RSSFragment extends Fragment
 
     private static final String KEY_BLOGID = "blog_id";
     private static final String KEY_TAG = "tag";
+    private static final String KEY_HAS_SPINNER = "has_spinner";
     private static final String KEY_POSITION = "position";
 
     private static final long STALE_POST_THRESHOLD = 5*60*1000;
@@ -109,6 +110,7 @@ public class RSSFragment extends Fragment
         if(savedInstanceState != null) {
             mBlogId = savedInstanceState.getString(KEY_BLOGID, mBlogId);
             mTag = savedInstanceState.getString(KEY_TAG, mTag);
+            mHasSpinner = savedInstanceState.getBoolean(KEY_HAS_SPINNER, mHasSpinner);
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
 
@@ -228,14 +230,19 @@ public class RSSFragment extends Fragment
     public void onStop() {
         super.onStop();
         mSearchViewExpanded = false;
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.removeView(mSpinnerContainer);
-        mSpinnerAdded = false;
         if (mHasSpinner) {
             SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
             prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
             prefs.apply();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+        toolbar.removeView(mSpinnerContainer);
+        mSpinnerAdded = false;
     }
 
 
@@ -244,6 +251,7 @@ public class RSSFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putString(KEY_BLOGID, mBlogId);
         outState.putString(KEY_TAG, mTag);
+        outState.putBoolean(KEY_HAS_SPINNER, mHasSpinner);
         outState.putInt(KEY_POSITION, mPosition);
     }
 
