@@ -43,7 +43,7 @@ import java.util.List;
 public class CalendarFragment extends Fragment
         implements AbsListView.OnScrollListener {
 
-    public static final String MOSCROP_CALENDAR_ID = moscroppanthers@gmail.com;
+    public static final String MOSCROP_CALENDAR_ID = "moscroppanthers@gmail.com";
 
     private static final String KEY_POSITION = "position";
     private int mPosition;
