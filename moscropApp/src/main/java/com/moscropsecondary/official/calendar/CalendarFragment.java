@@ -43,8 +43,7 @@ import java.util.List;
 public class CalendarFragment extends Fragment
         implements AbsListView.OnScrollListener {
 
-    public static final String MOSCROP_CALENDAR_ID = "moscropsecondaryschool@gmail.com";
-    public static final String MOSCROP_CALENDAR_JSON_URL = "http://www.google.com/calendar/feeds/moscropsecondaryschool@gmail.com/public/full?alt=json&max-results=1000&orderby=starttime&sortorder=descending&singleevents=true";
+    public static final String MOSCROP_CALENDAR_ID = moscroppanthers@gmail.com;
 
     private static final String KEY_POSITION = "position";
     private int mPosition;
