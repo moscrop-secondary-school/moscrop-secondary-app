@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
+import com.moscropsecondary.official.SettingsFragment;
 import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.ToolbarSpinnerAdapter;
 import com.moscropsecondary.official.util.Logger;
@@ -42,8 +43,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RSSFragment extends Fragment
-        implements AdapterView.OnItemClickListener, OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>, AbsListView.OnScrollListener {
+public class RSSFragment extends Fragment implements AdapterView.OnItemClickListener,
+        OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>,
+        AbsListView.OnScrollListener, SettingsFragment.SubscriptionListChangedListener {
 
     public static final String FEED_NEWS = "moscropschool";
     public static final String FEED_NEWSLETTERS = "moscropnewsletters";
@@ -79,6 +81,8 @@ public class RSSFragment extends Fragment
     public RSSAdapter mAdapter = null;
 
     private boolean mSearchViewExpanded = false;
+
+    private boolean mSubscriptionListUpdated = false;
 
     /**
 	 * Create and return a new instance of RSSFragment with given parameters
@@ -138,6 +142,7 @@ public class RSSFragment extends Fragment
 
         if (mHasSpinner) {
             setUpToolbarSpinner();
+            SettingsFragment.registerSubscriptionListChangedListener(this);
         }
 
         return mContentView;
@@ -160,6 +165,16 @@ public class RSSFragment extends Fragment
         } else {
             ((MainActivity) getActivity()).onSectionAttached(mPosition);
         }
+
+        if (mSubscriptionListUpdated) {
+            updateSpinnerList();
+            loadFeed(true, false, false, false, false);
+        }
+    }
+
+    @Override
+    public void onSubscriptionListChanged() {
+        mSubscriptionListUpdated = true;
     }
 
     private void setUpToolbarSpinner() {
@@ -177,20 +192,7 @@ public class RSSFragment extends Fragment
             mSpinnerAdded = true;
 
             // Update tags list
-            String[] spinnerTagsArray = null;
-            try {
-                spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-            if (spinnerTagsArray != null) {
-                mSpinnerAdapter.clear();
-                mSpinnerAdapter.add("Subscribed");
-                mSpinnerAdapter.add("All");
-                for (String tag : spinnerTagsArray) {
-                    mSpinnerAdapter.add(tag);
-                }
-            }
+            updateSpinnerList();
 
             // Initialize spinner and set adapter
             Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
@@ -224,6 +226,25 @@ public class RSSFragment extends Fragment
                 }
             });
         }
+    }
+
+    private void updateSpinnerList() {
+        String[] spinnerTagsArray = null;
+        try {
+            spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        if (spinnerTagsArray != null) {
+            mSpinnerAdapter.clear();
+            mSpinnerAdapter.add("Subscribed");
+            mSpinnerAdapter.add("All");
+            for (String tag : spinnerTagsArray) {
+                mSpinnerAdapter.add(tag);
+            }
+        }
+
+        mSubscriptionListUpdated = false;   // we just updated
     }
 
     @Override
@@ -419,6 +440,7 @@ public class RSSFragment extends Fragment
                     lastRefreshMillis = System.currentTimeMillis();
                 }
 
+                Logger.log("refreshing list");
                 getLoaderManager().restartLoader(0, null, this);    // Force a new reload
             }
 		}

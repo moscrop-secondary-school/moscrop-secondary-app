@@ -26,6 +26,28 @@ public class SettingsFragment extends PreferenceFragment
 
     private MultiSelectListPreference mTagChooser;
 
+    public interface SubscriptionListChangedListener {
+        public abstract void onSubscriptionListChanged();
+    }
+
+    private static List<SubscriptionListChangedListener> mListeners = new ArrayList<SubscriptionListChangedListener>();
+
+    public static void registerSubscriptionListChangedListener(SubscriptionListChangedListener listener) {
+        mListeners.add(listener);
+    }
+
+    public static void unregisterSubscriptionListChangedListeners(SubscriptionListChangedListener listener) {
+        mListeners.remove(listener);
+    }
+
+    private static void notifySubscriptionListChanged() {
+        for(SubscriptionListChangedListener l : mListeners) {
+            if(l != null) {
+                l.onSubscriptionListChanged();
+            }
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +60,7 @@ public class SettingsFragment extends PreferenceFragment
 
         mTagChooser = (MultiSelectListPreference) findPreference(Preferences.Keys.TAGS);
         updateTagsList();
+        mTagChooser.setOnPreferenceChangeListener(this);
 
         Preference refresh = findPreference("refresh_tag_list");
         refresh.setOnPreferenceClickListener(this);
@@ -49,6 +72,8 @@ public class SettingsFragment extends PreferenceFragment
         if(titleRes == R.string.theme_selector_title) {
             ThemesUtil.notifyThemeChanged();
             Toast.makeText(getActivity(), "Theme will change when you exit settings", Toast.LENGTH_SHORT).show();
+        } else if (titleRes == R.string.tag_chooser_title) {
+            notifySubscriptionListChanged();
         }
         return true;
     }
