@@ -126,7 +126,7 @@ public abstract class NavigationDrawerBase extends Fragment {
                 public void run() {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
-            }, 250);
+            }, 350);
         }
     }
 
