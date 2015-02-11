@@ -44,8 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFragment extends Fragment implements AdapterView.OnItemClickListener,
-        OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>,
-        AbsListView.OnScrollListener, SettingsFragment.SubscriptionListChangedListener {
+        OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>, AbsListView.OnScrollListener,
+        SettingsFragment.SubscriptionListChangedListener, MainActivity.CustomTitleFragment {
 
     public static final String FEED_NEWS = "moscropschool";
     public static final String FEED_NEWSLETTERS = "moscropnewsletters";
@@ -128,6 +128,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
+        //mListView.setAlpha(0);
 
         if (firstLaunch()) {
             loadFeed(false, false, true, true, false);      // Just in case there is some cache
@@ -261,11 +262,19 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.removeView(mSpinnerContainer);
-        mSpinnerAdded = false;
+        removeCustomTitle();
     }
 
+    @Override
+    public void removeCustomTitle() {
+        if (getActivity() != null) {
+            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            if (toolbar != null) {
+                toolbar.removeView(mSpinnerContainer);
+                mSpinnerAdded = false;
+            }
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -494,6 +503,8 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
                     break;
             }
+
+            //mListView.animate().setDuration(200).alpha(1);
         } else {
             Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
         }

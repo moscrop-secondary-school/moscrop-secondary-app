@@ -98,6 +98,8 @@ public abstract class NavigationDrawerBase extends Fragment {
         if (getNavigationItemsList() != null && position < getNavigationItemsList().getCount()) {
             getNavigationItemsList().setItemChecked(position, true);
         }
+
+        /*
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
@@ -111,6 +113,20 @@ public abstract class NavigationDrawerBase extends Fragment {
                 }
 
             }, 300);
+        }*/
+
+        if (mCallbacks != null) {
+            mCallbacks.onNavigationDrawerItemSelected(position, fromSavedInstanceState);
+        }
+
+        if (mDrawerLayout != null) {
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
+            }, 250);
         }
     }
 

@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CalendarFragment extends Fragment
-        implements AbsListView.OnScrollListener {
+        implements AbsListView.OnScrollListener, MainActivity.CustomTitleFragment {
 
     public static final String MOSCROP_CALENDAR_ID = "moscroppanthers@gmail.com";
 
@@ -180,9 +180,18 @@ public class CalendarFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
-        toolbar.removeView(mToolbarTitle);
-        mCustomTitleAdded = false;
+        removeCustomTitle();
+    }
+
+    @Override
+    public void removeCustomTitle() {
+        if (getActivity() != null) {
+            Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+            if (toolbar != null) {
+                toolbar.removeView(mToolbarTitle);
+                mCustomTitleAdded = false;
+            }
+        }
     }
 
     @Override

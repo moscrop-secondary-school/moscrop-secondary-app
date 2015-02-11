@@ -30,7 +30,7 @@ public class MainActivity extends ToolbarActivity
     protected CalendarFragment mEventsFragment;
     protected StaffInfoFragment mTeachersFragment;
 
-    protected static int mCurrentFragment;
+    protected static int mCurrentFragment = -1;
 
     private CharSequence mTitle;
 
@@ -41,6 +41,10 @@ public class MainActivity extends ToolbarActivity
     }
 
     private BackPressListener mBackPressListener;
+
+    public interface CustomTitleFragment {
+        public abstract void removeCustomTitle();
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -157,8 +161,12 @@ public class MainActivity extends ToolbarActivity
             // update the main content by replacing fragments
             Logger.log("Choosing fragment: " + position);
             if (mNextFragment != null) {
+
+                removeCustomTitleFromOldFragment();
+
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.drawer_fragment_enter, R.anim.drawer_fragment_exit, R.anim.drawer_fragment_enter, R.anim.drawer_fragment_exit)
                         .replace(R.id.content_frame, mNextFragment, mNextTag)
                         .commit();
             }
@@ -179,6 +187,30 @@ public class MainActivity extends ToolbarActivity
                 case NavigationDrawerFragment.TEACHERS:
                     mTeachersFragment = (StaffInfoFragment) getSupportFragmentManager().findFragmentByTag("mTeachersFragment");
                     break;
+            }
+        }
+    }
+
+    private void removeCustomTitleFromOldFragment() {
+        Fragment fragment = null;
+        switch (mCurrentFragment) {
+            case NavigationDrawerFragment.NEWS:
+                fragment = mNewsFragment;
+                break;
+            case NavigationDrawerFragment.EMAIL:
+                fragment = mEmailFragment;
+                break;
+            case NavigationDrawerFragment.EVENTS:
+                fragment = mEventsFragment;
+                break;
+            case NavigationDrawerFragment.TEACHERS:
+                fragment = mTeachersFragment;
+                break;
+        }
+
+        if (fragment != null) {
+            if (fragment instanceof CustomTitleFragment) {
+                ((CustomTitleFragment) fragment).removeCustomTitle();
             }
         }
     }
