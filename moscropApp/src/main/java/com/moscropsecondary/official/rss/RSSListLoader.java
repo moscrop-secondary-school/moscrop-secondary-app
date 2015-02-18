@@ -20,15 +20,17 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
     private RSSResult mResult;
     private String mBlogId;
     private String mTag;
+    private String mSearchQuery;
     private boolean mAppend;
     private long mOldestPostDate;
     private boolean mOnlineEnabled;
     private boolean mShowCacheWhileLoadingOnline;
 
-    public RSSListLoader(Context context, String blogId, String tag, boolean append, long oldestPostDate, boolean onlineEnabled, boolean showCacheWhileLoadingOnline) {
+    public RSSListLoader(Context context, String blogId, String tag, String searchQuery, boolean append, long oldestPostDate, boolean onlineEnabled, boolean showCacheWhileLoadingOnline) {
         super(context);
         mBlogId = blogId;
         mTag = tag;
+        mSearchQuery = searchQuery;
         mAppend = append;
         mOldestPostDate = oldestPostDate;
         mOnlineEnabled = onlineEnabled;
@@ -48,44 +50,56 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         String version = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
 
-        if (!mShowCacheWhileLoadingOnline && mOnlineEnabled) {
+        if (mSearchQuery != null) {
 
-            // Load online first, then offline if needed
+            RSSDatabase db = new RSSDatabase(getContext());
+            List<RSSItem> items = db.search(getFilterTags(), mSearchQuery);
+            db.close();
 
-            List<RSSItem> list = tryGetFullLoad();
-            if (list == null) {
-                list = getListOnly();
-            }
-
-            int result;
-            String newVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
-
-            if (!mAppend && newVersion.equals(version)) {
-                result = RSSResult.RESULT_REDUNDANT;
-            } else {
-                result = RSSResult.RESULT_OK;
-            }
-
-            return new RSSResult(version, result, list, mAppend);
+            int result = RSSResult.RESULT_OK;
+            return new RSSResult(version, result, items, false);
 
         } else {
 
-            // Load offline first, then online if needed
+            if (!mShowCacheWhileLoadingOnline && mOnlineEnabled) {
 
-            List<RSSItem> list = getListOnly();
-            if (list.size() == 0) {
-                list = tryGetFullLoad();
-            }
+                // Load online first, then offline if needed
 
-            int result;
+                List<RSSItem> list = tryGetFullLoad();
+                if (list == null) {
+                    list = getListOnly();
+                }
 
-            if (mShowCacheWhileLoadingOnline) {
-                result = RSSResult.RESULT_REDO_ONLINE;
+                int result;
+                String newVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
+
+                if (!mAppend && newVersion.equals(version)) {
+                    result = RSSResult.RESULT_REDUNDANT;
+                } else {
+                    result = RSSResult.RESULT_OK;
+                }
+
+                return new RSSResult(version, result, list, mAppend);
+
             } else {
-                result = RSSResult.RESULT_OK;
-            }
 
-            return new RSSResult(version, result, list, mAppend);
+                // Load offline first, then online if needed
+
+                List<RSSItem> list = getListOnly();
+                if (list.size() == 0) {
+                    list = tryGetFullLoad();
+                }
+
+                int result;
+
+                if (mShowCacheWhileLoadingOnline) {
+                    result = RSSResult.RESULT_REDO_ONLINE;
+                } else {
+                    result = RSSResult.RESULT_OK;
+                }
+
+                return new RSSResult(version, result, list, mAppend);
+            }
         }
     }
 

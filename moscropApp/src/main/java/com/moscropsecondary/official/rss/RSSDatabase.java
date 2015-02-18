@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import com.moscropsecondary.official.util.Preferences;
 
@@ -29,6 +30,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_METADATA     = "metadata";
 
     private static final String NAME = "rssfeeds";
+    private static final String NAME_FTS = "rssfeeds_fts";
     private static final int VERSION = 1;
 
     public RSSDatabase(Context context) {
@@ -40,7 +42,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + NAME + " (" +
-                _ID + " INTEGER PRIMARY KEY, " +
+                _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DATE + " INTEGER, " +
                 COLUMN_TITLE + " TEXT, " +
                 COLUMN_CONTENT + " TEXT, " +
@@ -48,6 +50,16 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 COLUMN_TAGS + " TEXT, " +
                 COLUMN_URL + " TEXT, " +
                 COLUMN_METADATA + " TEXT" + ")");
+
+        db.execSQL("CREATE VIRTUAL TABLE " + NAME_FTS + " USING fts3 (" +
+                _ID + ", " +
+                COLUMN_DATE + ", " +
+                COLUMN_TITLE + ", " +
+                COLUMN_CONTENT + ", " +
+                COLUMN_PREVIEW + ", " +
+                COLUMN_TAGS + ", " +
+                COLUMN_URL + ", " +
+                COLUMN_METADATA + ")");
     }
 
     @Override
@@ -72,7 +84,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
         String orderBy = COLUMN_DATE + " asc";
         String limit = "1";
 
-        Cursor c = mDB.query(NAME, columns, selection, null, null, null, orderBy, limit);
+        Cursor c = mDB.query(NAME_FTS, columns, selection, null, null, null, orderBy, limit);
         long oldestPostDate = System.currentTimeMillis();
         if (c.getCount() >= 1) {
             c.moveToPosition(0);
@@ -101,7 +113,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 values.put(COLUMN_URL, item.url);
                 values.put(COLUMN_METADATA, item.metadata);
 
-                mDB.insert(NAME, null, values);
+                mDB.insert(NAME_FTS, null, values);
             }
             mDB.setTransactionSuccessful();
         } finally {
@@ -111,10 +123,59 @@ public class RSSDatabase extends SQLiteOpenHelper {
 
     public int getCount() {
         String[] columns = new String[] { _ID };
-        Cursor c = mDB.query(NAME, columns, null, null, null, null, null, null);
+        Cursor c = mDB.query(NAME_FTS, columns, null, null, null, null, null, null);
         int count = c.getCount();
         c.close();
         return count;
+    }
+
+    public List<RSSItem> search(String[] filterTags, String query) {
+        String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
+        if (filterTags != null && filterTags.length >= 1) {
+            selection += " AND (";
+            for (int i=0; i<filterTags.length; i++) {
+                String tag = filterTags[i];
+                tag = "\'%" + tag + "%\'";
+                selection += COLUMN_TAGS + " LIKE " + tag;
+                if (i < filterTags.length-1) {
+                    selection += " OR ";
+                }
+            }
+            selection += ")";
+        }
+        String[] selectionArgs = new String[] { appendWildcard(query) };
+        String orderBy = COLUMN_DATE + " desc";
+
+        List<RSSItem> items = new ArrayList<RSSItem>();
+
+        Cursor c = mDB.query(NAME_FTS, null, selection, selectionArgs, null, null, orderBy);
+        c.moveToPosition(-1);
+        while (c.moveToNext()) {
+            long duration = c.getLong(c.getColumnIndex(COLUMN_DATE));
+            String title = c.getString(c.getColumnIndex(COLUMN_TITLE));
+            String content = c.getString(c.getColumnIndex(COLUMN_CONTENT));
+            String preview = c.getString(c.getColumnIndex(COLUMN_PREVIEW));
+            String[] tags = c.getString(c.getColumnIndex(COLUMN_TAGS)).split(",");
+            String url = c.getString(c.getColumnIndex(COLUMN_URL));
+            String metadata = c.getString(c.getColumnIndex(COLUMN_METADATA));
+            RSSItem item = new RSSItem(duration, title, content, preview, tags, url, metadata);
+            items.add(item);
+        }
+
+        return items;
+
+    }
+
+    private String appendWildcard(String query) {
+        if (TextUtils.isEmpty(query)) return query;
+
+        final StringBuilder builder = new StringBuilder();
+        final String[] splits = TextUtils.split(query, " ");
+
+        for (String split : splits)
+            builder.append(split).append("*").append(" ");
+
+        return builder.toString().trim();
     }
 
     /**
@@ -156,7 +217,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
 
         List<RSSItem> items = new ArrayList<RSSItem>();
 
-        Cursor c = mDB.query(NAME, null, selection, null, null, null, orderBy, limit);
+        Cursor c = mDB.query(NAME_FTS, null, selection, null, null, null, orderBy, limit);
         c.moveToPosition(-1);
         while (c.moveToNext()) {
             long duration = c.getLong(c.getColumnIndex(COLUMN_DATE));
@@ -174,10 +235,10 @@ public class RSSDatabase extends SQLiteOpenHelper {
     }
 
     public int deleteAll() {
-        return mDB.delete(NAME, null, null);
+        return mDB.delete(NAME_FTS, null, null);
     }
 
     public int deleteIfPublishedAfter(long time) {
-        return mDB.delete(NAME, COLUMN_DATE + ">=?", new String[] { String.valueOf(time) });
+        return mDB.delete(NAME_FTS, COLUMN_DATE + ">=?", new String[] { String.valueOf(time) });
     }
 }

@@ -63,6 +63,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
 	private String mBlogId = "";
     private String mTag = "";
+    private String mSearchQuery = null;
     private boolean mAppend = false;
     private boolean mOnlineEnabled = true;
     private boolean mShowCacheWhileLoadingOnline = false;
@@ -131,13 +132,13 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         //mListView.setAlpha(0);
 
         if (firstLaunch()) {
-            loadFeed(false, false, true, true, false);      // Just in case there is some cache
+            loadFeed(false, null, false, true, true, false);      // Just in case there is some cache
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean autoRefresh = prefs.getBoolean(Preferences.Keys.AUTO_REFRESH, Preferences.Default.AUTO_REFRESH);
             boolean existingLoadedPostsAreStale = (System.currentTimeMillis() - lastRefreshMillis) > STALE_POST_THRESHOLD;
             boolean loadOnline = existingLoadedPostsAreStale && (autoRefresh && (savedInstanceState == null));
-            loadFeed(false, false, loadOnline, true, false);
+            loadFeed(false, null, false, loadOnline, true, false);
         }
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
 
@@ -169,7 +170,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
         if (mSubscriptionListUpdated) {
             updateSpinnerList();
-            loadFeed(true, false, false, false, false);
+            loadFeed(true, null, false, false, false, false);
         }
     }
 
@@ -217,7 +218,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     String tag = mSpinnerAdapter.getItem(position);
                     if (!tag.equals(mTag)) {
                         mTag = tag;
-                        loadFeed(true, false, false, false, true);    // Not loading online, so don't worry about cache
+                        loadFeed(true, null, false, false, false, true);    // Not loading online, so don't worry about cache
                         // Stop previous loader and start new one
                     }
                 }
@@ -314,6 +315,9 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                 mSearchViewExpanded = false;
                 if (mHasSpinner) {
                     setUpToolbarSpinner();
+                }
+                if (mSearchQuery != null) {
+                    loadFeed(true, null, false, false, false, true);
                 }
                 return true;
             }
@@ -437,10 +441,11 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 	 * @param force
      *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
 	 */
-	private void loadFeed(boolean force, boolean append, boolean onlineEnabled, boolean showCacheWhileLoadingOnline, boolean runEvenIfHasRunningLoaders) {
+	private void loadFeed(boolean force, String searchQuery, boolean append, boolean onlineEnabled, boolean showCacheWhileLoadingOnline, boolean runEvenIfHasRunningLoaders) {
 		if(force || (mAdapter.getCount() == 0)) {
             if(runEvenIfHasRunningLoaders || !getLoaderManager().hasRunningLoaders()) {
 
+                mSearchQuery = searchQuery;
                 mAppend = append;
                 mOnlineEnabled = onlineEnabled;
                 mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline && mOnlineEnabled;
@@ -457,11 +462,12 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
 	@Override
 	public void onRefresh() {
-		loadFeed(true, false, true, false, false);     // Don't show cache as old data is still not cleared
+		loadFeed(true, null, false, true, false, false);     // Don't show cache as old data is still not cleared
 	}
 
     public void doSearch(String query) {
         Toast.makeText(getActivity(), "News: " + query, Toast.LENGTH_SHORT).show();
+        loadFeed(true, query, false, false, false, true);
     }
 
     @Override
@@ -474,7 +480,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             oldestPostDate = mAdapter.getItem(mAdapter.getCount()-1).date;
         }
 
-        return new RSSListLoader(getActivity(), mBlogId, mTag, mAppend, oldestPostDate, mOnlineEnabled, mShowCacheWhileLoadingOnline);
+        return new RSSListLoader(getActivity(), mBlogId, mTag, mSearchQuery, mAppend, oldestPostDate, mOnlineEnabled, mShowCacheWhileLoadingOnline);
     }
 
     @Override
@@ -497,7 +503,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     break;
                 case RSSResult.RESULT_REDO_ONLINE:
                     updateListOnLoadFinished(result);
-                    loadFeed(true, false, true, false, true);
+                    loadFeed(true, null, false, true, false, true);
                     break;
                 case RSSResult.RESULT_FAIL:
                     Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
@@ -574,7 +580,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
             if (loadMore) {
                 Logger.log("Trying to load more feed");
-                loadFeed(true, true, true, false, false);  // No need to show cache, old posts still there
+                loadFeed(true, null, true, true, false, false);  // No need to show cache, old posts still there
                 mScrolling = false;
             }
         }
