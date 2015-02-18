@@ -228,6 +228,28 @@ public class CalendarFragment extends Fragment
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mSearchViewExpanded = false;
                 addTitleWithArrow();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        CalendarDatabase db = new CalendarDatabase(getActivity());
+                        final List<GCalEvent> events = db.getAllEvents();
+
+                        //final List<GCalEvent> events = db.getAllEvents();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.clear();
+                                mAdapter.addToEnd(events);
+                                mAdapter.notifyDataSetChanged();
+                                scrollTo(System.currentTimeMillis());
+
+                                loadEventsIntoCaldroid(events);
+                            }
+                        });
+                    }
+                }).start();
+
                 return true;
             }
         });
@@ -495,8 +517,29 @@ public class CalendarFragment extends Fragment
         mCaldroidFrame.setVisibility(View.GONE);
     }
 
-    public void doSearch(String query) {
+    public void doSearch(final String query) {
         Toast.makeText(getActivity(), "Events: " + query, Toast.LENGTH_SHORT).show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                CalendarDatabase db = new CalendarDatabase(getActivity());
+                final List<GCalEvent> events = db.search(query);
+
+                //final List<GCalEvent> events = db.getAllEvents();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.clear();
+                        mAdapter.addToEnd(events);
+                        mAdapter.notifyDataSetChanged();
+                        scrollTo(System.currentTimeMillis());
+
+                        loadEventsIntoCaldroid(events);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override

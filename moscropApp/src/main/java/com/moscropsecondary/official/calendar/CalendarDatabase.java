@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,6 +31,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_END = "end";
 
     private static final String NAME = "calendar";
+    private static final String NAME_FTS = "calendar_fts";
     private static final int VERSION = 1;
 
     public CalendarDatabase(Context context) {
@@ -48,6 +50,15 @@ public class CalendarDatabase extends SQLiteOpenHelper {
                 COLUMN_START + " INTEGER, " +
                 COLUMN_END + " INTEGER" +
                 ")");
+
+        db.execSQL("CREATE VIRTUAL TABLE " + NAME_FTS + " USING fts3 (" +
+                _ID + ", " +
+                COLUMN_TITLE + ", " +
+                COLUMN_DESCRIPTION + ", " +
+                COLUMN_LOCATION + ", " +
+                COLUMN_START + ", " +
+                COLUMN_END + "" +
+                ")");
     }
 
     @Override
@@ -56,11 +67,11 @@ public class CalendarDatabase extends SQLiteOpenHelper {
     }
 
     public int deleteAll() {
-        return mDB.delete(NAME, null, null);
+        return mDB.delete(NAME_FTS, null, null);
     }
 
     public int deleteAfterTime(long time) {
-        return mDB.delete(NAME, COLUMN_END + ">=?", new String[]{String.valueOf(time)});
+        return mDB.delete(NAME_FTS, COLUMN_END + ">=?", new String[]{String.valueOf(time)});
     }
 
     public void saveEventsToProvider(List<GCalEvent> events) {
@@ -73,7 +84,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
                 values.put(COLUMN_LOCATION, event.location);
                 values.put(COLUMN_START, event.startTime);
                 values.put(COLUMN_END, event.endTime);
-                mDB.insert(NAME, null, values);
+                mDB.insert(NAME_FTS, null, values);
             }
             mDB.setTransactionSuccessful();
         } finally {
@@ -90,8 +101,34 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return new GCalEvent(title, description, location, startTime, endTime);
     }
 
+    public List<GCalEvent> search(String query) {
+        String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
+        String[] selectionArgs = new String[] { appendWildcard(query) };
+        Cursor c = mDB.query(NAME_FTS, null, selection, selectionArgs, null, null, null);
+        List<GCalEvent> events = new ArrayList<GCalEvent>();
+        c.moveToFirst();
+        while (c.moveToNext()) {
+            events.add(fromCursor(c));
+        }
+        c.close();
+
+        return events;
+    }
+
+    private String appendWildcard(String query) {
+        if (TextUtils.isEmpty(query)) return query;
+
+        final StringBuilder builder = new StringBuilder();
+        final String[] splits = TextUtils.split(query, " ");
+
+        for (String split : splits)
+            builder.append(split).append("*").append(" ");
+
+        return builder.toString().trim();
+    }
+
     public List<GCalEvent> getAllEvents() {
-        Cursor c = mDB.query(NAME, null, null, null, null, null, null);
+        Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
         c.moveToFirst();
         while (c.moveToNext()) {
@@ -114,7 +151,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
 
         String orderBy = COLUMN_START + " ASC";
 
-        Cursor c = mDB.query(NAME, null, selection, null, null, null, orderBy);
+        Cursor c = mDB.query(NAME_FTS, null, selection, null, null, null, orderBy);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
         c.moveToPosition(-1);
         while (c.moveToNext()) {
@@ -155,7 +192,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
     }
 
     public int getCount() {
-        Cursor c = mDB.query(NAME, null, null, null, null, null, null);
+        Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
         int count = c.getCount();
         c.close();
         return count;
