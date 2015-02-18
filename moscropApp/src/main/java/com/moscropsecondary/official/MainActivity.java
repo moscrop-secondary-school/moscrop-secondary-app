@@ -111,6 +111,10 @@ public class MainActivity extends ToolbarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState) {
 
+        if (position == mCurrentFragment) {
+            return;
+        }
+
         if(!fromSavedInstanceState) {
             // determine which fragment to load
             Fragment mNextFragment = null;
