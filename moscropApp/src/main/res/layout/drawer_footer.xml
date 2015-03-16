@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/backgroundd" />
+        android:background="?attr/backgrounddd" />
 
     <TextView
         android:id="@+id/btnSettings"
@@ -25,10 +25,10 @@
         android:textColor="?attr/textt"
         android:textSize="@dimen/nav_drawer_footer_text" />
 
-    <View
+    <!--<View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/backgroundd" />
+        android:background="?attr/backgroundd" />-->
 
     <TextView
         android:id="@+id/btnAbout"
@@ -46,13 +46,10 @@
         android:textColor="?attr/textt"
         android:textSize="@dimen/nav_drawer_footer_text" />
 
-    <View
+    <!--<View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/backgroundd" />
-
-    <!-- Great! Now that you're looking here: This will be the new
-         home of the contact button. Fix strings as appropriate :) -->
+        android:background="?attr/backgroundd" />-->
 
     <TextView
         android:id="@+id/btnContact"
@@ -70,9 +67,9 @@
         android:textColor="?attr/textt"
         android:textSize="@dimen/nav_drawer_footer_text" />
 
-    <View
+    <!--<View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/backgroundd" />
+        android:background="?attr/backgroundd" />-->
 
 </LinearLayout>

@@ -5,6 +5,9 @@
         <item>Newsletters</item>
         <item>Events</item>
         <item>Teachers</item>
+        <item>Settings</item>
+        <item>About</item>
+        <item>Contacts</item>
     </string-array>
 
     <string-array name="drawer_icons_light">
@@ -13,6 +16,9 @@
         <!--<item>@drawable/ic_action_student_light</item>-->
         <item>@drawable/ic_action_event_light</item>
         <item>@drawable/ic_action_teacher_light</item>
+        <item>@drawable/ic_action_settings_light</item>
+        <item>@drawable/ic_action_about_dev_light</item>
+        <item>@drawable/ic_action_contact_light</item>
     </string-array>
 
     <string-array name="drawer_icons_dark">
@@ -21,6 +27,9 @@
         <!--<item>@drawable/ic_action_student_dark</item>-->
         <item>@drawable/ic_action_event_dark</item>
         <item>@drawable/ic_action_teacher_dark</item>
+        <item>@drawable/ic_action_settings_dark</item>
+        <item>@drawable/ic_action_about_dev_dark</item>
+        <item>@drawable/ic_action_contact_dark</item>
     </string-array>
 
     <string-array name="theme_texts" translatable="false">

@@ -26,9 +26,9 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
     //public static final int STUDENT = 2;
     public static final int EVENTS = 2;
     public static final int TEACHERS = 3;
-    public static final int SETTINGS = 500;
-    public static final int ABOUT = 600;
-    public static final int CONTACT = 700;
+    public static final int SETTINGS = 4;
+    public static final int ABOUT = 5;
+    public static final int CONTACT = 6;
 
     private NavDrawerAdapter mDrawerAdapter;
     private ListView mDrawerList;
@@ -65,10 +65,13 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
         }
         images.recycle();
 
+        Integer[] dividerPositions = new Integer[] {4};
+
         mDrawerAdapter = new NavDrawerAdapter(
                 getActivity(),
                 new ArrayList<String>(Arrays.asList(drawerItems)),
-                drawerIcons
+                drawerIcons,
+                new ArrayList<Integer>(Arrays.asList(dividerPositions))
         );   // TODO: use getSupportActionBar().getThemedContext()
 
         // Add header
@@ -84,9 +87,9 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
         });
         mDrawerList.addHeaderView(headerView, null, false);
 
-        // Add footer
+        /*// Add footer
         View footerView = inflater.inflate(R.layout.drawer_footer, mDrawerList, false);
-        mDrawerList.addFooterView(footerView, null, false);
+        mDrawerList.addFooterView(footerView, null, false);*/
 
         // Set list adapter
         mDrawerList.setAdapter(mDrawerAdapter);
@@ -98,7 +101,7 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
                 selectItem(position - mDrawerList.getHeaderViewsCount());
             }
         });
-        footerView.findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
+        /*footerView.findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectItem(SETTINGS);
@@ -115,7 +118,7 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
             public void onClick(View v) {
                 selectItem(CONTACT);
             }
-        });
+        });*/
 
         // Load banner using Picasso to initialize its singleton ahead of time
         //Picasso.with(this).load(R.drawable.banner).into((ImageView) headerView.findViewById(R.id.imgBanner));

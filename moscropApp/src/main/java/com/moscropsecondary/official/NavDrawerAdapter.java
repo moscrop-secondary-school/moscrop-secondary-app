@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class NavDrawerAdapter extends BaseAdapter
 	// Essential Resources
 	private List<String> mDrawerItems;
     private List<Integer> mDrawerIcons;
+    private List<Integer> mDividerPositions;
 	private Context mContext;
 	
 	// Current index and custom fonts
@@ -28,18 +30,19 @@ public class NavDrawerAdapter extends BaseAdapter
 		this.mDrawerItems = new ArrayList<String>();
 		this.mContext = context;
 		
-		this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
-		this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
+		//this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
+		//this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
 	}
 	
-	public NavDrawerAdapter(Context context, List<String> drawerItems, List<Integer> drawerIcons)
+	public NavDrawerAdapter(Context context, List<String> drawerItems, List<Integer> drawerIcons, List<Integer> dividerPositions)
 	{
 		this.mDrawerItems = drawerItems;
         this.mDrawerIcons = drawerIcons;
+        this.mDividerPositions = dividerPositions;
 		this.mContext = context;
 		
-		this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
-		this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
+		//this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
+		//this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
 	}
 	
 	public void addItem(String drawerItem)
@@ -90,7 +93,9 @@ public class NavDrawerAdapter extends BaseAdapter
 			
 			holder = new ViewHolder();
 			//holder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
-            holder.listItem = (TextView) convertView.findViewById(R.id.list_button);
+            holder.icon = (ImageView) convertView.findViewById(R.id.drawer_item_icon);
+            holder.text = (TextView) convertView.findViewById(R.id.drawer_item_text);
+            holder.divider = convertView.findViewById(R.id.divider);
 
 			convertView.setTag(holder);
 		}
@@ -100,14 +105,21 @@ public class NavDrawerAdapter extends BaseAdapter
 		
 		// Set text
 		//holder.txtTitle.setText(mDrawerItems.get(position));
-        holder.listItem.setText(mDrawerItems.get(position));
+        holder.text.setText(mDrawerItems.get(position));
 		
 		// Set bold if selected
 		//holder.txtTitle.setTypeface((currentPage == position) ? fontSelected : fontNormal);
         //holder.listButton.setTypeface((currentPage == position) ? fontSelected : fontNormal);
 
         // Set icon
-        holder.listItem.setCompoundDrawablesWithIntrinsicBounds(mDrawerIcons.get(position).intValue(), 0, 0, 0);
+        holder.icon.setImageResource(mDrawerIcons.get(position));
+
+        // Set divider
+        if (mDividerPositions.contains(position)) {
+            holder.divider.setVisibility(View.VISIBLE);
+        } else {
+            holder.divider.setVisibility(View.GONE);
+        }
 
         return convertView;
 	}
@@ -115,6 +127,8 @@ public class NavDrawerAdapter extends BaseAdapter
 	private class ViewHolder
 	{
 		//public TextView txtTitle;
-        public TextView listItem;
+        public ImageView icon;
+        public TextView text;
+        public View divider;
 	}
 }
