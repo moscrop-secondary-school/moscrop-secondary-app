@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -147,18 +148,18 @@ public class MainActivity extends ToolbarActivity
                 case NavigationDrawerFragment.SETTINGS:
                     Intent settingsIntent = new Intent(this, GenericActivity.class);
                     settingsIntent.putExtra(GenericActivity.TYPE_KEY, GenericActivity.TYPE_SETTINGS);
-                    startActivity(settingsIntent);
+                    delayedStartActivity(settingsIntent);
                     return;
                 case NavigationDrawerFragment.ABOUT:
                     Intent aboutIntent = new Intent(this, GenericActivity.class);
                     aboutIntent.putExtra(GenericActivity.TYPE_KEY, GenericActivity.TYPE_ABOUT);
-                    startActivity(aboutIntent);
+                    delayedStartActivity(aboutIntent);
                     return;
                 case NavigationDrawerFragment.CONTACT:
                     Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.dev_email), null));
                     contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_subject));
                     contactIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(Intent.createChooser(contactIntent, getString(R.string.send_email)));
+                    delayedStartActivity(Intent.createChooser(contactIntent, getString(R.string.send_email)));
                     return;
             }
 
@@ -177,6 +178,10 @@ public class MainActivity extends ToolbarActivity
             mCurrentFragment = position;
 
         } else {
+
+            // Position will never be SETTINGS, ABOUT, or CONTACT
+            // when from savedInstanceState because those link to other activities.
+
             // Fragment will already be loaded, but we must obtain a reference to it
             switch (position) {
                 case NavigationDrawerFragment.NEWS:
@@ -192,6 +197,38 @@ public class MainActivity extends ToolbarActivity
                     mTeachersFragment = (StaffInfoFragment) getSupportFragmentManager().findFragmentByTag("mTeachersFragment");
                     break;
             }
+        }
+    }
+
+    private static final int STANDARD_DRAWER_CLOSE_DELAY    = 350;  // milliseconds
+    private static final int DRAWER_CLOSE_APPROX_DURATION   = 300;  // milliseconds
+
+    private void delayedStartActivity(final Intent intent) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(intent);
+            }
+        }, DRAWER_CLOSE_APPROX_DURATION);
+    }
+
+    @Override
+    public int getNavigationDrawerCloseDelay(int position) {
+        switch (position) {
+
+            case NavigationDrawerFragment.NEWS:
+            case NavigationDrawerFragment.EMAIL:
+            case NavigationDrawerFragment.EVENTS:
+            case NavigationDrawerFragment.TEACHERS:
+                return STANDARD_DRAWER_CLOSE_DELAY;
+
+            case NavigationDrawerFragment.SETTINGS:
+            case NavigationDrawerFragment.ABOUT:
+            case NavigationDrawerFragment.CONTACT:
+                return 0;
+
+            default:
+                return STANDARD_DRAWER_CLOSE_DELAY;
         }
     }
 

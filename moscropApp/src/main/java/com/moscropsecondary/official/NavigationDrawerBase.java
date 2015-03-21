@@ -121,18 +121,20 @@ public abstract class NavigationDrawerBase extends Fragment {
         }*/
 
         if (mCallbacks != null) {
+
+            if (mDrawerLayout != null) {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDrawerLayout.closeDrawer(mDrawerContentContainer);
+                    }
+                }, mCallbacks.getNavigationDrawerCloseDelay(position));
+            }
+
             mCallbacks.onNavigationDrawerItemSelected(position, fromSavedInstanceState);
         }
 
-        if (mDrawerLayout != null) {
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mDrawerLayout.closeDrawer(mDrawerContentContainer);
-                }
-            }, 350);
-        }
     }
 
     @Override
@@ -164,6 +166,7 @@ public abstract class NavigationDrawerBase extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState);
+        public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState);
+        public int getNavigationDrawerCloseDelay(int position);
     }
 }
