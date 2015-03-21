@@ -99,6 +99,7 @@ public class MainActivity extends ToolbarActivity
     protected void onResume() {
         super.onResume();
         if(mThemeRequiresUpdate) {
+            mCurrentFragment = -1;
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
@@ -112,7 +113,10 @@ public class MainActivity extends ToolbarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState) {
 
+        Logger.log("From saved instance state: " + fromSavedInstanceState);
+
         if (position == mCurrentFragment) {
+            Logger.log("Desired position (" + position + ") is the same as mCurrentFragment (" + mCurrentFragment + ")");
             return;
         }
 
