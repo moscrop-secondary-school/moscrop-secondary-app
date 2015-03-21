@@ -55,7 +55,7 @@ public class MainActivity extends ToolbarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        int theme = ThemesUtil.getThemeResFromPreference(this);
+        int theme = ThemesUtil.getThemeResFromPreference(this, ThemesUtil.THEME_TYPE_DRAWER);
         setTheme(theme);
         mThemeRequiresUpdate = false;   // We just set the latest theme
         ThemesUtil.registerThemeChangedListener(this);
@@ -64,12 +64,12 @@ public class MainActivity extends ToolbarActivity
         setActionBarIcon(R.drawable.ic_ab_drawer);
         getSupportActionBar().setTitle("");
 
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTitle = getTitle();
 
         // Set up the drawer.
-        navigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+        navigationDrawerFragment.setUp(mDrawerLayout, R.id.navigation_drawer_container);
 
         //setUpToolbarSpinner();
     }

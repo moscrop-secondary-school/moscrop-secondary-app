@@ -17,7 +17,7 @@ public class GenericActivity extends ToolbarActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        int theme = ThemesUtil.getThemeResFromPreference(this);
+        int theme = ThemesUtil.getThemeResFromPreference(this, ThemesUtil.THEME_TYPE_NORMAL);
         setTheme(theme);
 
         super.onCreate(savedInstanceState);

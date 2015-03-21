@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,12 +29,22 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_gravity="start"/>-->
-    <fragment android:id="@+id/navigation_drawer"
+    <com.moscropsecondary.official.Widget.ScrimInsetsFrameLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/navigation_drawer_container"
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:insetForeground="#4000">
+
+    <fragment android:id="@+id/navigation_drawer_fragment"
+        android:layout_width="@dimen/nav_drawer_width"
+        android:layout_height="match_parent"
         android:name="com.moscropsecondary.official.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
+
+    </com.moscropsecondary.official.Widget.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>
 

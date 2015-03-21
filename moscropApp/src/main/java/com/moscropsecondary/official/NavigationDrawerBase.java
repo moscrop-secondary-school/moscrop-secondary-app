@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.moscropsecondary.official.util.ThemesUtil;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -35,7 +37,7 @@ public abstract class NavigationDrawerBase extends Fragment {
      */
 
     private DrawerLayout mDrawerLayout;
-    private View mFragmentContainerView;
+    private View mDrawerContentContainer;
 
     private int mCurrentSelectedPosition = 0;
     public int getCurrentSelectedPosition() {
@@ -69,24 +71,27 @@ public abstract class NavigationDrawerBase extends Fragment {
     protected abstract ListView getNavigationItemsList();
 
     public boolean isDrawerOpen() {
-        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mDrawerContentContainer);
     }
 
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
-     * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
+     * @param drawerContentContainer   The android:id of this second child in the DrawerLayout.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
-        mFragmentContainerView = getActivity().findViewById(fragmentId);
+    public void setUp(DrawerLayout drawerLayout, int drawerContentContainer) {
         mDrawerLayout = drawerLayout;
+        mDrawerContentContainer = getActivity().findViewById(drawerContentContainer);
 
         // set a custom shadow that overlays the main content when the drawer opens
         TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[] {R.attr.drawer_shadow});
         int attributeResourceId = a.getResourceId(0, 0);
         a.recycle();
         mDrawerLayout.setDrawerShadow(attributeResourceId, GravityCompat.START);
+
+        // set status bar color to primaryDark
+        mDrawerLayout.setStatusBarBackgroundColor(ThemesUtil.getThemePrimaryColor(getActivity()));
     }
 
     protected void selectItem(int position) {
@@ -101,7 +106,7 @@ public abstract class NavigationDrawerBase extends Fragment {
 
         /*
         if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mFragmentContainerView);
+            mDrawerLayout.closeDrawer(mDrawerContentContainer);
         }
         if (mCallbacks != null) {
 
@@ -124,7 +129,7 @@ public abstract class NavigationDrawerBase extends Fragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                    mDrawerLayout.closeDrawer(mDrawerContentContainer);
                 }
             }, 350);
         }

@@ -35,7 +35,7 @@ public class NewsDisplayActivity extends ActionBarActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-        int theme = ThemesUtil.getDetailThemeResFromPreference(this);
+        int theme = ThemesUtil.getThemeResFromPreference(this, ThemesUtil.THEME_TYPE_DETAIL);
         setTheme(theme);
         mThemeRequiresUpdate = false;   // We just set the latest theme
         ThemesUtil.registerThemeChangedListener(this);
