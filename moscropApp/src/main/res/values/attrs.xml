@@ -40,6 +40,8 @@
         <attr name="contact" format="reference" />
         <attr name="nav_header_shadow" format="reference" />
         <attr name="background_nav" format="reference" />
+        <attr name="nav_drawer_item_text_color" format="reference" />
+        <attr name="nav_drawer_header_text_color" format="reference" />
 
         <!--banners-->
         <attr name="credits_allan_banner" format="reference" />

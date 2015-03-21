@@ -49,7 +49,7 @@
         <item name="backgrounddd">@color/backgrounddd</item>
         <item name="linkTextColor">@color/linkColorLight</item>
 
-        <item name="banner">@drawable/banner</item>
+        <item name="banner">@drawable/banner_snow_1</item>
         <item name="drawer_icon_array">@array/drawer_icons_light</item>
 
         <item name="settings">@drawable/ic_action_settings_light</item>
@@ -60,6 +60,8 @@
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_light</item>
         <item name="background_nav">@color/backgroundd</item>
         <item name="avatar">@drawable/avatar</item>
+        <item name="nav_drawer_item_text_color">@color/nav_drawer_item_text</item>
+        <item name="nav_drawer_header_text_color">@color/dnav_drawer_item_text</item>
 
         <item name="credits_allan_banner">@drawable/credits_allan_banner</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
@@ -104,7 +106,7 @@
         <item name="backgrounddd">@color/dbackgrounddd</item>
         <item name="linkTextColor">@color/linkColorDark</item>
 
-        <item name="banner">@drawable/banner_dark</item>
+        <item name="banner">@drawable/banner_snow_1</item>
         <item name="drawer_icon_array">@array/drawer_icons_dark</item>
 
         <item name="settings">@drawable/ic_action_settings_dark</item>
@@ -114,7 +116,9 @@
         <item name="nav_header_shadow">@drawable/shadow_drawer_header_dark</item>
         <item name="nav_drawer_selector">@drawable/selector_nav_drawer_footer_dark</item>
         <item name="background_nav">@color/dbackgroundd</item>
-        <item name="avatar">@drawable/avatar_dark</item>
+        <item name="avatar">@drawable/avatar</item> <!-- only temporarily changed, normally use avatar_dark -->
+        <item name="nav_drawer_item_text_color">@color/dnav_drawer_item_text</item>
+        <item name="nav_drawer_header_text_color">@color/dnav_drawer_item_text</item>
 
         <item name="status">@color/primary_dark_indigo_d</item>
         <item name="toolbar_color">@color/primary_indigo_d</item>

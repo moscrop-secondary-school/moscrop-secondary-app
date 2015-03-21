@@ -5,8 +5,12 @@
     <!-- Don't change these, they're only for injecting API 21+ specific things -->
 
     <style name="Theme.Base.Light.Versioned" parent="Theme.Base.Light">
-        <item name="android:statusBarColor">?attr/status</item>
-        <item name="android:navigationBarColor">?attr/status</item>
+        <!--<item name="android:statusBarColor">?attr/status</item>-->
+        <!--<item name="android:navigationBarColor">?attr/status</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+        <!--<item name="android:statusBarColor">#33000000</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
@@ -15,8 +19,12 @@
     </style>
 
     <style name="Theme.Base.Dark.Versioned" parent="Theme.Base.Dark">
-        <item name="android:statusBarColor">?attr/status</item>
-        <item name="android:navigationBarColor">?attr/status</item>
+        <!--<item name="android:statusBarColor">?attr/status</item>-->
+        <!--<item name="android:navigationBarColor">?attr/status</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+        <!--<item name="android:statusBarColor">#33000000</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>

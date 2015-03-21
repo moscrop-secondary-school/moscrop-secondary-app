@@ -74,7 +74,8 @@
             android:textDirection="anyRtl"
             android:lines="1"
             android:singleLine="true"
-            tools:text="Some drawer text"/>
+            tools:text="Some drawer text"
+            android:textColor="?attr/nav_drawer_item_text_color"/>
 
     </RelativeLayout>
 

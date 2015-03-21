@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/nav_drawer_header_banner"
     tools:ignore="ContentDescription" >
 
     <ImageView
@@ -13,51 +13,62 @@
         android:scaleType="centerCrop"
         android:src="?attr/banner" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?attr/nav_header_shadow"
-        android:orientation="horizontal" >
+        android:layout_height="@dimen/nav_drawer_header_banner">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circleAvatar"
+            android:elevation="2dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_width="@dimen/nav_drawer_header_avatar"
             android:layout_height="@dimen/nav_drawer_header_avatar"
-            android:layout_margin="@dimen/nav_drawer_header_spacing"
+            android:layout_marginLeft="@dimen/material_drawer_vertical_padding"
+            android:layout_marginStart="@dimen/material_drawer_vertical_padding"
+            android:layout_marginTop="@dimen/material_drawer_account_header_horizontal_top"
+            android:layout_marginBottom="@dimen/material_drawer_account_header_horizontal_bottom"
             android:src="?attr/avatar"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_height="56dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/material_drawer_header_text_bottom_padding"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
+                android:fontFamily="sans-serif-medium"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:gravity="bottom"
-                android:maxLines="1"
-                android:paddingRight="@dimen/nav_drawer_header_spacing"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/material_drawer_account_header_text"
+                android:layout_marginLeft="@dimen/material_drawer_vertical_padding"
+                android:layout_marginStart="@dimen/material_drawer_vertical_padding"
                 android:text="@string/app_name"
-                android:textColor="?attr/text"
-                android:textSize="@dimen/nav_drawer_header_name"
-                android:textStyle="bold" />
+                android:textColor="?attr/nav_drawer_header_text_color"/>
 
             <TextView
+                android:fontFamily="sans-serif"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-light"
-                android:gravity="top"
-                android:maxLines="1"
-                android:paddingRight="@dimen/nav_drawer_header_spacing"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/material_drawer_account_header_text"
+                android:layout_marginLeft="@dimen/material_drawer_vertical_padding"
+                android:layout_marginStart="@dimen/material_drawer_vertical_padding"
                 android:text="@string/moscrop_desc"
-                android:textColor="?attr/text"
-                android:textSize="@dimen/nav_drawer_header_email" />
+                android:textColor="?attr/nav_drawer_header_text_color"/>
+
         </LinearLayout>
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </FrameLayout>

@@ -29,7 +29,7 @@
     <color name="nav_drawer_background">@color/background</color>
     <color name="nav_drawer_divider">#11000000</color>
     <color name="nav_drawer_pressed">#44000000</color>
-    <color name="nav_drawer_item_text">@color/textt</color>
+    <color name="nav_drawer_item_text">#de000000</color>
     <color name="nav_drawer_footer_text">@color/textt</color>
     <color name="nav_drawer_shadow_1">#17000000</color>
     <color name="nav_drawer_shadow_2">#33000000</color>
@@ -60,7 +60,7 @@
     <color name="dnav_drawer_background">@color/dbackground</color>
     <color name="dnav_drawer_divider">#11ffffff</color>
     <color name="dnav_drawer_footer_pressed">#44ffffff</color>
-    <color name="dnav_drawer_item_text">@color/dtext</color>
+    <color name="dnav_drawer_item_text">#deFFFFFF</color>
     <color name="dnav_drawer_footer_text">@color/dtext</color>
     <color name="dnav_drawer_shadow_1">#17ffffff</color>
     <color name="dnav_drawer_shadow_2">#33ffffff</color>
