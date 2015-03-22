@@ -1,5 +1,6 @@
 package com.moscropsecondary.official.calendar;
 
+import android.animation.TimeInterpolator;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,8 +22,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,6 +58,10 @@ public class CalendarFragment extends Fragment
     private SwipeRefreshLayout mSwipeLayout;
     private ListView mListView;
     private View mToolbarTitle;
+    private View mToolbarShadow;
+
+    private static final TimeInterpolator mAccelerateInterpolator = new AccelerateInterpolator();
+    private static final TimeInterpolator mDecelerateInterpolator = new DecelerateInterpolator();
 
     private boolean mCalendarIsShowing = false;
     private boolean mSearchViewExpanded = false;
@@ -107,7 +113,7 @@ public class CalendarFragment extends Fragment
         args.putInt(CaldroidFragment.MONTH, today.get(Calendar.MONTH) + 1);
         args.putInt(CaldroidFragment.YEAR, today.get(Calendar.YEAR));
         args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, true);
-        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, false);
+        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, true);
 
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -146,11 +152,23 @@ public class CalendarFragment extends Fragment
         transaction.replace(R.id.calendar_frame, mCaldroid, "CaldroidFragment").commit();
 
         mCaldroidFrame = mContentView.findViewById(R.id.calendar_frame);
-        mCaldroidFrame.setVisibility(View.GONE);
+        mToolbarShadow = getActivity().findViewById(R.id.toolbar_shadow);
 
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
+
+        ViewTreeObserver observer = mCaldroidFrame.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+
+            @Override
+            public boolean onPreDraw() {
+                mCaldroidFrame.getViewTreeObserver().removeOnPreDrawListener(this);
+                int height = mCaldroidFrame.getHeight();
+                mCaldroidFrame.setTranslationY(-height);
+                return true;
+            }
+        });
 
         // Refresh calendar
         new Thread(new Runnable() {
@@ -183,6 +201,12 @@ public class CalendarFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         removeCustomTitle();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ((MainActivity) getActivity()).getToolbar().setElevation(Util.convertDpToPixel(4, getActivity()));
+        } else {
+            mToolbarShadow.setTranslationY(0);
+        }
     }
 
     @Override
@@ -500,14 +524,25 @@ public class CalendarFragment extends Fragment
         setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
         ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle_up, 0);
 
-        Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-        mCaldroidFrame.startAnimation(slideIn);
+        //Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+        //mCaldroidFrame.startAnimation(slideIn);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        mCaldroidFrame.animate().setDuration(400)
+                .translationY(0)
+                .setInterpolator(mDecelerateInterpolator);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ((MainActivity) getActivity()).getToolbar().setElevation(0);
+        } else {
+            int height = mCaldroidFrame.getHeight();
+            mToolbarShadow.animate().setDuration(400)
+                    .translationY(height)
+                    .setInterpolator(mDecelerateInterpolator);
         }
 
-        mCaldroidFrame.setVisibility(View.VISIBLE);
+
+
+        //mCaldroidFrame.setVisibility(View.VISIBLE);
     }
 
     private void hideCalendar() {
@@ -517,14 +552,32 @@ public class CalendarFragment extends Fragment
         setToolbarTitle("Events");
         ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle, 0);
 
-        Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
-        mCaldroidFrame.startAnimation(slideOut);
+        //Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+        //mCaldroidFrame.startAnimation(slideOut);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            ((MainActivity) getActivity()).getToolbar().setElevation(Util.convertDpToPixel(4, getActivity()));
+        int height = mCaldroidFrame.getHeight();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mCaldroidFrame.animate().setDuration(400)
+                    .translationY(-height)
+                    .setInterpolator(mAccelerateInterpolator)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((MainActivity) getActivity()).getToolbar().setElevation(Util.convertDpToPixel(4, getActivity()));
+                        }
+                    });
+        } else {
+            mCaldroidFrame.animate().setDuration(400)
+                    .translationY(-height)
+                    .setInterpolator(mAccelerateInterpolator);
+
+            mToolbarShadow.animate().setDuration(400)
+                    .translationY(0)
+                    .setInterpolator(mAccelerateInterpolator);
         }
 
-        mCaldroidFrame.setVisibility(View.GONE);
+        //mCaldroidFrame.setVisibility(View.GONE);
     }
 
     public void doSearch(final String query) {

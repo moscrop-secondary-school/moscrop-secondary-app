@@ -109,4 +109,7 @@
     <dimen name="rss_divider_size_dark">2dp</dimen>
     <dimen name="rss_divider_size_black">0dp</dimen>
     <dimen name="rss_divider_size_transparent">0dp</dimen>
+
+    <dimen name="caldroid_elevation">0dp</dimen>    <!-- shadows taken care of with 9patches for pre-lollipop -->
+
 </resources>
