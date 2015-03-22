@@ -87,6 +87,10 @@
     <color name="background_holo_light">#fff3f3f3</color>
 
 
+    <!-- Stuff I have no place to put for now -Ivon -->
+    <color name="nav_drawer_divider_light">#B6B6B6</color>
+    <color name="nav_drawer_divider_dark">#555555</color>
+
     <!-- stuff from pedometer -->
 
     <color name="text_color_primary">#de000000</color>

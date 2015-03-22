@@ -9,7 +9,8 @@
         android:id="@+id/webview_container"
         android:layout_below="@+id/fnd_title_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:foreground="@drawable/header_shadow">
 
         <WebView
             android:id="@+id/fnd_webview"
@@ -26,11 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/pmoscrop"
-        android:minHeight="56dp">
+        android:minHeight="56dp"
+        android:elevation="4dp">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"/>
+        <include layout="@layout/toolbar"/>
 
         <TextView
             android:id="@+id/fnd_title"

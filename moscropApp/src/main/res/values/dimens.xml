@@ -30,7 +30,7 @@
 
     <!-- Navigation Drawer -->
     <dimen name="nav_drawer_width">-2px</dimen> <!-- match_parent -->
-    <dimen name="nav_drawer_header_banner">172dp</dimen>    <!-- 148dp + 24dp for the status bar -->
+    <dimen name="nav_drawer_header_banner">148dp</dimen>
     <dimen name="nav_drawer_header_avatar">64dp</dimen>
     <dimen name="nav_drawer_header_name">20sp</dimen>
     <dimen name="nav_drawer_header_email">17sp</dimen>
@@ -49,7 +49,7 @@
     <dimen name="material_drawer_account_header_text">14sp</dimen>
 
     <!-- General margins for the drawer account header -->
-    <dimen name="material_drawer_account_header_horizontal_top">40dp</dimen>    <!-- 16dp + 24dp for the status bar -->
+    <dimen name="material_drawer_account_header_horizontal_top">16dp</dimen>
     <dimen name="material_drawer_account_header_horizontal_bottom">4dp</dimen>
 
     <!-- General profileIcon margins for the drawer item -->

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -32,6 +33,7 @@ import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.DateUtil;
 import com.moscropsecondary.official.util.Preferences;
+import com.moscropsecondary.official.util.Util;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
@@ -501,6 +503,10 @@ public class CalendarFragment extends Fragment
         Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
         mCaldroidFrame.startAnimation(slideIn);
 
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            ((MainActivity) getActivity()).getToolbar().setElevation(0);
+        }
+
         mCaldroidFrame.setVisibility(View.VISIBLE);
     }
 
@@ -513,6 +519,10 @@ public class CalendarFragment extends Fragment
 
         Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
         mCaldroidFrame.startAnimation(slideOut);
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            ((MainActivity) getActivity()).getToolbar().setElevation(Util.convertDpToPixel(4, getActivity()));
+        }
 
         mCaldroidFrame.setVisibility(View.GONE);
     }
