@@ -34,6 +34,7 @@ import com.moscropsecondary.official.MainActivity;
 import com.moscropsecondary.official.R;
 import com.moscropsecondary.official.ToolbarActivity;
 import com.moscropsecondary.official.util.DateUtil;
+import com.moscropsecondary.official.util.Logger;
 import com.moscropsecondary.official.util.Preferences;
 import com.moscropsecondary.official.util.Util;
 import com.roomorama.caldroid.CaldroidFragment;
@@ -207,6 +208,8 @@ public class CalendarFragment extends Fragment
         } else {
             mToolbarShadow.setTranslationY(0);
         }
+
+        mCalendarIsShowing = false;
     }
 
     @Override
@@ -318,9 +321,9 @@ public class CalendarFragment extends Fragment
         return title;
     }
 
-    private void setToolbarTitle(String subtitle) {
+    private void setToolbarTitle(String title) {
         if (mToolbarTitle != null) {
-            ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setText(subtitle);
+            ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setText(title);
         }
     }
 
