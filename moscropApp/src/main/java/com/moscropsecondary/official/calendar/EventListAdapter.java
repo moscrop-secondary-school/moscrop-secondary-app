@@ -118,7 +118,7 @@ public class EventListAdapter extends BaseAdapter {
                 }
                 day++;
             }
-            return getItem(mDays.size() - 1).dayNumber;
+            return mDays.size() - 1;
         } else {
             return -1;
         }

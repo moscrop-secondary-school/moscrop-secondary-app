@@ -222,9 +222,11 @@ public class MainActivity extends ToolbarActivity
 
             case NavigationDrawerFragment.NEWS:
             case NavigationDrawerFragment.EMAIL:
-            case NavigationDrawerFragment.EVENTS:
             case NavigationDrawerFragment.TEACHERS:
                 return STANDARD_DRAWER_CLOSE_DELAY;
+
+            case NavigationDrawerFragment.EVENTS:
+                return 500;
 
             case NavigationDrawerFragment.SETTINGS:
             case NavigationDrawerFragment.ABOUT:

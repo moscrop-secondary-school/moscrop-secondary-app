@@ -472,6 +472,7 @@ public class CalendarFragment extends Fragment
         int dayNumber = DateUtil.daysFromMillis(millis);
         int position = mAdapter.getPositionNearestToDay(dayNumber);
         if (position != -1) {
+            Logger.log("Scrolling to position: " + position);
             mListView.setSelection(position);
         }
     }
@@ -599,9 +600,9 @@ public class CalendarFragment extends Fragment
                         mAdapter.clear();
                         mAdapter.addToEnd(events);
                         mAdapter.notifyDataSetChanged();
-                        scrollTo(System.currentTimeMillis());
+                        //scrollTo(System.currentTimeMillis());
 
-                        loadEventsIntoCaldroid(events);
+                        //loadEventsIntoCaldroid(events);
                     }
                 });
             }

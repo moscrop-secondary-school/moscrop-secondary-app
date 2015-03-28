@@ -102,8 +102,29 @@ public class CalendarDatabase extends SQLiteOpenHelper {
     }
 
     public List<GCalEvent> search(String query) {
+
+        // TODO add a limit to events returned from search
+        // TODO to prevent an extremely long list as repetitive
+        // TODO events such as 'Spring Break' pile up throughout the years
+
+        /*Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        long lowerBound = cal.getTimeInMillis();
+
+        cal.add(Calendar.YEAR, 2);
+        long upperBound = cal.getTimeInMillis();
+
+        String selection = NAME_FTS + " MATCH ? COLLATE NOCASE AND " + COLUMN_END + " > ? AND " + COLUMN_START + " < ?";
+        String[] selectionArgs = new String[] { appendWildcard(query), String.valueOf(lowerBound), String.valueOf(upperBound) };*/
+
+        // TODO possibly instead of limiting by time difference,
+        // TODO limit instead by number of results returned
+
+        // TODO Old, non-limiting implementation
+
         String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
         String[] selectionArgs = new String[] { appendWildcard(query) };
+
         Cursor c = mDB.query(NAME_FTS, null, selection, selectionArgs, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
         c.moveToFirst();
