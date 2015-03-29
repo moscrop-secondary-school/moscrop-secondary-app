@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.moscropsecondary.official.BuildConfig;
+
 public class Logger {
 	
-	public static final boolean DEBUG = true;
+//	public static final boolean DEBUG = true;
 	public static final boolean SPAM = false;
-	public static final String TAG = "com.moscropsecondary.official";
+	public static final String TAG = "moscrop";
 	
 	public static void error(String message) {
 		Log.e(TAG, message);
@@ -27,15 +29,15 @@ public class Logger {
 	}
 	
 	public static void log(String message) {
-		if(DEBUG) Log.i(TAG, message);
+		if(BuildConfig.MOSCROPDEBUG) Log.i(TAG, message);
 	}
 	
 	public static void log(String name, String value) {
-		if(DEBUG) Log.i(TAG, name + " = " + value);
+		if(BuildConfig.MOSCROPDEBUG) Log.i(TAG, name + " = " + value);
 	}
 	
 	public static void log(String name, int value) {
-		if(DEBUG) Log.i(TAG, name + " = " + value);
+		if(BuildConfig.MOSCROPDEBUG) Log.i(TAG, name + " = " + value);
 	}
 	
 	public static void spam(String message) {
@@ -51,6 +53,6 @@ public class Logger {
 	}
 	
 	public static void toast(Context context, String message) {
-		if(DEBUG) Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+		if(BuildConfig.MOSCROPDEBUG) Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 	}
 }
