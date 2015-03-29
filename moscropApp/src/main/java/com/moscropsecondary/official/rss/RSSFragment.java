@@ -430,22 +430,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
      * @return  integer color of the form 0xAARRGGBB
      */
     private int getFromColor(int position) {
-        int resID = R.attr.rss_card_bg_1;
-        switch(position % 4) {
-            case 0:
-            case 3:
-                resID = R.attr.rss_card_bg_1;
-                break;
-            case 1:
-            case 2:
-                resID = R.attr.rss_card_bg_2;
-                break;
-        }
-
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(resID, typedValue, true);
-        return typedValue.data;
+        return mAdapter.getCardBackgroundColor(position);
     }
 
     /**
@@ -459,12 +444,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         theme.resolveAttribute(R.attr.toolbar_color, typedValue, true);
         int bgcolor = typedValue.data;
         return bgcolor;
-        /*int a = (bgcolor >> 24) & 0xFF;
-		 int r = (bgcolor >> 16) & 0xFF;
-		 int g = (bgcolor >> 8) & 0xFF;
-		 int b = (bgcolor >> 0) & 0xFF;
-		 return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
-		 return Color.TRANSPARENT;*/
     }
 
     /**
@@ -491,9 +470,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(resID, typedValue, true);
-        int color = typedValue.data;
-        //return Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
-        return color;
+        return typedValue.data;
     }
 
     /**

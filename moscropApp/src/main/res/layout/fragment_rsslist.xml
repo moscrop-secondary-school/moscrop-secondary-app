@@ -10,7 +10,7 @@
 	    android:id="@+id/rlf_list"
 	    android:layout_height="match_parent"
 	    android:layout_width="match_parent"
-        android:numColumns="2"
+        android:numColumns="@integer/rss_list_width"
         android:horizontalSpacing="?attr/rss_divider_size"
         android:verticalSpacing="?attr/rss_divider_size"
         android:background="?attr/rss_background"

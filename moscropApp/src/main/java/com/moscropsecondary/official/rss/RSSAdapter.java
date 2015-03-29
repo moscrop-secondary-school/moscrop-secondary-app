@@ -62,24 +62,106 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         RSSItem item = mItems.get(position);
 
-        int textColor = Color.TRANSPARENT;
-        int bgColor = Color.TRANSPARENT;
-        switch(position % 4) {
-            case 0:
-            case 3:
-                textColor = textColor1;
-                bgColor = bgColor1;
-                break;
-            case 1:
-            case 2:
-                textColor = textColor2;
-                bgColor = bgColor2;
-                break;
-        }
+        int textColor = getCardTextColor(position);
+        int bgColor = getCardBackgroundColor(position);
 
         loadCardWithRssItem(getContext(), view, item, bgColor, textColor);
 
         return view;
+    }
+
+    public int getCardTextColor(int position) {
+        switch(getColorType(position)) {
+            case 1:
+                return textColor1;
+            case 2:
+                return textColor2;
+            default:
+                return Color.TRANSPARENT;
+        }
+    }
+
+    public int getCardBackgroundColor(int position) {
+        switch(getColorType(position)) {
+            case 1:
+                return bgColor1;
+            case 2:
+                return bgColor2;
+            default:
+                return Color.TRANSPARENT;
+        }
+    }
+
+    /**
+     * Determine which variant of each color to use
+     * @param position
+     *          Position of the card
+     * @return
+     *          1 if bgColor1 or textColor1 is required,
+     *          2 if bgColor2 or textColor2 is required.
+     */
+    private int getColorType(int position) {
+
+        int width = getContext().getResources().getInteger(R.integer.rss_list_width);
+
+        if (width == 2) {
+
+            switch (position % 4) {
+                case 0:
+                case 3:
+                    return 1;
+                case 1:
+                case 2:
+                    return 2;
+            }
+
+        } else if (width == 3) {
+
+            switch (position % 6) {
+                case 0:
+                case 2:
+                case 4:
+                    return 1;
+                case 1:
+                case 3:
+                case 5:
+                    return 2;
+            }
+
+        } else if (width == 4) {
+
+            switch (position % 8) {
+                case 0:
+                case 2:
+                case 5:
+                case 7:
+                    return 1;
+                case 1:
+                case 3:
+                case 4:
+                case 6:
+                    return 2;
+            }
+
+        } else if (width == 5) {
+
+            switch (position % 10) {
+                case 0:
+                case 2:
+                case 4:
+                case 6:
+                case 8:
+                    return 1;
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 9:
+                    return 2;
+            }
+        }
+
+        return 0;
     }
 
     /**
