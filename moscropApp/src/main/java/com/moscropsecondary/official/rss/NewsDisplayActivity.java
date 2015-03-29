@@ -13,8 +13,6 @@ import com.moscropsecondary.official.util.ThemesUtil;
 public class NewsDisplayActivity extends ActionBarActivity
         implements ThemesUtil.ThemeChangedListener {
 
-    public static final String SHARED_ELEMENT_NAME = "sharedElementName";
-
 	public static final String EXTRA_URL = "url";
 	public static final String EXTRA_CONTENT = "content";
 	public static final String EXTRA_TITLE = "abTitle";
@@ -35,6 +33,7 @@ public class NewsDisplayActivity extends ActionBarActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
+        // Set the theme and register for theme updates
         int theme = ThemesUtil.getThemeResFromPreference(this, ThemesUtil.THEME_TYPE_DETAIL);
         setTheme(theme);
         mThemeRequiresUpdate = false;   // We just set the latest theme
@@ -42,14 +41,6 @@ public class NewsDisplayActivity extends ActionBarActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsdisplay);
-
-		/*String url = getIntent().getStringExtra(EXTRA_URL) + "?m=1";
-		String htmlContent = getIntent().getStringExtra(EXTRA_CONTENT);
-		String title = getIntent().getStringExtra(EXTRA_TITLE);*/
-
-        // Retrieve shared element
-        /*FrameLayout contentFrame = (FrameLayout) findViewById(R.id.content_frame);
-        ViewCompat.setTransitionName(contentFrame, SHARED_ELEMENT_NAME);*/
 
         // Display the fragment as the main content.
         if (savedInstanceState == null) {
@@ -70,11 +61,6 @@ public class NewsDisplayActivity extends ActionBarActivity
             finish();
         }
     }
-
-    /*@Override
-    protected int getLayoutResource() {
-        return R.layout.activity_newsdisplay;
-    }*/
 
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,15 +90,6 @@ public class NewsDisplayActivity extends ActionBarActivity
     public void onThemeChanged() {
         mThemeRequiresUpdate = true;
     }
-
-    /*public static void launch(ToolbarActivity activity, View transitionView, String url, String content, String title) {
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionView, SHARED_ELEMENT_NAME);
-        Intent intent = new Intent(activity, NewsDisplayActivity.class);
-        intent.putExtra(EXTRA_URL, url);
-        intent.putExtra(EXTRA_CONTENT, content);
-        intent.putExtra(EXTRA_TITLE, title);
-        ActivityCompat.startActivity(activity, intent, options.toBundle());
-    }*/
 
     @Override
     public void finish() {

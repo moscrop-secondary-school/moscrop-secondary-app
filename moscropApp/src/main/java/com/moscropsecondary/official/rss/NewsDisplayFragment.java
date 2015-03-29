@@ -39,7 +39,6 @@ import com.moscropsecondary.official.util.ThemesUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -125,7 +124,8 @@ public class NewsDisplayFragment extends Fragment {
 		if(mTitleView != null) {
             mTitleView.setText(mTitle);
 		}
-		
+
+        // Configure WebView settings
 		mWebView = (WebView) mContentView.findViewById(R.id.fnd_webview);
 		if(mWebView != null) {
             mWebView.setVisibility(View.GONE);
@@ -212,7 +212,6 @@ public class NewsDisplayFragment extends Fragment {
 
         final long primaryDuration = showFullAnimation ? PRIMARY_DURATION : 0;
         final long secondaryDuration = showFullAnimation ? SECONDARY_DURATION : 0;
-
 
         // Set starting values for properties we're going to animate. These
         // values scale and position the full size version down to the thumbnail
@@ -404,7 +403,11 @@ public class NewsDisplayFragment extends Fragment {
         }
     }
 
-    public void onPreExit() {
+    /**
+     * Helper method to run the exit animation
+     * before finishing the activity
+     */
+    private void onPreExit() {
         if (!mAlreadyExiting) {
             runExitAnimation(new Runnable() {
                 public void run() {
@@ -432,34 +435,23 @@ public class NewsDisplayFragment extends Fragment {
         return content;
 	}
 
-    private int getToolbarColor() {
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(R.attr.toolbar_color, typedValue, true);
-        int bgcolor = typedValue.data;
-        return bgcolor;
-        /*int a = (bgcolor >> 24) & 0xFF;
-		 int r = (bgcolor >> 16) & 0xFF;
-		 int g = (bgcolor >> 8) & 0xFF;
-		 int b = (bgcolor >> 0) & 0xFF;
-		 return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
-		 return Color.TRANSPARENT;*/
-    }
-	
+    /**
+     * Determine from attributes the background color of the webview
+     *
+     * @return  integer color of the form 0xAARRGGBB
+     */
     private int getBgColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(R.attr.backgroundd, typedValue, true);
-        int bgcolor = typedValue.data;
-        return bgcolor;
-        /*int a = (bgcolor >> 24) & 0xFF;
-        int r = (bgcolor >> 16) & 0xFF;
-        int g = (bgcolor >> 8) & 0xFF;
-        int b = (bgcolor >> 0) & 0xFF;
-        return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
-        return Color.TRANSPARENT;*/
+        return typedValue.data;
     }
 
+    /**
+     * Determine from attributes the text color of the webview
+     *
+     * @return  integer color of the form 0xAARRGGBB
+     */
     private String getTextColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -468,6 +460,11 @@ public class NewsDisplayFragment extends Fragment {
         return String.format("#%06X", (0xFFFFFF & textcolorInt));
     }
 
+    /**
+     * Determine from attributes the link color of the webview
+     *
+     * @return  integer color of the form 0xAARRGGBB
+     */
     private String getLinkColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -498,7 +495,13 @@ public class NewsDisplayFragment extends Fragment {
 		    }
 		}
 	}
-	
+
+    /**
+     * For debug purposes.
+     *
+     * Shows HTML source of the displayed
+     * webpage in a dialog window.
+     */
 	private void showSource() {
 		TextView tv = new TextView(getActivity());
 		tv.setText(getHtmlData(mRawHtmlContent));
@@ -517,7 +520,13 @@ public class NewsDisplayFragment extends Fragment {
 			   .create()
 			   .show();
 	}
-	
+
+    /**
+     * For debug purposes.
+     *
+     * Export HTML source of the displayed
+     * webpage to a file in '/sdcard/moscrop'
+     */
 	private void exportString() {
 		Logger.log("try export");
 		// Create a file on external storage
@@ -538,8 +547,6 @@ public class NewsDisplayFragment extends Fragment {
 			pw.close();
 			fos.close();
 			Logger.log("exported");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

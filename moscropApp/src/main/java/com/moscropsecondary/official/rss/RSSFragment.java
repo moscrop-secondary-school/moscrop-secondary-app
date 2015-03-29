@@ -89,7 +89,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 	 * Create and return a new instance of RSSFragment with given parameters
 	 *
 	 * @param blogId URL of the RSS feed to load and display
-	 * @return New instance of RSSFragment
 	 */
 	public static RSSFragment newInstance(int position, String blogId, String tag) {
 		RSSFragment fragment = new RSSFragment();
@@ -107,11 +106,13 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Set to true to show toolbar menu
     	setHasOptionsMenu(true);
 
+        // Inflate the main view
     	View mContentView = inflater.inflate(R.layout.fragment_rsslist, container, false);
-        //mContentView.setBackgroundColor(0xffe4e4e4);
 
+        // Retrieve data that was persisted across a configuration change
         if(savedInstanceState != null) {
             mBlogId = savedInstanceState.getString(KEY_BLOGID, mBlogId);
             mTag = savedInstanceState.getString(KEY_TAG, mTag);
@@ -119,6 +120,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
 
+        // Initialize views
     	mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.rlf_swipe);
         mSwipeLayout.setOnRefreshListener(this);
 
@@ -129,27 +131,38 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
-        //mListView.setAlpha(0);
 
         if (firstLaunch()) {
+            // On first launch, load everything and force online
+            // because there is assumed to be nothing cached
             loadFeed(false, null, false, true, true, false);      // Just in case there is some cache
         } else {
+            // Otherwise do not load online automatically unless
+            // the user specified it in SharedPreferences.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean autoRefresh = prefs.getBoolean(Preferences.Keys.AUTO_REFRESH, Preferences.Default.AUTO_REFRESH);
             boolean existingLoadedPostsAreStale = (System.currentTimeMillis() - lastRefreshMillis) > STALE_POST_THRESHOLD;
             boolean loadOnline = existingLoadedPostsAreStale && (autoRefresh && (savedInstanceState == null));
             loadFeed(false, null, false, loadOnline, true, false);
         }
+
+        // Initialize and add the toolbar spinner
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
 
         if (mHasSpinner) {
             setUpToolbarSpinner();
-            SettingsFragment.registerSubscriptionListChangedListener(this);
+            SettingsFragment.registerSubscriptionListChangedListener(this);     // Receive updates when the user changed their subscriptions
         }
 
         return mContentView;
     }
 
+    /**
+     * Helper method to determine if this is the
+     * first time the app has been launched
+     *
+     * @return  true if app hasn't been launched, otherwise false
+     */
     private boolean firstLaunch() {
         SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         return prefs.getBoolean(Preferences.App.Keys.FIRST_LAUNCH, Preferences.App.Default.FIRST_LAUNCH);
@@ -158,18 +171,31 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onResume() {
         super.onResume();
-        Logger.log("onresume");
         mAlreadyStartingDetailActivity = false;
+
+        // Only add the spinner if the fragment is
+        // set to have a spinner. For example,
+        // sometimes this fragment is locked to
+        // certain tags such as "Student Bulletin"
+        // and does not require a spinner to change tags.
         if (mHasSpinner) {
             if (!mSpinnerAdded) {
                 setUpToolbarSpinner();
             }
         } else {
+            // Allow the MainActivity to determine the toolbar title instead
             ((MainActivity) getActivity()).onSectionAttached(mPosition);
         }
 
+        // If there has been a change to the user's subcriptions,
+        // we must update the spinner list and reload the feed
+        // to reflect those changes.
         if (mSubscriptionListUpdated) {
             updateSpinnerList();
+
+            // TODO only reload when the user is viewing "Subscribed",
+            // TODO otherwise their subscription preferences have no
+            // TODO affect on the posts shown.
             loadFeed(true, null, false, false, false, false);
         }
     }
@@ -183,9 +209,12 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
         if (!mSearchViewExpanded) {
 
-            // Add spinner container
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
+
+            // Remove all previously added spinners
             toolbar.removeView(mSpinnerContainer);
+
+            // Add spinner container
             mSpinnerContainer = LayoutInflater.from(getActivity()).inflate(R.layout.actionbar_spinner, toolbar, false);
             ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -230,6 +259,11 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         }
     }
 
+    /**
+     * Helper method used to retrieve a list
+     * of tags the user has subscribed to
+     * and add them to the spinner adapter
+     */
     private void updateSpinnerList() {
         String[] spinnerTagsArray = null;
         try {
@@ -252,7 +286,18 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onStop() {
         super.onStop();
+
+        // Search view is automatically closed during onStop(),
+        // so we must let the rest of the app know that is is
+        // no longer expanded.
         mSearchViewExpanded = false;
+
+        // If the fragment has a spinner, we must save the
+        // last viewed tag so the fragment will open up to
+        // that tag the next time the user enters this fragment.
+        // If the fragment does not have a spinner, such as
+        // when the tag to view is locked to "Student Bulletin",
+        // do not save the tag.
         if (mHasSpinner) {
             SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
             prefs.putString(Preferences.App.Keys.RSS_LAST_TAG, mTag);
@@ -263,6 +308,10 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        // Remove the custom title as to not
+        // interfere with other fragments'
+        // custom titles.
         removeCustomTitle();
     }
 
@@ -287,12 +336,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((MainActivity) getActivity()).onSectionAttached(-1);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.menu_rss, menu);
@@ -314,9 +357,11 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mSearchViewExpanded = false;
                 if (mHasSpinner) {
+                    // Re-add spinner once search bar has collapsed
                     setUpToolbarSpinner();
                 }
                 if (mSearchQuery != null) {
+                    // Return to the main feed
                     loadFeed(true, null, false, false, false, true);
                 }
                 return true;
@@ -345,15 +390,16 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
             RSSItem r = mAdapter.getItem(position);
 
-            //NewsDisplayActivity.launch((ToolbarActivity) getActivity(), view, r.url, r.content, r.title);
-
             Intent intent = new Intent(getActivity(), NewsDisplayActivity.class);
 
+            // Pass on information about the RSS post
+            // to the NewsDisplayActivity.
             intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
             intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
             intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
 
-
+            // Pass on information about the position and state
+            // of the card to the NewsDisplayActivity.
             int orientation = getResources().getConfiguration().orientation;
             int[] screenLocation = new int[2];
             view.getLocationOnScreen(screenLocation);
@@ -369,48 +415,45 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
             getActivity().startActivity(intent);
 
-            // Override transitions: we don't want the normal window animation in addition
-            // to our custom one
+            // Override transitions: we don't want the normal
+            // window animation in addition to our custom one
             getActivity().overridePendingTransition(0, 0);
         }
 	}
 
+    /**
+     * Get the color the card was
+     * when it was displayed in the list
+     *
+     * @param position
+     *          Position of the card
+     * @return  integer color of the form 0xAARRGGBB
+     */
     private int getFromColor(int position) {
-        int resID = R.attr.rss_card_bg_1;
-        switch(position % 4) {
-            case 0:
-            case 3:
-                resID = R.attr.rss_card_bg_1;
-                break;
-            case 1:
-            case 2:
-                resID = R.attr.rss_card_bg_2;
-                break;
-        }
-
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(resID, typedValue, true);
-        int color = typedValue.data;
-        //return Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
-        return color;
+        return mAdapter.getCardBackgroundColor(position);
     }
 
-
+    /**
+     * Get the color of the toolbar
+     *
+     * @return  integer color of the form 0xAARRGGBB
+     */
     private int getToolbarColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(R.attr.toolbar_color, typedValue, true);
         int bgcolor = typedValue.data;
         return bgcolor;
-        /*int a = (bgcolor >> 24) & 0xFF;
-		 int r = (bgcolor >> 16) & 0xFF;
-		 int g = (bgcolor >> 8) & 0xFF;
-		 int b = (bgcolor >> 0) & 0xFF;
-		 return String.format("rgba(%d,%d,%d,%f)", r, g, b, a/255.0);
-		 return Color.TRANSPARENT;*/
     }
 
+    /**
+     * Get the color of the title text for
+     * a specified card.
+     *
+     * @param position
+     *          Position of the card
+     * @return  integer color of the form 0xAARRGGBB
+     */
     private int getRssTitleColor(int position) {
         int resID = R.attr.rss_card_text_1;
         switch(position % 4) {
@@ -427,20 +470,40 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(resID, typedValue, true);
-        int color = typedValue.data;
-        //return Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
-        return color;
+        return typedValue.data;
     }
 
-	/**
-	 * Perform a refresh of the feed.
-	 * This method will create and start
-	 * an AsyncTask to download and parse
-	 * a RSS feed and load it to a ListView
-	 * 
-	 * @param force
+    /**
+     * Perform a refresh of the feed.
+     * This method will create and start
+     * an AsyncTaskLoader to download
+     * and parse a RSS feed.
+     *
+     * @param force
      *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
-	 */
+     * @param searchQuery
+     *          Query for posts matching this String.
+     *          Set null for no search.
+     * @param append
+     *          True to only load posts after the oldest cached post
+     *          and for results to be added to the bottom of the RSS list.
+     *          False for a normal load that performs a full refresh
+     *          of the cache and completely reloads the list.
+     * @param onlineEnabled
+     *          True to allow loading online.
+     *          False to load only from cache.
+     * @param showCacheWhileLoadingOnline
+     *          True to perform a load from cache so the user
+     *          is not staring at a blank screen while waiting
+     *          for content to load from online.
+     *          False to only reload list content once an
+     *          updated feed is done downloading and parsing.
+     * @param runEvenIfHasRunningLoaders
+     *          True to allow the load to run even if
+     *          other loads are already running.
+     *          False to cancel this load request if
+     *          other loads are already running.
+     */
 	private void loadFeed(boolean force, String searchQuery, boolean append, boolean onlineEnabled, boolean showCacheWhileLoadingOnline, boolean runEvenIfHasRunningLoaders) {
 		if(force || (mAdapter.getCount() == 0)) {
             if(runEvenIfHasRunningLoaders || !getLoaderManager().hasRunningLoaders()) {
@@ -466,7 +529,11 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 	}
 
     public void doSearch(String query) {
+
+        // TODO debug toast, remove before release
         Toast.makeText(getActivity(), "News: " + query, Toast.LENGTH_SHORT).show();
+
+        // Search request handled by loadFeed()
         loadFeed(true, query, false, false, false, true);
     }
 
@@ -499,7 +566,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     updateListOnLoadFinished(result);
                     break;
                 case RSSResult.RESULT_REDUNDANT:
-                    // Do nothing
+                    Logger.log("RSS load finished for tag " + mTag + ", result is redundant");
                     break;
                 case RSSResult.RESULT_REDO_ONLINE:
                     updateListOnLoadFinished(result);
@@ -510,7 +577,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     break;
             }
 
-            //mListView.animate().setDuration(200).alpha(1);
         } else {
             Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
         }
@@ -568,7 +634,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        //boolean loadMore =  firstVisibleItem + visibleItemCount >= totalItemCount-1;
 
         if (mScrolling) {
             boolean loadMore = false;
@@ -579,7 +644,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             }
 
             if (loadMore) {
-                Logger.log("Trying to load more feed");
                 loadFeed(true, null, true, true, false, false);  // No need to show cache, old posts still there
                 mScrolling = false;
             }

@@ -24,9 +24,6 @@ public class RSSParser {
 
     public static final int PAGE_SIZE = Preferences.Default.LOAD_LIMIT;
 
-    public static final String NEWSLETTER_TAG = "newsletter";
-    public static final String STUDENT_SUBS_TAG = "studentsubs";
-
     private Context mContext;
     private RSSTagCriteria[] mCriteria;
 
@@ -35,21 +32,35 @@ public class RSSParser {
         mCriteria = RSSTagCriteria.getCriteriaList(context);
     }
 
+    /**
+     * Extract from JSONObject the time the RSS feed was last updated
+     *
+     * @throws JSONException
+     */
     private String getUpdatedTimeFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
         JSONObject updated = feed.getJSONObject("updated");
         return updated.getString("$t");
     }
 
+    /**
+     * Extract from JSONObject the number of events in the RSS feed
+     *
+     * @throws JSONException
+     */
     private int getTotalResultsCount(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
         JSONObject totalResults = feed.getJSONObject("openSearch$totalResults");
         return Integer.parseInt(totalResults.getString("$t"));
     }
 
+    /**
+     * Extract a list of RSSItems from the JSONObject
+     *
+     * @throws JSONException
+     */
     private List<RSSItem> getEntriesListFromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject feed = jsonObject.getJSONObject("feed");
-        JSONObject updated = feed.getJSONObject("updated");
         JSONArray entry = feed.getJSONArray("entry");
         JSONObject entryObjects[] = JsonUtil.extractJsonArray(entry);
         if (entryObjects == null) {
@@ -66,6 +77,12 @@ public class RSSParser {
         return items;
     }
 
+    /**
+     * Helper method that converts a JSONObject representation
+     * of an RSS entry (post) to an instance of RSSItem
+     *
+     * @throws JSONException
+     */
     private RSSItem entryObjectToRssItem(JSONObject entryObject) throws JSONException {
 
         String dateStr = entryObject.getJSONObject("published").getString("$t");
@@ -88,6 +105,12 @@ public class RSSParser {
         return new RSSItem(date, title, content, tags, url);
     }
 
+    /**
+     * Determines which tags fit the RSS post from
+     * the JSONObject representation of that post
+     *
+     * @return  String array of tag names that the post belongs to
+     */
     private String[] extractTags(JSONObject entryObject) {
 
         // Get a list of categories
@@ -137,6 +160,14 @@ public class RSSParser {
         return tagsArray;
     }
 
+    /**
+     * Get RSSFeed object for an online Blogger feed
+     *
+     * @param url
+     *          URL to a Blogger JSON feed
+     *
+     * @throws JSONException
+     */
     private RSSFeed getRssFeed(Context context, String url) throws JSONException {
         JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
         if (jsonObject != null) {
@@ -158,6 +189,14 @@ public class RSSParser {
         }
     }
 
+    /**
+     * Get version info and post count for an online Blogger feed
+     *
+     * @param url
+     *          URL to a Blogger JSON feed
+     *
+     * @throws JSONException
+     */
     private RSSInfo getRssInfo(Context context, String url) throws JSONException {
         JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
         if (jsonObject != null) {
@@ -169,11 +208,23 @@ public class RSSParser {
         }
     }
 
+    /**
+     * Get version info of the cached Blogger feed
+     */
     private String getStoredVersion() {
         SharedPreferences prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         return prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
     }
 
+    /**
+     * Helper method to generate URL of Blogger feed
+     *
+     * @param blogId
+     *          Blogger ID of the blog
+     * @param headerInfoOnly
+     *          True to generate URL that only retrieves information for an RSSInfo object
+     *          False to generate URL for a full list of posts
+     */
     private String getFeedUrlFromId(String blogId, boolean headerInfoOnly) {
         if (headerInfoOnly) {
             return "http://" + blogId + ".blogspot.ca/feeds/posts/default?alt=json&max-results=0";
@@ -182,6 +233,14 @@ public class RSSParser {
         }
     }
 
+    /**
+     * Save the version info so we know
+     * which version we are currently on,
+     * in case future updates need to compare version info
+     *
+     * @param version
+     *          Version string of the Blogger feed we just downloaded
+     */
     private void saveUpdateInfo(String version) {
         SharedPreferences.Editor prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
         prefs.putLong(Preferences.App.Keys.RSS_LAST_UPDATED, System.currentTimeMillis());
@@ -189,6 +248,18 @@ public class RSSParser {
         prefs.apply();
     }
 
+    /**
+     * Download, parse and save into cache a Blogger feed
+     *
+     * @param blogId
+     *          Blogger ID of the blog
+     * @param lastFeedVersion
+     *          The last version of this feed that we have cached
+     * @param append
+     *          False to delete all existing cache and load from scratch
+     *          True to only load posts older than the oldest post in cache
+     *          and append them to the cache database
+     */
     public void parseAndSave(String blogId, String lastFeedVersion, boolean append) {
 
         //Logger.log("---");

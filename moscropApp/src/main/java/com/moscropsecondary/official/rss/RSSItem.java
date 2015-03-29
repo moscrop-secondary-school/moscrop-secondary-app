@@ -40,7 +40,7 @@ public class RSSItem implements Parcelable {
         if (preview != null) {
             this.preview = preview;
         } else {
-            this.preview = generatePreview(content, tags);
+            this.preview = "";
         }
         this.tags = tags;
         this.url = url;
@@ -49,17 +49,6 @@ public class RSSItem implements Parcelable {
         } else {
             this.metadata = generateDisplayMetaData(content);
         }
-    }
-
-    private String generatePreview(String content, String[] tags) {
-        String s = "";
-        for (int i = 0; i < tags.length; i++) {
-            s += tags[i];
-            if (!(i == tags.length - 1)) {
-                s += ",";
-            }
-        }
-        return "Tags: " + s;
     }
 
     private String generateDisplayMetaData(String content) {
@@ -80,6 +69,8 @@ public class RSSItem implements Parcelable {
 
         return s;
     }
+
+    /** Implementations of Parcelable methods down below */
 
     @Override
     public int describeContents() {

@@ -31,6 +31,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Contains information about tags and the criteria
+ * a post must meet to be labeled as this tag.
+ *
+ * This class is used to assist in the tagging of posts.
+ *
  * Created by ivon on 10/31/14.
  */
 public class RSSTagCriteria {
@@ -52,11 +57,38 @@ public class RSSTagCriteria {
         this.imageUrl = (imageUrl.equals("@null")) ? NO_IMAGE : imageUrl;
     }
 
-    public static File getTagListFile(Context context) {
+    /**
+     * Helper method to get the cached tag list JSON file
+     */
+    private static File getTagListFile(Context context) {
         return new File(context.getFilesDir(), TAG_LIST_JSON);
     }
 
-    public static JSONObject getTagListJsonObject(Context context) throws JSONException, IOException {
+    /**
+     * Helper method to copy the tag list file shipped
+     * with apk into the app's data folder
+     *
+     * @throws IOException
+     */
+    private static void copyTagListFromAssetsToStorage(Context context) throws IOException {
+        InputStream inputStream = context.getAssets().open(TAG_LIST_JSON);
+        File file = new File(context.getFilesDir(), TAG_LIST_JSON);
+        OutputStream outputStream = new FileOutputStream(file);
+        Util.copy(inputStream, outputStream);
+    }
+
+    /**
+     * Helper method to parse the tag list file into a JSONObject
+     *
+     * If there is no cache of an updated version from the serve,
+     * then we will use the possibly outdated version that is
+     * packed into the apk. The updated version is downloaded
+     * when RSS feed is refreshed.
+     *
+     * @throws JSONException
+     * @throws IOException
+     */
+    private static JSONObject getTagListJsonObject(Context context) throws JSONException, IOException {
 
         File file = getTagListFile(context);
         if (!file.exists()) {
@@ -66,6 +98,12 @@ public class RSSTagCriteria {
         return JsonUtil.getJsonObjectFromFile(file);
     }
 
+    /**
+     * Get a list of the tags and their criteria
+     *
+     * @throws JSONException
+     * @throws IOException
+     */
     public static RSSTagCriteria[] getCriteriaList(Context context) throws JSONException, IOException {
         JSONObject tagListJsonObject = getTagListJsonObject(context);
         JSONObject[] criteriaJSONArray = JsonUtil.extractJsonArray(tagListJsonObject.getJSONArray("tags"));
@@ -81,6 +119,12 @@ public class RSSTagCriteria {
         return criteriaList;
     }
 
+    /**
+     * Get a list of all tags (without criteria)
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
     public static String[] getTagNames(Context context) throws IOException, JSONException {
         JSONObject tagListJsonObject = getTagListJsonObject(context);
         JSONObject[] criteriaJSONArray = JsonUtil.extractJsonArray(tagListJsonObject.getJSONArray("tags"));
@@ -92,6 +136,8 @@ public class RSSTagCriteria {
             }
         }
 
+        // Use custom comparator because we want
+        // "Official" to remain at the top of the list
         Collections.sort(names, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
@@ -113,6 +159,12 @@ public class RSSTagCriteria {
         return allTags;
     }
 
+    /**
+     * Get a list of the tags the user has subscribed to (without criteria)
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
     public static String[] getSubscribedTags(Context context) throws IOException, JSONException {
 
         // Get a list of recognized tags
@@ -151,13 +203,11 @@ public class RSSTagCriteria {
         return subscribedTags;
     }
 
-    public static void copyTagListFromAssetsToStorage(Context context) throws IOException {
-        InputStream inputStream = context.getAssets().open(TAG_LIST_JSON);
-        File file = new File(context.getFilesDir(), TAG_LIST_JSON);
-        OutputStream outputStream = new FileOutputStream(file);
-        Util.copy(inputStream, outputStream);
-    }
-
+    /**
+     * Download the tag list from PasteBin to app's storage directory
+     *
+     * @throws IOException
+     */
     public static void downloadTagListToStorage(Context context) throws IOException {
         if (Util.isConnected(context)) {
 

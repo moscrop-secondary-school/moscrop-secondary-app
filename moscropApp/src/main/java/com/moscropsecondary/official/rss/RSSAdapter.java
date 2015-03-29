@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.rss.CardUtil.CardProcessor;
 import com.moscropsecondary.official.util.DateUtil;
 import com.squareup.picasso.Picasso;
 
@@ -51,17 +50,6 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         bgColor2 = typedValue.data;
     }
 
-    public static class RSSAdapterItem {
-
-        public final RSSItem item;
-        public final CardProcessor processor;
-
-        public RSSAdapterItem(RSSItem r, CardProcessor c) {
-            item = r;
-            processor = c;
-        }
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -74,26 +62,120 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         RSSItem item = mItems.get(position);
 
-        int textColor = Color.TRANSPARENT;
-        int bgColor = Color.TRANSPARENT;
-        switch(position % 4) {
-            case 0:
-            case 3:
-                textColor = textColor1;
-                bgColor = bgColor1;
-                break;
-            case 1:
-            case 2:
-                textColor = textColor2;
-                bgColor = bgColor2;
-                break;
-        }
+        int textColor = getCardTextColor(position);
+        int bgColor = getCardBackgroundColor(position);
 
         loadCardWithRssItem(getContext(), view, item, bgColor, textColor);
 
         return view;
     }
 
+    public int getCardTextColor(int position) {
+        switch(getColorType(position)) {
+            case 1:
+                return textColor1;
+            case 2:
+                return textColor2;
+            default:
+                return Color.TRANSPARENT;
+        }
+    }
+
+    public int getCardBackgroundColor(int position) {
+        switch(getColorType(position)) {
+            case 1:
+                return bgColor1;
+            case 2:
+                return bgColor2;
+            default:
+                return Color.TRANSPARENT;
+        }
+    }
+
+    /**
+     * Determine which variant of each color to use
+     * @param position
+     *          Position of the card
+     * @return
+     *          1 if bgColor1 or textColor1 is required,
+     *          2 if bgColor2 or textColor2 is required.
+     */
+    private int getColorType(int position) {
+
+        int width = getContext().getResources().getInteger(R.integer.rss_list_width);
+
+        if (width == 2) {
+
+            switch (position % 4) {
+                case 0:
+                case 3:
+                    return 1;
+                case 1:
+                case 2:
+                    return 2;
+            }
+
+        } else if (width == 3) {
+
+            switch (position % 6) {
+                case 0:
+                case 2:
+                case 4:
+                    return 1;
+                case 1:
+                case 3:
+                case 5:
+                    return 2;
+            }
+
+        } else if (width == 4) {
+
+            switch (position % 8) {
+                case 0:
+                case 2:
+                case 5:
+                case 7:
+                    return 1;
+                case 1:
+                case 3:
+                case 4:
+                case 6:
+                    return 2;
+            }
+
+        } else if (width == 5) {
+
+            switch (position % 10) {
+                case 0:
+                case 2:
+                case 4:
+                case 6:
+                case 8:
+                    return 1;
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 9:
+                    return 2;
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Helper method to populate a RSS card layout with an RSSItem
+     *
+     * @param view
+     *          Layout to populate with RSSItem
+     * @param item
+     *          RSSItem to populate layout with
+     * @param bgColor
+     *          Color to set the card background to
+     * @param textColor
+     *          Color to set the card text to
+     */
     public static void loadCardWithRssItem(Context context, View view, RSSItem item, int bgColor, int textColor) {
         ImageView bgImage = (ImageView) view.findViewById(R.id.CardBgImg);
         ImageView tagIcon = (ImageView) view.findViewById(R.id.CardTagIcon);
@@ -101,21 +183,8 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         TextView timestampText = (TextView) view.findViewById(R.id.CardTimestamp);
         TextView title = (TextView) view.findViewById(R.id.rlc_title);
 
+        // Process the metadata into an usable String array format
         String[] metadata = item.metadata.split(",");
-
-        // Set background color
-//        int bgColor = Color.WHITE;
-//        switch(position % 4) {
-//            case 0:
-//            case 3:
-//                bgColor = R.color.backgrounddd;
-//                break;
-//            case 1:
-//            case 2:
-//                bgColor = 0xff34495e;
-//                break;
-//        }
-//        view.setBackgroundColor(bgColor);
 
         view.setBackgroundColor(bgColor);
 
@@ -170,13 +239,5 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             title.setText(item.title);
             title.setTextColor(textColor);
         }
-    }
-
-
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        //Logger.log("notifyDataSetChanged");
     }
 }

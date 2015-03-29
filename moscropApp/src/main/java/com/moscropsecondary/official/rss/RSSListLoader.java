@@ -39,18 +39,15 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
 
     @Override
     public RSSResult loadInBackground() {
-/*        if (mOnlineEnable && isConnected()) {
-            Logger.log("RSSListLoader Loading from " + mBlogId + " and " + mTag);
-            RSSParser.parseAndSaveAll(getContext(), mBlogId, mTag);
-        }
-        RSSDatabase database = new RSSDatabase(getContext());
-        return database.getItems(mTag);
-        */
 
+        // Retrieve information about the previously cached version
         SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         String version = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
 
         if (mSearchQuery != null) {
+
+            // If this is a search request, we will
+            // simply use the search() method of RSSDatabase
 
             RSSDatabase db = new RSSDatabase(getContext());
             List<RSSItem> items = db.search(getFilterTags(), mSearchQuery);
@@ -60,6 +57,8 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
             return new RSSResult(version, result, items, false);
 
         } else {
+
+            // Otherwise, we must handle the request based on the other flags
 
             if (!mShowCacheWhileLoadingOnline && mOnlineEnabled) {
 
@@ -153,7 +152,6 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
 
     /**
      * Gets a list of RSSItems from the internet
-     * @return a list of RSSItems.
      */
     private List<RSSItem> downloadParseSaveGetList(boolean append, long prevOldestPostDate) {
         if (Util.isConnected(getContext())) {
@@ -169,9 +167,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
             RSSParser parser = null;
             try {
                 parser = new RSSParser(getContext());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -215,24 +211,24 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
 
     private String[] getFilterTags() {
         String[] tags = null;
-        if (mTag.equals("All")) {
-            try {
-                tags = RSSTagCriteria.getTagNames(getContext());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else if (mTag.equals("Subscribed")) {
-            try {
-                tags = RSSTagCriteria.getSubscribedTags(getContext());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            tags = new String[] { mTag };
+        switch (mTag) {
+            case "All":
+                try {
+                    tags = RSSTagCriteria.getTagNames(getContext());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "Subscribed":
+                try {
+                    tags = RSSTagCriteria.getSubscribedTags(getContext());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                tags = new String[]{mTag};
+                break;
         }
         return tags;
     }

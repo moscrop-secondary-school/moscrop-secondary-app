@@ -3,4 +3,6 @@
     <integer name="anim_duration">@android:integer/config_mediumAnimTime</integer>
     <!--<integer name="anim_duration">10000</integer>-->
     <integer name="fragment_transition_duration">300</integer>
+
+    <integer name="rss_list_width">2</integer>
 </resources>
