@@ -112,15 +112,13 @@
 
     <color name="primary_indigo">#34495e</color>
     <color name="primary_dark_indigo">#2c3e50</color>
-    <color name="accent_indigo">#ff4081</color>
+    <color name="accent_indigo">@color/primary_indigo</color>
 
     <color name="primary_indigo_d">#ff34495e</color>
     <color name="primary_indigo_t">#8834495e</color>
     <color name="primary_dark_indigo_d">#ff2c3e50</color>
     <color name="primary_dark_indigo_t">#882c3e50</color>
-    <color name="accent_indigo_d">#ffff4081</color>
-
-    <color name="accent_indigo_t">#80ff4081</color>
+    <color name="accent_indigo_d">@color/dtext</color>
 
     <color name="primary_green">#259b24</color>
     <color name="primary_dark_green">#0a7e07</color>
