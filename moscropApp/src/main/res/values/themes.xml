@@ -167,7 +167,7 @@
         <item name="card_picture_alpha">@string/card_picture_alpha_t</item>
         <item name="card_about">@drawable/selector_card_about_t</item>
 
-        <item name="colorAccent">@color/accent_indigo_t</item>
+        <item name="colorAccent">@color/accent_indigo_d</item>
 
         <item name="backgroundorig">@color/tdbackground</item>
         <item name="backgroundd">@color/tdbackgroundd</item>
