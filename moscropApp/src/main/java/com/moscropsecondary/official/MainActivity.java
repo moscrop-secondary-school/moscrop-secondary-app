@@ -105,6 +105,12 @@ public class MainActivity extends ToolbarActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCurrentFragment = -1;
+    }
+
+    @Override
     protected int getLayoutResource() {
         return R.layout.activity_main;
     }
