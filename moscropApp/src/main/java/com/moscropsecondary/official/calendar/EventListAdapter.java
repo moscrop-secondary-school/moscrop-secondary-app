@@ -57,6 +57,21 @@ public class EventListAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Add an event to the list.
+     *
+     * This method will add the event to
+     * the corresponding day in the list,
+     * or add a new day into the list if
+     * there are no events yet for that day.
+     *
+     * @param event
+     *          Event to add to the list
+     * @param addToFront
+     *          If the event day is not in the list yet,
+     *          true will add the event day to the front of the list
+     *          and false will append it to the end of the list
+     */
     public void add(GCalEvent event, boolean addToFront) {
 
         Calendar cal = Calendar.getInstance();
@@ -109,6 +124,14 @@ public class EventListAdapter extends BaseAdapter {
         mDayMap.clear();
     }
 
+    /**
+     * Get the list position of the nearest day
+     * after the specified day that contains an event
+     *
+     * @param day
+     *          Specified day
+     * @return  position in list
+     */
     public int getPositionNearestToDay(int day) {
         if (mDays.size() > 0) {
             while (day < getItem(mDays.size() - 1).dayNumber) {
@@ -124,16 +147,29 @@ public class EventListAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Get number of days that contain events
+     */
     @Override
     public int getCount() {
         return mDays.size();
     }
 
+    /**
+     * Get the Day object in that position
+     *
+     * NOTE: does not return GCalEvent objects,
+     * although the Day object contains a list
+     * of GCalEvents.
+     */
     @Override
     public Day getItem(int position) {
         return mDays.get(position);
     }
 
+    /**
+     * Gets the day number for the day in that position
+     */
     @Override
     public long getItemId(int position) {
         return getItem(position).dayNumber;

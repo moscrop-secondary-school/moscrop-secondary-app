@@ -1,6 +1,7 @@
 package com.moscropsecondary.official.calendar;
 
 import android.animation.TimeInterpolator;
+import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -97,17 +98,17 @@ public class CalendarFragment extends Fragment
     	
     	mContentView = inflater.inflate(R.layout.fragment_events, container, false);
 
-        //insertDays();
-
+        // Setup swipe refresh layout
         mSwipeLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.fragment_event_swipe_container);
         mSwipeLayout.setEnabled(false);
 
+        // Set up listview with custom calendar adapter
         mListView = (ListView) mContentView.findViewById(R.id.daily_events_list);
         mAdapter = new EventListAdapter(getActivity(), new ArrayList<GCalEvent>());
         mListView.setAdapter(mAdapter);
-        //mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
 
+        // Set up Caldroid and pass arguments in bundle
         mCaldroid = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar today = Calendar.getInstance();
@@ -149,36 +150,46 @@ public class CalendarFragment extends Fragment
         mCaldroid.setArguments(args);
         mCaldroid.setCaldroidListener(mCaldroidListener);
 
+        // Add CaldroidFragment as a fragment-within-a-fragment
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.calendar_frame, mCaldroid, "CaldroidFragment").commit();
 
+        // Initialize shadows for top sheet (Caldroid)
         mCaldroidFrame = mContentView.findViewById(R.id.calendar_frame);
         mToolbarShadow = getActivity().findViewById(R.id.toolbar_shadow);
 
+        // Retrieve saved position
         if(savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
         }
 
+        // Add listener to perform calculations for animation
+        // once view measurements have been calculated
         ViewTreeObserver observer = mCaldroidFrame.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 
             @Override
             public boolean onPreDraw() {
+
+                // Remove listener now that we no longer need it
                 mCaldroidFrame.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                // Move Caldroid slide-in to be out of sight
                 int height = mCaldroidFrame.getHeight();
                 mCaldroidFrame.setTranslationY(-height);
                 return true;
             }
         });
 
-        // Refresh calendar
+        // Refresh calendar asynchronously
         new Thread(new Runnable() {
             @Override
             public void run() {
-                downloadCalendar(true);
+                loadCalendar(true);
             }
         }).start();
 
+        // Set custom toolbar title view
         addTitleWithArrow();
 
         return mContentView;
@@ -286,6 +297,9 @@ public class CalendarFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * One-time init method used to add custom title view to toolbar
+     */
     private void addTitleWithArrow() {
         if (!mSearchViewExpanded) {
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
@@ -327,20 +341,33 @@ public class CalendarFragment extends Fragment
         }
     }
 
-    private void downloadCalendar(boolean showCacheWhileLoading) {
+    /**
+     * Download the calendar from Google Calendar
+     * Will only download if there is a newer version
+     * or if there is no record of a previous offline cache.
+     *
+     * @param showCacheWhileLoading
+     *          Set true to show events already in offline database
+     *          while new events are being downloaded from internet
+     */
+    private void loadCalendar(boolean showCacheWhileLoading) {
 
-        // Check if provider is empty
+        // Check if database is empty
         CalendarDatabase db = new CalendarDatabase(getActivity());
         int count = db.getCount();
 
+        // Get information about current cached version and last update time
         SharedPreferences prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         long lastUpdateMillis = prefs.getLong(Preferences.App.Keys.GCAL_LAST_UPDATED, Preferences.App.Default.GCAL_LAST_UPDATED);
         String lastGcalVersion = prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
 
+        // Immediately display calendar loaded from already-offline database
         if (showCacheWhileLoading) {
             if (getActivity() != null) {
 
-                Calendar cal = Calendar.getInstance();
+                // TODO only show events from within a month on initial load
+
+                /*Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.MILLISECOND, 0);
                 cal.set(Calendar.SECOND, 0);
                 cal.set(Calendar.MINUTE, 0);
@@ -349,11 +376,14 @@ public class CalendarFragment extends Fragment
                 mLowerBound = cal.getTimeInMillis();
                 cal.add(Calendar.MONTH, 2);
                 mUpperBound = cal.getTimeInMillis();
+                final List<GCalEvent> events = db.getEventsForDuration(mLowerBound, mUpperBound);*/
 
-                //final List<GCalEvent> events = db.getEventsForDuration(mLowerBound, mUpperBound);
+                // TODO temporary load implementation that simply loads all posts
                 final List<GCalEvent> events = db.getAllEvents();
 
-                //final List<GCalEvent> events = db.getAllEvents();
+                // Load all events from the database query
+                // into the listview and CaldroidFragment.
+                // Then scroll to the nearest event after "today"
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -390,16 +420,21 @@ public class CalendarFragment extends Fragment
                 lastUpdateMillis = System.currentTimeMillis();
             }
 
+            // Only delete calendar entries in the database starting AFTER lastUpdateMillis
+            // and replace those with possibly updated entries pulled from Google Calendar
             CalendarParser.parseAndSave(getActivity(), MOSCROP_CALENDAR_ID, lastUpdateMillis, lastGcalVersion);
         }
 
+        // Save new update/GCalVersion info
         String newGcalVersion = prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
 
         // Update UI when done loading
         if (showCacheWhileLoading && !newGcalVersion.equals(lastGcalVersion)) {
             if (getActivity() != null) {
 
-                Calendar cal = Calendar.getInstance();
+                // TODO only show events from within a month on initial load
+
+                /*Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.MILLISECOND, 0);
                 cal.set(Calendar.SECOND, 0);
                 cal.set(Calendar.MINUTE, 0);
@@ -408,10 +443,14 @@ public class CalendarFragment extends Fragment
                 mLowerBound = cal.getTimeInMillis();
                 cal.add(Calendar.MONTH, 2);
                 mUpperBound = cal.getTimeInMillis();
+                final List<GCalEvent> events = db.getEventsForDuration(mLowerBound, mUpperBound);*/
 
-                //final List<GCalEvent> events = db.getEventsForDuration(mLowerBound, mUpperBound);
+                // TODO temporary load implementation that simply loads all posts
                 final List<GCalEvent> events = db.getAllEvents();
 
+                // Load all events from the database query
+                // into the listview and CaldroidFragment.
+                // Then scroll to the nearest event after "today"
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -429,6 +468,9 @@ public class CalendarFragment extends Fragment
         db.close();
     }
 
+    // TODO used for future "append" loading where the initial load
+    // TODO only loads events within a set duration, and all other
+    // TODO events will be loaded once the user scrolls to the end of the list
     private void loadMoreCalendar(boolean addToEnd) {
 
         /*Logger.log("-------------------------");
@@ -468,6 +510,15 @@ public class CalendarFragment extends Fragment
 
     }
 
+    /**
+     * Gets list position of the nearest event beginning
+     * after the given time "millis"
+     *
+     * Scrolls to that position without animation
+     *
+     * @param millis
+     *          Time to scroll the list to
+     */
     private void scrollTo(long millis) {
         int dayNumber = DateUtil.daysFromMillis(millis);
         int position = mAdapter.getPositionNearestToDay(dayNumber);
@@ -477,6 +528,13 @@ public class CalendarFragment extends Fragment
         }
     }
 
+    /**
+     * Load a list of events into Caldroid so it knows
+     * under which dates to add event indicators to
+     *
+     * @param events
+     *          List of events
+     */
     private void loadEventsIntoCaldroid(List<GCalEvent> events) {
         /*if (getActivity() != null) {
             CalendarDatabase db = new CalendarDatabase(getActivity());
@@ -485,11 +543,11 @@ public class CalendarFragment extends Fragment
 
             Calendar cal = Calendar.getInstance();
             for (GCalEvent event : events) {
-                cal.setTimeInMillis(event.startTime);                                               // Set cal to event start time
-                while (cal.getTimeInMillis() < event.endTime - 1) {                                 // Loop through days within event range
+                cal.setTimeInMillis(event.startTime);                                       // Set cal to event start time
+                while (cal.getTimeInMillis() < event.endTime - 1) {                         // Loop through days within event range
                     Date date = cal.getTime();
-                    mCaldroid.setHasEventsForDate(true, date);                                      // Set hasEvents flag of this day
-                    cal.setTimeInMillis(cal.getTimeInMillis() + 24 * 60 * 60 * 1000);               // Increment calendar by a day
+                    mCaldroid.setHasEventsForDate(true, date);                              // Set hasEvents flag of this day
+                    cal.setTimeInMillis(cal.getTimeInMillis() + 24 * 60 * 60 * 1000);       // Increment calendar by a day
                 }
             }
         //}
@@ -499,7 +557,7 @@ public class CalendarFragment extends Fragment
         @Override
         public void onSelectDate(Date date, View view) {
             scrollTo(date.getTime());
-            hideCalendar();
+            hideCalendar();     // Hide calendar after selecting a day to jump to
         }
 
         @Override
@@ -508,101 +566,126 @@ public class CalendarFragment extends Fragment
                 setToolbarTitle(getTitleStringFromDate(year, month));
             }
 
+            // TODO in current implementation there is no need
+            // TODO for upper and lower bounds, and they are not set.
+
+            // TODO this section is only needed once append-loading is added
+            /*
             Calendar cal = Calendar.getInstance();
             cal.set(year, month, 1);
             if (cal.getTimeInMillis() < mLowerBound) {
+                Logger.log("calendar time less than lower bound");
                 loadMoreCalendar(false);
             } else {
                 cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
                 if (cal.getTimeInMillis() > mUpperBound) {
+                    Logger.log("calendar time greater than upper bound");
                     loadMoreCalendar(true);
                 }
             }
+            */
         }
     };
 
+    private static final long CALDROID_ANIM_DURATION = 400;
+
+    /**
+     * Expand the calendar top sheet containing the CaldroidFragment.
+     * Animates it in and updates the toolbar title to show the month.
+     */
     private void showCalendar() {
 
+        // Set status boolean
         mCalendarIsShowing = true;
 
+        // Change toolbar title from "Events" to the month shown in the calendar
+        // Flip the arrow
         setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
         ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle_up, 0);
 
-        //Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-        //mCaldroidFrame.startAnimation(slideIn);
-
-        mCaldroidFrame.animate().setDuration(400)
+        // Animate calendar entrance
+        mCaldroidFrame.animate().setDuration(CALDROID_ANIM_DURATION)
                 .translationY(0)
                 .setInterpolator(mDecelerateInterpolator);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // In lollipop, remove toolbar elevation to give the appearance
+            // that it is "transferred" to the CaldroidFragment
             ((MainActivity) getActivity()).getToolbar().setElevation(0);
         } else {
+            // In pre-lollipop there is no elevation attribute,
+            // so animate the replica shadow along with the CaldroidFragment
             int height = mCaldroidFrame.getHeight();
-            mToolbarShadow.animate().setDuration(400)
+            mToolbarShadow.animate().setDuration(CALDROID_ANIM_DURATION)
                     .translationY(height)
                     .setInterpolator(mDecelerateInterpolator);
         }
-
-
-
-        //mCaldroidFrame.setVisibility(View.VISIBLE);
     }
 
     private void hideCalendar() {
 
+        // Set status boolean
         mCalendarIsShowing = false;
 
+        // Change toolbar title back to "Events"
+        // Flip the arrow
         setToolbarTitle("Events");
         ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle, 0);
 
-        //Animation slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
-        //mCaldroidFrame.startAnimation(slideOut);
-
+        // Animate calendar exit
+        // In lollipop and higher, "transfer" elevation back to toolbar
+        // at the end of the exit animation. In pre-lollipop, simply
+        // animate the replica shadow up along with the CaldroidFragment.
         int height = mCaldroidFrame.getHeight();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mCaldroidFrame.animate().setDuration(400)
+            mCaldroidFrame.animate().setDuration(CALDROID_ANIM_DURATION)
                     .translationY(-height)
                     .setInterpolator(mAccelerateInterpolator)
                     .withEndAction(new Runnable() {
+                        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
                             ((MainActivity) getActivity()).getToolbar().setElevation(Util.convertDpToPixel(4, getActivity()));
                         }
                     });
         } else {
-            mCaldroidFrame.animate().setDuration(400)
+            mCaldroidFrame.animate().setDuration(CALDROID_ANIM_DURATION)
                     .translationY(-height)
                     .setInterpolator(mAccelerateInterpolator);
 
-            mToolbarShadow.animate().setDuration(400)
+            mToolbarShadow.animate().setDuration(CALDROID_ANIM_DURATION)
                     .translationY(0)
                     .setInterpolator(mAccelerateInterpolator);
         }
-
-        //mCaldroidFrame.setVisibility(View.GONE);
     }
 
+    /**
+     * Perform full-text search (FTS) for specified query
+     *
+     * @param query
+     *          String to search for
+     */
     public void doSearch(final String query) {
+
+        // TODO debug toast, remove before release
         Toast.makeText(getActivity(), "Events: " + query, Toast.LENGTH_SHORT).show();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                // Perform FTS query
                 CalendarDatabase db = new CalendarDatabase(getActivity());
                 final List<GCalEvent> events = db.search(query);
 
-                //final List<GCalEvent> events = db.getAllEvents();
+                // Load resulting list into ListView
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mAdapter.clear();
                         mAdapter.addToEnd(events);
                         mAdapter.notifyDataSetChanged();
-                        //scrollTo(System.currentTimeMillis());
-
-                        //loadEventsIntoCaldroid(events);
                     }
                 });
             }
@@ -612,15 +695,11 @@ public class CalendarFragment extends Fragment
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_TOUCH_SCROLL || scrollState == SCROLL_STATE_FLING) {
-            //Logger.log("Scrolling");
-
             if (mCalendarIsShowing) {
                 hideCalendar();
             }
-
             mScrolling = true;
         } else {
-            //Logger.log("Not scrolling");
             mScrolling = false;
         }
     }
@@ -628,6 +707,11 @@ public class CalendarFragment extends Fragment
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         if (mAdapter != null && mAdapter.getCount() > 0) {
+
+            // TODO move the month-change to occur when expanding calendar
+
+            // Change the calendar month (out of view) to the
+            // month of the first visible event in the list
             EventListAdapter.Day day = mAdapter.getItem(firstVisibleItem);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(DateUtil.millisFromDays(day.dayNumber));
@@ -639,7 +723,10 @@ public class CalendarFragment extends Fragment
                 mCaldroid.moveToDate(cal.getTime());
             }
 
-            if (mScrolling) {
+            // TODO mechanism for controlling when to append-load at when top/end of list is reached
+            // TODO disabled for now
+
+            /*if (mScrolling) {
                 int loadMore = -1;
                 if (mListView != null && mListView.getChildAt(mListView.getChildCount() - 1) != null
                         && mListView.getLastVisiblePosition() == mListView.getAdapter().getCount() - 1
@@ -665,7 +752,7 @@ public class CalendarFragment extends Fragment
                         mScrolling = false;
                         break;
                 }
-            }
+            }*/
         }
     }
 }

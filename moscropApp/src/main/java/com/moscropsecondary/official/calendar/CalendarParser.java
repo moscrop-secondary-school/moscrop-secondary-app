@@ -35,6 +35,16 @@ public class CalendarParser {
         }
     }
 
+    /**
+     * Get the version number (and possibly other
+     * information in the future) of the online calendar
+     *
+     * @param url
+     *          URL of the Google Calendar JSON feed
+     * @return  CalendarInfo object containing the version
+     *
+     * @throws JSONException
+     */
     private static CalendarInfo getCalendarInfo(Context context, String url) throws JSONException {
         JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
         if (jsonObject != null) {
@@ -45,15 +55,39 @@ public class CalendarParser {
         }
     }
 
+    /**
+     * Get the version string of the calendar stored in offline database/cache
+     *
+     * @return  version string of the offline calendar
+     */
     private static String getStoredVersion(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         return prefs.getString(Preferences.App.Keys.GCAL_VERSION, Preferences.App.Default.GCAL_VERSION);
     }
 
+    /**
+     * Get the time the online calendar was last updated
+     * Extracted from JSONObject
+     *
+     * @param root
+     *          JSONObject parsed from GCal JSON feed
+     * @return  Last updated time in RFC 3339 format
+     *
+     * @throws JSONException
+     */
     private static String getUpdatedTimeFromJsonObject(JSONObject root) throws JSONException {
         return root.getString("updated");
     }
 
+    /**
+     * Extract list of GCalEvents from JSONObject
+     *
+     * @param root
+     *          JSONObject parsed from GCal JSON feed
+     * @return  List of GCalEvents contained in the JSONObject
+     *
+     * @throws JSONException
+     */
     private static List<GCalEvent> getEventsListFromJsonObject(JSONObject root) throws JSONException {
         JSONArray items = root.getJSONArray("items");
         JSONObject itemObjects[] = JsonUtil.extractJsonArray(items);
@@ -71,6 +105,13 @@ public class CalendarParser {
         return events;
     }
 
+    /**
+     * Convert individual JSONObject to GCalEvent
+     *
+     * @param itemObject
+     *          JSONObject to extract information from
+     * @return  GCalEvent
+     */
     private static GCalEvent jsonItemToEvent(JSONObject itemObject) {
 
         String title = null;
@@ -130,6 +171,16 @@ public class CalendarParser {
         return new GCalEvent(title, description, location, startTime, endTime);
     }
 
+    /**
+     * Retrieve a CalendarFeed object from a given GCal JSON feed URL.
+     * Will contain a JSONObject of the JSON feed along with version info
+     *
+     * @param url
+     *          URL of the Google Calendar JSON feed
+     * @return  CalendarFeed object containing the feed in JSONObject form and version info
+     *
+     * @throws JSONException
+     */
     private static CalendarFeed getCalendarFeed(Context context, String url) throws JSONException {
         JSONObject jsonObject = JsonUtil.getJsonObjectFromUrl(context, url);
         if (jsonObject != null) {
@@ -192,7 +243,7 @@ public class CalendarParser {
             saveUpdateInfo(context, feed.version);
             CalendarDatabase db = new CalendarDatabase(context);
             db.deleteAll();
-            db.saveEventsToProvider(feed.events);
+            db.saveEventsToDatabase(feed.events);
             db.close();
         }
     }
@@ -233,6 +284,7 @@ public class CalendarParser {
             //Logger.log("Info is null!!!");
         }
 
+        // Only pull update from internet if there is a new version available
         if (info != null && !info.version.equals(getStoredVersion(context))) {
 
             CalendarFeed feed = null;
@@ -281,7 +333,7 @@ public class CalendarParser {
                     // of events that begin after startMin, so no
                     // overlapping will occur. We can save normally.
 
-                    db.saveEventsToProvider(feed.events);
+                    db.saveEventsToDatabase(feed.events);
 
                 } else {
                     Logger.log("Existing version is already up to date.");

@@ -74,7 +74,11 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return mDB.delete(NAME_FTS, COLUMN_END + ">=?", new String[]{String.valueOf(time)});
     }
 
-    public void saveEventsToProvider(List<GCalEvent> events) {
+    /**
+     * Save a list of GCalEvents to the database
+     * @param events
+     */
+    public void saveEventsToDatabase(List<GCalEvent> events) {
         mDB.beginTransaction();
         try {
             for (GCalEvent event : events) {
@@ -92,6 +96,10 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Create a new GCalEvent using data
+     * from the cursor at its current position
+     */
     private GCalEvent fromCursor(Cursor c) {
         String title = c.getString(c.getColumnIndex(COLUMN_TITLE));
         String description = c.getString(c.getColumnIndex(COLUMN_DESCRIPTION));
@@ -101,6 +109,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return new GCalEvent(title, description, location, startTime, endTime);
     }
 
+    /**
+     * Retrieve a list of GCalEvents for a given query
+     */
     public List<GCalEvent> search(String query) {
 
         // TODO add a limit to events returned from search
@@ -136,6 +147,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return events;
     }
 
+    /**
+     * Helper method used to prepare the query for a full-text search
+     */
     private String appendWildcard(String query) {
         if (TextUtils.isEmpty(query)) return query;
 
@@ -148,6 +162,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return builder.toString().trim();
     }
 
+    /**
+     * Retrieve a list of all events stored in the database
+     */
     public List<GCalEvent> getAllEvents() {
         Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
@@ -160,6 +177,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return events;
     }
 
+    /**
+     * Retrieve a list of events between the specified bounds
+     */
     public List<GCalEvent> getEventsForDuration(long lowerBound, long upperBound) {
         // Consider 3 cases:
         // 1. Date contains start of an event
@@ -182,6 +202,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return events;
     }
 
+    /**
+     * Retrieve a list of events for a specified month
+     */
     public List<GCalEvent> getEventsForMonth(int year, int month) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, 1);
@@ -197,6 +220,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         return getEventsForDuration(lowerBound, upperBound);
     }
 
+    /**
+     * Retrieve a list of events for a specified day
+     */
     public List<GCalEvent> getEventsForDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -212,6 +238,9 @@ public class CalendarDatabase extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Get a count of how many events are in the database
+     */
     public int getCount() {
         Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
         int count = c.getCount();

@@ -27,7 +27,6 @@ public class MainActivity extends ToolbarActivity
     private DrawerLayout mDrawerLayout;
     protected RSSFragment mNewsFragment;
     protected RSSFragment mEmailFragment;
-    //protected RSSFragment mStudentSubsFragment;
     protected CalendarFragment mEventsFragment;
     protected StaffInfoFragment mTeachersFragment;
 
