@@ -241,12 +241,6 @@ public class CalendarFragment extends Fragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((MainActivity) getActivity()).onSectionAttached(mPosition);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.menu_events, menu);
@@ -297,9 +291,6 @@ public class CalendarFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    /**
-     * One-time init method used to add custom title view to toolbar
-     */
     private void addTitleWithArrow() {
         if (!mSearchViewExpanded) {
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();

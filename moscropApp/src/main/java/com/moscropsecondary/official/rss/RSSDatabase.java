@@ -67,6 +67,14 @@ public class RSSDatabase extends SQLiteOpenHelper {
         // N/A
     }
 
+    /**
+     * Get the time of the oldest post in the database
+     *
+     * @param filterTags
+     *          Apply filters to get the time of
+     *          the oldest post that matches these filters
+     * @return  the time in milliseconds
+     */
     public long getOldestPostDate(String[] filterTags) {
         String[] columns = new String[] { COLUMN_DATE };
         String selection = null;
@@ -93,6 +101,9 @@ public class RSSDatabase extends SQLiteOpenHelper {
         return oldestPostDate;
     }
 
+    /**
+     * Save a list of RSSItems to the database
+     */
     public void save(List<RSSItem> items) {
         mDB.beginTransaction();
         try {
@@ -121,6 +132,9 @@ public class RSSDatabase extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Get a count of how many RSSItems are in the database
+     */
     public int getCount() {
         String[] columns = new String[] { _ID };
         Cursor c = mDB.query(NAME_FTS, columns, null, null, null, null, null, null);
@@ -129,6 +143,13 @@ public class RSSDatabase extends SQLiteOpenHelper {
         return count;
     }
 
+    /**
+     * Retrieve a list of RSSItems for a given query
+     *
+     * @param filterTags
+     *          Apply filters to only search in
+     *          posts that match these filters
+     */
     public List<RSSItem> search(String[] filterTags, String query) {
         String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
         if (filterTags != null && filterTags.length >= 1) {
@@ -161,6 +182,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
             RSSItem item = new RSSItem(duration, title, content, preview, tags, url, metadata);
             items.add(item);
         }
+        c.close();
 
         return items;
 
@@ -198,6 +220,18 @@ public class RSSDatabase extends SQLiteOpenHelper {
         return getItems(filterTags, System.currentTimeMillis(), loadLimit);
     }
 
+    /**
+     * Get all items stored in the database
+     * older than a specified date
+     *
+     * @param filterTags
+     *          tag to filter by
+     * @param dateMax
+     *          only return posts older than this date
+     * @param loadLimit
+     *          only return this many results
+     * @return  list of RSSItems that satisfy the given criteria
+     */
     public List<RSSItem> getItems(String[] filterTags, long dateMax, int loadLimit) {
         String selection = COLUMN_DATE + " < " + dateMax;
         if (filterTags != null && filterTags.length >= 1) {
@@ -234,10 +268,22 @@ public class RSSDatabase extends SQLiteOpenHelper {
         return items;
     }
 
+    /**
+     * Delete all posts in the database
+     *
+     * @return  number of posts deleted
+     */
     public int deleteAll() {
         return mDB.delete(NAME_FTS, null, null);
     }
 
+    /**
+     * Delete all posts dated after a specified time
+     *
+     * @param time
+     *          only delete posts after this time
+     * @return  number of posts deleted
+     */
     public int deleteIfPublishedAfter(long time) {
         return mDB.delete(NAME_FTS, COLUMN_DATE + ">=?", new String[] { String.valueOf(time) });
     }

@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moscropsecondary.official.R;
-import com.moscropsecondary.official.rss.CardUtil.CardProcessor;
 import com.moscropsecondary.official.util.DateUtil;
 import com.squareup.picasso.Picasso;
 
@@ -51,17 +50,6 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         bgColor2 = typedValue.data;
     }
 
-    public static class RSSAdapterItem {
-
-        public final RSSItem item;
-        public final CardProcessor processor;
-
-        public RSSAdapterItem(RSSItem r, CardProcessor c) {
-            item = r;
-            processor = c;
-        }
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -94,6 +82,18 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         return view;
     }
 
+    /**
+     * Helper method to populate a RSS card layout with an RSSItem
+     *
+     * @param view
+     *          Layout to populate with RSSItem
+     * @param item
+     *          RSSItem to populate layout with
+     * @param bgColor
+     *          Color to set the card background to
+     * @param textColor
+     *          Color to set the card text to
+     */
     public static void loadCardWithRssItem(Context context, View view, RSSItem item, int bgColor, int textColor) {
         ImageView bgImage = (ImageView) view.findViewById(R.id.CardBgImg);
         ImageView tagIcon = (ImageView) view.findViewById(R.id.CardTagIcon);
@@ -101,21 +101,8 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         TextView timestampText = (TextView) view.findViewById(R.id.CardTimestamp);
         TextView title = (TextView) view.findViewById(R.id.rlc_title);
 
+        // Process the metadata into an usable String array format
         String[] metadata = item.metadata.split(",");
-
-        // Set background color
-//        int bgColor = Color.WHITE;
-//        switch(position % 4) {
-//            case 0:
-//            case 3:
-//                bgColor = R.color.backgrounddd;
-//                break;
-//            case 1:
-//            case 2:
-//                bgColor = 0xff34495e;
-//                break;
-//        }
-//        view.setBackgroundColor(bgColor);
 
         view.setBackgroundColor(bgColor);
 
@@ -170,13 +157,5 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
             title.setText(item.title);
             title.setTextColor(textColor);
         }
-    }
-
-
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        //Logger.log("notifyDataSetChanged");
     }
 }
