@@ -4,7 +4,7 @@
     android:id="@+id/rlf_swipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.moscropsecondary.official.MainActivity$RSSFragment" >
+    tools:context="com.moscrop.official.MainActivity$RSSFragment" >
 
 	<GridView
 	    android:id="@+id/rlf_list"

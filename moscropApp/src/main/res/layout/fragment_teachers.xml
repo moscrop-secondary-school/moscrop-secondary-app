@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.moscropsecondary.official.MainActivity$PlaceholderFragment" >
+    tools:context="com.moscrop.official.MainActivity$PlaceholderFragment" >
 
 	<ListView
 	    android:id="@+id/teachers_list"

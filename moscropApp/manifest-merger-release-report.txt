@@ -42,7 +42,7 @@ MERGED from com.android.support:support-v4:21.0.3:16:5
 		ADDED from AndroidManifest.xml:12:9
 	android:theme
 		ADDED from AndroidManifest.xml:13:9
-activity#com.moscropsecondary.official.MainActivity
+activity#com.moscrop.official.MainActivity
 ADDED from AndroidManifest.xml:15:9
 	android:label
 		ADDED from AndroidManifest.xml:17:13
@@ -72,7 +72,7 @@ ADDED from AndroidManifest.xml:26:13
 		ADDED from AndroidManifest.xml:28:17
 	android:name
 		ADDED from AndroidManifest.xml:27:17
-activity#com.moscropsecondary.official.rss.NewsDisplayActivity
+activity#com.moscrop.official.rss.NewsDisplayActivity
 ADDED from AndroidManifest.xml:31:9
 	android:label
 		ADDED from AndroidManifest.xml:34:13
@@ -80,13 +80,13 @@ ADDED from AndroidManifest.xml:31:9
 		ADDED from AndroidManifest.xml:33:13
 	android:name
 		ADDED from AndroidManifest.xml:32:13
-activity#com.moscropsecondary.official.GenericActivity
+activity#com.moscrop.official.GenericActivity
 ADDED from AndroidManifest.xml:36:9
 	android:label
 		ADDED from AndroidManifest.xml:38:13
 	android:name
 		ADDED from AndroidManifest.xml:37:13
-activity#com.moscropsecondary.official.egg.LLandActivity
+activity#com.moscrop.official.egg.LLandActivity
 ADDED from AndroidManifest.xml:40:9
 	android:label
 		ADDED from AndroidManifest.xml:42:13

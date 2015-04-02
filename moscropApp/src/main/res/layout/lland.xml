@@ -16,11 +16,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <com.moscropsecondary.official.egg.LLand
+    <com.moscrop.official.egg.LLand
         android:id="@+id/world"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.moscropsecondary.official.egg.LLand>
+    </com.moscrop.official.egg.LLand>
     <TextView
         android:id="@+id/score"
         android:layout_width="wrap_content"

@@ -5,11 +5,11 @@ android {
     buildToolsVersion '22.0.0'
 
     defaultConfig {
-        applicationId "com.moscropsecondary.official"
+        applicationId "com.moscrop.official"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 700
-        versionName "0.7.0"
+        versionCode 701
+        versionName "0.7.1"
     }
     buildTypes {
         release {
@@ -23,7 +23,7 @@ android {
         }
         side_apk {
             buildConfigField "boolean", "MOSCROPDEBUG", "true"
-            applicationId "com.moscropsecondary.official.test"
+            applicationId "com.moscrop.official.test"
         }
         app_debug {
             buildConfigField "boolean", "MOSCROPDEBUG", "true"
