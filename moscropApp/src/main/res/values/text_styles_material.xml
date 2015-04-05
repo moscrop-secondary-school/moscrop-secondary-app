@@ -5,7 +5,7 @@
 
     <style name="agenda_day_number">
         <item name="android:textColor">?attr/textm</item>
-        <item name="android:textSize">45sp</item>
+        <item name="android:textSize">28sp</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
 

@@ -6,11 +6,15 @@
     <TextView
         android:id="@+id/event_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        style="@style/text_list_title"
+        android:textSize="14sp"/>
 
     <TextView
         android:id="@+id/event_subtitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        style="@style/text_list_subhead"
+        android:textSize="14sp"/>
 
 </LinearLayout>

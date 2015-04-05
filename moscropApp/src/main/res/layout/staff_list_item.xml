@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingLeft="72dp"
+    android:paddingBottom="16dp"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/teacher_name"
+        android:id="@+id/staff_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_teacher_list"/>
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:paddingBottom="4dp"
+        style="@style/text_list_title"/>
+
+    <TextView
+        android:id="@+id/staff_department"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        style="@style/text_list_subhead"/>
 
 </LinearLayout>

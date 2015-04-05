@@ -47,8 +47,8 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     	
     	setHasOptionsMenu(true);
     	
-    	View rootView = inflater.inflate(R.layout.fragment_teachers, container, false);
-        mListView = (ListView) rootView.findViewById(R.id.teachers_list);
+    	View rootView = inflater.inflate(R.layout.fragment_staff, container, false);
+        mListView = (ListView) rootView.findViewById(R.id.staff_list);
         mAdapter = new StaffListAdapter(getActivity(), new ArrayList<StaffInfoModel>());
     	mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
