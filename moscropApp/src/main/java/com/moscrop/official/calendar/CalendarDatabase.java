@@ -138,7 +138,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
 
         Cursor c = mDB.query(NAME_FTS, null, selection, selectionArgs, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
-        c.moveToFirst();
+        c.moveToPosition(-1);
         while (c.moveToNext()) {
             events.add(fromCursor(c));
         }
@@ -168,7 +168,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
     public List<GCalEvent> getAllEvents() {
         Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
-        c.moveToFirst();
+        c.moveToPosition(-1);
         while (c.moveToNext()) {
             events.add(fromCursor(c));
         }
