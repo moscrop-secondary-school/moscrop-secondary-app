@@ -5,7 +5,7 @@
     <style name="Theme.Base.Light" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/pmoscrop</item>
         <item name="colorPrimaryDark">@color/pmoscrop2</item>
-        <item name="colorAccent">@color/accent_indigo</item>
+        <!--<item name="colorAccent">@color/accent_indigo</item>-->
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@color/background</item>
@@ -166,8 +166,6 @@
         <item name="background_card">@drawable/background_card_tblack</item>
         <item name="card_picture_alpha">@string/card_picture_alpha_t</item>
         <item name="card_about">@drawable/selector_card_about_t</item>
-
-        <item name="colorAccent">@color/accent_indigo_d</item>
 
         <item name="backgroundorig">@color/tdbackground</item>
         <item name="backgroundd">@color/tdbackgroundd</item>
