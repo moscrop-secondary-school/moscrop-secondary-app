@@ -34,7 +34,7 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
 
     private static final String NAME = "staff_info";
     private static final String NAME_FTS = "staff_info_fts";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2015040501;
 
     private StaffInfoDatabase(Context context) {
         super(context, NAME, null, VERSION);
