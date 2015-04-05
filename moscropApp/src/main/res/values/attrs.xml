@@ -11,6 +11,7 @@
         <attr name="rss_background" format="reference" />
         <attr name="card_about" format="reference" />
 
+        <attr name="divider_color" format="reference" />
         <attr name="status" format="reference" />
         <attr name="toolbar_color" format="reference" />
         <attr name="drawer_shadow" format="reference" />

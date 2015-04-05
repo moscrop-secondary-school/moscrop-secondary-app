@@ -11,6 +11,8 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb</item>
+        <item name="android:fastScrollTrackDrawable">@drawable/track</item>
     </style>
 
     <style name="Theme.Base.Dark.Versioned" parent="Theme.Base.Dark">
@@ -20,6 +22,7 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb</item>
     </style>
 
     <style name="Theme.Light.Drawer" parent="Theme.Light">

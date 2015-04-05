@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="16dp"
+    android:paddingTop="12dp"
     android:paddingLeft="72dp"
-    android:paddingBottom="16dp"
+    android:paddingBottom="12dp"
     android:orientation="vertical">
 
     <TextView
@@ -15,7 +15,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:paddingBottom="4dp"
-        style="@style/text_list_title"/>
+        style="@style/staff_title"/>
 
     <TextView
         android:id="@+id/staff_department"
@@ -23,6 +23,6 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
-        style="@style/text_list_subhead"/>
+        style="@style/staff_subhead"/>
 
 </LinearLayout>

@@ -121,4 +121,12 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="staff_title" parent="@style/text_title_custom">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="staff_subhead" parent="@style/text_subhead_custom">
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>
