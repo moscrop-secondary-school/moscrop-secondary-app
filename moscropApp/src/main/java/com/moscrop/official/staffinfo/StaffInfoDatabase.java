@@ -119,7 +119,7 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
     public List<StaffInfoModel> getList() {
         Cursor c = getReadableDatabase().query(NAME_FTS, null, null, null, null, null, null);
         List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
-        c.moveToFirst();
+        c.moveToPosition(-1);
         while (c.moveToNext()) {
             list.add(fromCursor(c));
         }
@@ -135,7 +135,7 @@ public class StaffInfoDatabase extends SQLiteOpenHelper {
 
         Cursor c = getReadableDatabase().query(NAME_FTS, null, selection, selectionArgs, null, null, null);
         List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
-        c.moveToFirst();
+        c.moveToPosition(-1);
         while (c.moveToNext()) {
             list.add(fromCursor(c));
         }

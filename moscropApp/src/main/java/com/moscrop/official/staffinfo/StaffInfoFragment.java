@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,6 +32,8 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     private ListView mListView;
 
     private StaffListAdapter mAdapter;
+
+    private boolean mSearchViewExpanded = false;
 
     public static StaffInfoFragment newInstance(int position) {
     	StaffInfoFragment fragment = new StaffInfoFragment();
@@ -64,6 +68,12 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mSearchViewExpanded = false;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_POSITION, mPosition);
@@ -84,6 +94,22 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint("Search staff");
+
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                mSearchViewExpanded = true;
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mSearchViewExpanded = false;
+                refreshList();
+                return true;
+            }
+        });
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -182,7 +208,28 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
-    public void doSearch(String query) {
+    public void doSearch(final String query) {
         Toast.makeText(getActivity(), "Staff: " + query, Toast.LENGTH_SHORT).show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                // Perform FTS query
+                StaffInfoDatabase db = StaffInfoDatabase.getInstance(getActivity());
+                final List<StaffInfoModel> models = db.search(query);
+                db.close();
+
+                // Load resulting list into ListView
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.clear();
+                        mAdapter.addAll(models);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }).start();
     }
 }
