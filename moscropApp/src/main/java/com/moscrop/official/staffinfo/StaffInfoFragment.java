@@ -56,7 +56,7 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         new Thread(new Runnable() {
             @Override
             public void run() {
-                refreshList(null);
+                refreshList();
             }
         }).start();
 
@@ -95,31 +95,20 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
         View dialogView = inflater.inflate(R.layout.staff_info_dialog, null);
 
         StaffInfoModel model = mAdapter.getItem(position);
-        String name = model.getName();
-        String[] subjects = model.getSubjects();
-        int[] rooms = model.getRooms();
+        String name = model.getFullName();
+        String[] rooms = model.getRooms();
+        String department = model.getDepartment();
         String email = model.getEmail();
-        String website = model.getSite();
+        String[] websites = model.getSites();
 
-        if (subjects != null && subjects.length > 0) {
-            View subjectGroup = dialogView.findViewById(R.id.subject_group);
-            subjectGroup.setVisibility(View.VISIBLE);
-            TextView subjectTitle = (TextView) dialogView.findViewById(R.id.subject_title);
-            if (subjects.length > 1) {
-                subjectTitle.append("s");
-            }
-            TextView subjectText = (TextView) dialogView.findViewById(R.id.subject);
-            for (int i=0; i<subjects.length; i++) {
-                if (i != 0) {
-                    // Not the first item
-                    subjectText.append(", " + subjects[i]);
-                } else {
-                    subjectText.setText(subjects[i]);
-                }
-            }
+        if (department != null && !department.equals("")) {
+            View departmentGroup = dialogView.findViewById(R.id.department_group);
+            departmentGroup.setVisibility(View.VISIBLE);
+            TextView departmentText = (TextView) dialogView.findViewById(R.id.department);
+            departmentText.setText(department);
         } else {
-            View subjectGroup = dialogView.findViewById(R.id.subject_group);
-            subjectGroup.setVisibility(View.GONE);
+            View departmentGroup = dialogView.findViewById(R.id.department_group);
+            departmentGroup.setVisibility(View.GONE);
         }
 
         if (rooms != null && rooms.length > 0) {
@@ -130,14 +119,8 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
                 roomTitle.append("s");
             }
             TextView roomText = (TextView) dialogView.findViewById(R.id.room);
-            for (int i=0; i<rooms.length; i++) {
-                if (i != 0) {
-                    // Not the first item
-                    roomText.append(", " + rooms[i]);
-                } else {
-                    roomText.setText(String.valueOf(rooms[i]));
-                }
-            }
+            String roomStr = StaffInfoModel.roomsArrayToString(rooms).replace(";", ",");
+            roomText.setText(roomStr);
         } else {
             View roomGroup = dialogView.findViewById(R.id.room_group);
             roomGroup.setVisibility(View.GONE);
@@ -153,11 +136,16 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
             emailGroup.setVisibility(View.GONE);
         }
 
-        if (website != null && !website.equals("")) {
+        if (websites != null && websites.length > 0) {
             View websiteGroup = dialogView.findViewById(R.id.website_group);
             websiteGroup.setVisibility(View.VISIBLE);
+            TextView websiteTitle = (TextView) dialogView.findViewById(R.id.website_title);
+            if (websites.length > 1) {
+                websiteTitle.append("s");
+            }
             TextView websiteText = (TextView) dialogView.findViewById(R.id.website);
-            websiteText.setText(website);
+            String websiteStr = StaffInfoModel.sitesArrayToString(websites).replace(" ", "\n");
+            websiteText.setText(websiteStr);
         } else {
             View websiteGroup = dialogView.findViewById(R.id.website_group);
             websiteGroup.setVisibility(View.GONE);
@@ -176,13 +164,10 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     }
 
 
-    private void refreshList(String query) {
+    private void refreshList() {
 
-        // This line does all the copying (if needed)
-        StaffInfoDatabase db = new StaffInfoDatabase(getActivity());
-
-        // This line is the normal database stuff
-        final List<StaffInfoModel> models = db.getList(query);
+        StaffInfoDatabase db = StaffInfoDatabase.getInstance(getActivity());
+        final List<StaffInfoModel> models = db.getList();
         db.close();
 
         if (getActivity() != null) {

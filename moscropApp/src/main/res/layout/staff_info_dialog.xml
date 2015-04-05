@@ -14,7 +14,7 @@
         android:paddingTop="16dp">
 
         <LinearLayout
-            android:id="@+id/subject_group"
+            android:id="@+id/department_group"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -22,14 +22,13 @@
             android:paddingBottom="10dp">
 
             <TextView
-                android:id="@+id/subject_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Subject"
                 style="@style/text_subhead_custom"/>
 
             <TextView
-                android:id="@+id/subject"
+                android:id="@+id/department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/text_body_2"/>
@@ -91,6 +90,7 @@
             android:paddingBottom="10dp">
 
             <TextView
+                android:id="@+id/website_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Website"

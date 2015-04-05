@@ -34,7 +34,7 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
 
         TextView nameText = (TextView) view.findViewById(R.id.teacher_name);
         StaffInfoModel model = mModels.get(position);
-        nameText.setText(model.getName());
+        nameText.setText(model.getFullName());
 
         return view;
     }

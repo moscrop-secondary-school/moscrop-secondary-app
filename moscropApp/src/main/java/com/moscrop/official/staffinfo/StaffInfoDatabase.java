@@ -1,208 +1,184 @@
 package com.moscrop.official.staffinfo;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
-import com.moscrop.official.util.Logger;
-import com.moscrop.official.util.Preferences;
-
-import java.io.FileOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ivon on 9/23/14.
+ * Created by ivon on 04/04/15.
  */
 public class StaffInfoDatabase extends SQLiteOpenHelper {
 
-    private SQLiteDatabase mDB;
+    private static StaffInfoDatabase mInstance;
     private Context mContext;
 
-    private static final String DB_NAME = "staff_info";
-    private static final String TABLE_NAME = "staff_info";
+    private static final String _ID = "_id";
+    private static final String COLUMN_NAME_PREFIX  = "name_prefix";
+    private static final String COLUMN_FIRST_NAME   = "first_name";
+    private static final String COLUMN_LAST_NAME    = "last_name";
+    private static final String COLUMN_ROOMS        = "rooms";
+    private static final String COLUMN_DEPARTMENT   = "department";
+    private static final String COLUMN_EMAIL        = "email";
+    private static final String COLUMN_SITES        = "sites";
+
+    private static final String NAME = "staff_info";
+    private static final String NAME_FTS = "staff_info_fts";
     private static final int VERSION = 1;
 
-    public StaffInfoDatabase(Context context) {
-        super(context, DB_NAME, null, VERSION);
+    private StaffInfoDatabase(Context context) {
+        super(context, NAME, null, VERSION);
         mContext = context;
-        Logger.log("getting writable database");
-        mDB = getDatabase();
     }
 
-    /**
-     * Creates a empty database on the system and rewrites it with your own database.
-     */
-    public void createDatabase() {
-
-        Logger.log("createDatabase()");
-
-            // By calling this method and empty database will be created into the default system path
-            // of your application so we are gonna be able to overwrite that database with our database.
-            this.getReadableDatabase();
-
-            try {
-                copyDatabase();
-            } catch (IOException e) {
-                Logger.error("Error creating staff info database", e);
-            }
-    }
-
-    /**
-     * Check if the database already exist to avoid re-copying the file each time you open the application.
-     * @return true if it exists, false if it doesn't
-     */
-    private boolean databaseExists(){
-
-        SharedPreferences prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
-        String existing_db_version = prefs.getString(Preferences.App.Keys.STAFF_DB_VERSION, Preferences.App.Default.STAFF_DB_VERSION);
-        if (existing_db_version.equals(Preferences.App.Default.STAFF_DB_VERSION)) {
-            return false;
-        } else {
-            return true;
+    public static synchronized StaffInfoDatabase getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new StaffInfoDatabase(context);
         }
-    }
-
-    /**
-     * Copies your database from your local assets-folder to the just created empty database in the
-     * system folder, from where it can be accessed and handled.
-     * This is done by transfering bytestream.
-     * */
-    private void copyDatabase() throws IOException{
-        Logger.log("copying database");
-        // Open your local db as the input stream
-        InputStream input = mContext.getAssets().open(DB_NAME);
-
-        // Path to the just created empty db
-        String outFileName = mContext.getDatabasePath(DB_NAME).toString();
-
-        // Open the empty db as the output stream
-        OutputStream output = new FileOutputStream(outFileName);
-
-        // Transfer bytes from the input file to the output file
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = input.read(buffer))>0) {
-            output.write(buffer, 0, length);
+        if (mInstance.getCount() == 0) {
+            mInstance.populateDatabaseFromCsv();
         }
-
-        // Close the streams
-        output.flush();
-        output.close();
-        input.close();
-
-        SharedPreferences.Editor prefs = mContext.getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
-        prefs.putString(Preferences.App.Keys.STAFF_DB_VERSION, "some version name");
-        prefs.apply();
-
-        Logger.log("Done copying");
-    }
-
-    public SQLiteDatabase getDatabase() {
-
-        if(!databaseExists()) {
-            createDatabase();
-        }
-
-        String path = mContext.getDatabasePath(DB_NAME).toString();
-        return SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
+        return mInstance;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Logger.log("Staff info database oncreate, but we are doing nothing here");
+        db.execSQL("CREATE TABLE " + NAME + " (" +
+                _ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_NAME_PREFIX  + " TEXT" + ", " +
+                COLUMN_FIRST_NAME   + " TEXT" + ", " +
+                COLUMN_LAST_NAME    + " TEXT" + ", " +
+                COLUMN_ROOMS        + " TEXT" + ", " +
+                COLUMN_DEPARTMENT   + " TEXT" + ", " +
+                COLUMN_EMAIL        + " TEXT" + ", " +
+                COLUMN_SITES        + " TEXT" + ""   +
+                ")");
+
+        db.execSQL("CREATE VIRTUAL TABLE " + NAME_FTS + " USING fts3 (" +
+                _ID + ", " +
+                COLUMN_NAME_PREFIX  + ", " +
+                COLUMN_FIRST_NAME   + ", " +
+                COLUMN_LAST_NAME    + ", " +
+                COLUMN_ROOMS        + ", " +
+                COLUMN_DEPARTMENT   + ", " +
+                COLUMN_EMAIL        + ", " +
+                COLUMN_SITES        + "" +
+                ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Nothing here yet, although we might need to use this method
+        db.execSQL("DROP TABLE IF EXISTS " + NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + NAME_FTS);
+        onCreate(db);
     }
 
-    @Override
-    public synchronized void close() {
-        if (mDB != null) {
-            mDB.close();
-        }
-        super.close();
-    }
+    private void populateDatabaseFromCsv() {
+        AssetManager assetManager = mContext.getAssets();
+        try {
 
-    /******************** Helper methods ********************/
+            InputStream is = assetManager.open("staff_info.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
-    private List<StaffInfoModel> getListFromCursor(Cursor c) {
-        List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
-        c.moveToPosition(-1);
-        while(c.moveToNext()) {
+            getWritableDatabase().beginTransaction();
 
-            // Extract the values from database
-            String prefix = c.getString(c.getColumnIndex("name_prefix"));
-            String firstName = c.getString(c.getColumnIndex("name_first"));
-            String lastName = c.getString(c.getColumnIndex("name_last"));
-            String email = c.getString(c.getColumnIndex("email"));
-            String subject = c.getString(c.getColumnIndex("subject"));
-            String room = c.getString(c.getColumnIndex("room"));
-            String site = c.getString(c.getColumnIndex("sites"));
-            boolean isDH = c.getInt(c.getColumnIndex("is_department_head"))==1;
-            int teacherID = c.getInt(c.getColumnIndex("teacher_id"));
+            String line = reader.readLine();    // remove the first row of headers
+            while ((line = reader.readLine()) != null) {
+                String[] array = line.split(",");
 
-            // Process name
-            String firstInitial = firstName.substring(0, 1).toUpperCase();
-            String name = String.format("%s. %s. %s", prefix, firstInitial, lastName);
-
-            // Split subjects
-            String[] subjects = subject.split("\\s*,\\s*");
-
-            // Split rooms
-            // TODO temporary solution is to those pesky "todo" tags in the database
-            int[] rooms;
-            if (!room.contains("TODO")) {
-                String[] roomStrs = room.split("\\s*,\\s*");
-                rooms = new int[roomStrs.length];
-                for (int i = 0; i < roomStrs.length; i++) {
-                    try {
-                        rooms[i] = Integer.parseInt(roomStrs[i]);
-                    } catch (NumberFormatException e) {
-                        Logger.error("Parsing room number from String to int", e);
-                    }
-                }
-            } else {
-                rooms = new int[] { 3, 1, 4 };
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_NAME_PREFIX,  array[0]);
+                values.put(COLUMN_FIRST_NAME,   array[1]);
+                values.put(COLUMN_LAST_NAME,    array[2]);
+                values.put(COLUMN_ROOMS,        array[3]);
+                values.put(COLUMN_DEPARTMENT,   array[4]);
+                values.put(COLUMN_EMAIL,        array[5]);
+                values.put(COLUMN_SITES,        array[6]);
+                getWritableDatabase().insert(NAME_FTS, null, values);
             }
 
-            // Create and add
-            StaffInfoModel model = new StaffInfoModel(name, email, subjects, rooms, site, isDH, teacherID);
-            list.add(model);
-            Logger.log("Added " + name + " to list with room array of " + rooms.length + " length");
+            getWritableDatabase().setTransactionSuccessful();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            getWritableDatabase().endTransaction();
+        }
+    }
+
+    public List<StaffInfoModel> getList() {
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, null, null, null, null, null);
+        List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
+        c.moveToFirst();
+        while (c.moveToNext()) {
+            list.add(fromCursor(c));
         }
         c.close();
+
         return list;
     }
 
-    public List<StaffInfoModel> getList(String query) {
+    public List<StaffInfoModel> search(String query) {
 
-        String selection;
-        if (query == null) {
-            selection = null;
-        } else {
+        String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
+        String[] selectionArgs = new String[] { appendWildcard(query) };
 
-            query = "\'%" + query + "%\'";
-
-            selection = "name_first" + " LIKE " + query
-                    + " OR " + "name_last" + " LIKE " + query
-                    + " OR " + "subject" + " LIKE " + query
-                    + " OR " + "room" + " LIKE " + query;
-            //selection = "staff_info MATCH " + query;
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, selection, selectionArgs, null, null, null);
+        List<StaffInfoModel> list = new ArrayList<StaffInfoModel>();
+        c.moveToFirst();
+        while (c.moveToNext()) {
+            list.add(fromCursor(c));
         }
-
-        Cursor c = mDB.query(TABLE_NAME, null, selection, null, null, null, "name_last asc");
-        List<StaffInfoModel> list = getListFromCursor(c);
+        c.close();
 
         return list;
-
     }
 
+    /**
+     * Helper method used to prepare the query for a full-text search
+     */
+    private String appendWildcard(String query) {
+        if (TextUtils.isEmpty(query)) return query;
+
+        final StringBuilder builder = new StringBuilder();
+        final String[] splits = TextUtils.split(query, " ");
+
+        for (String split : splits)
+            builder.append(split).append("*").append(" ");
+
+        return builder.toString().trim();
+    }
+
+    private StaffInfoModel fromCursor(Cursor c) {
+        String namePrefix = c.getString(c.getColumnIndex(COLUMN_NAME_PREFIX));
+        String firstName = c.getString(c.getColumnIndex(COLUMN_FIRST_NAME));
+        String lastName = c.getString(c.getColumnIndex(COLUMN_LAST_NAME));
+        String rooms = c.getString(c.getColumnIndex(COLUMN_ROOMS));
+        String department = c.getString(c.getColumnIndex(COLUMN_DEPARTMENT));
+        String email = c.getString(c.getColumnIndex(COLUMN_EMAIL));
+        String sites = c.getString(c.getColumnIndex(COLUMN_SITES));
+
+        return new StaffInfoModel(namePrefix, firstName, lastName,
+                StaffInfoModel.roomsStringToArray(rooms),
+                department, email,
+                StaffInfoModel.sitesStringToArray(sites)
+        );
+    }
+
+    public int getCount() {
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, null, null, null, null, null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
 }
