@@ -295,7 +295,7 @@ public class CalendarFragment extends Fragment
         if (!mSearchViewExpanded) {
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
             toolbar.removeView(mToolbarTitle);
-            mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.spinner_actionbar_title, toolbar, false);
+            mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_title_with_arrow, toolbar, false);
             setToolbarTitle("Events");
             mToolbarTitle.setOnClickListener(new View.OnClickListener() {
                 @Override

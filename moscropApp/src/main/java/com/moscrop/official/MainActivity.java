@@ -61,7 +61,7 @@ public class MainActivity extends ToolbarActivity
         ThemesUtil.registerThemeChangedListener(this);
 
         super.onCreate(savedInstanceState);
-        setActionBarIcon(R.drawable.ic_ab_drawer);
+        setActionBarIcon(R.drawable.ic_drawer);
         getSupportActionBar().setTitle("");
 
         NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);

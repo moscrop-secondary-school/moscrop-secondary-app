@@ -26,7 +26,7 @@ public class ToolbarSpinnerAdapter extends ArrayAdapter<String> {
 
         if (view == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.spinner_actionbar_title, null);
+            view = inflater.inflate(R.layout.toolbar_title_with_arrow, null);
             view.setTag("NON_DROPDOWN");
         }
 
