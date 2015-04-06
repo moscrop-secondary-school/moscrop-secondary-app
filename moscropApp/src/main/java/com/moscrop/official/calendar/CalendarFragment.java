@@ -275,6 +275,7 @@ public class CalendarFragment extends Fragment
                             public void run() {
                                 mAdapter.clear();
                                 mAdapter.addToEnd(events);
+                                mAdapter.setShowSearchResultsMode(false);
                                 mAdapter.notifyDataSetChanged();
                                 scrollTo(System.currentTimeMillis());
 
@@ -380,6 +381,7 @@ public class CalendarFragment extends Fragment
                     public void run() {
                         mAdapter.clear();
                         mAdapter.addToEnd(events);
+                        mAdapter.setShowSearchResultsMode(false);
                         mAdapter.notifyDataSetChanged();
                         scrollTo(System.currentTimeMillis());
 
@@ -447,6 +449,7 @@ public class CalendarFragment extends Fragment
                     public void run() {
                         mAdapter.clear();
                         mAdapter.addToEnd(events);
+                        mAdapter.setShowSearchResultsMode(false);
                         mAdapter.notifyDataSetChanged();
                         scrollTo(System.currentTimeMillis());
 
@@ -675,6 +678,7 @@ public class CalendarFragment extends Fragment
                     public void run() {
                         mAdapter.clear();
                         mAdapter.addToEnd(events);
+                        mAdapter.setShowSearchResultsMode(true);
                         mAdapter.notifyDataSetChanged();
                     }
                 });

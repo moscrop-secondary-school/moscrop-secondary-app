@@ -39,6 +39,8 @@ public class EventListAdapter extends BaseAdapter {
     private List<Day> mDays = new ArrayList<Day>();
     private HashMap<Integer, Integer> mDayMap = new HashMap<>();
 
+    private boolean mShowSearchResultsMode;
+
     public EventListAdapter(Context context, List<GCalEvent> events) {
         mContext = context;
         addToEnd(events);
@@ -194,10 +196,15 @@ public class EventListAdapter extends BaseAdapter {
         Date date = new Date(dayMillis);
 
         SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
-        SimpleDateFormat sdfWeek = new SimpleDateFormat("EEE");
+        SimpleDateFormat sdfSubtitle;
+        if (mShowSearchResultsMode) {
+            sdfSubtitle = new SimpleDateFormat("MMM'\n'yyyy");
+        } else {
+            sdfSubtitle = new SimpleDateFormat("EEE");
+        }
 
         dayNumberText.setText(sdfDay.format(date));
-        dayMonthText.setText(sdfWeek.format(date));
+        dayMonthText.setText(sdfSubtitle.format(date));
         dayEventsGroup.removeAllViews();
 
         for (final GCalEvent event : day.events) {
@@ -221,6 +228,10 @@ public class EventListAdapter extends BaseAdapter {
         }
 
         return view;
+    }
+
+    public void setShowSearchResultsMode(boolean showSearchResultsMode) {
+        mShowSearchResultsMode = showSearchResultsMode;
     }
 
     private void showEventDialog(LayoutInflater inflater, GCalEvent event) {
