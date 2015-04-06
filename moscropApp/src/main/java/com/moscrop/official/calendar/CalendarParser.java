@@ -277,6 +277,7 @@ public class CalendarParser {
             //Logger.error("RSSParser.parseAndSave() info", e);
         }
 
+        // Used for debugging loading-redundancy
         if (info != null) {
             //Logger.log("Downloaded version: " + info.version);
             //Logger.log("Stored version:     " + getStoredVersion(context));
@@ -291,7 +292,9 @@ public class CalendarParser {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 String timeMinStr = sdf.format(new Date(timeMin));
-                String url = getCalendarUrlFromId(id, timeMinStr, false);
+                String url = getCalendarUrlFromId(id, /*timeMinStr*/null, false);   // Have it reload the whole calendar for now
+                                                                                    // Add back partial loading once I figure out
+                                                                                    // How to selectively delete on an FTS table
                 feed = getCalendarFeed(context, url);
             } catch (JSONException e) {
                 Logger.error("CalendarParser.process()", e);
@@ -320,14 +323,19 @@ public class CalendarParser {
                     //
                     // Begin by deleting those events
 
-                    int deleted = db.deleteAfterTime(timeMin);
+                    /*int deleted = db.deleteAfterTime(timeMin);
 
                     if (deleted != feed.events.size()) {
                         Logger.warn("Processing calendar events: deleted "
                                         + deleted + " events from database, but only inserting "
                                         + feed.events.size() + " new events."
                         );
-                    }
+                    }*/
+                    // TODO Instead of deleting only the parts of the table
+                    // deemed necessary, we will delete everything and save
+                    // everything again. This is because I have no clue how
+                    // to do selectively delete with FTS tables.
+                    db.deleteAll();
 
                     // Our list of events will already only consist
                     // of events that begin after startMin, so no
