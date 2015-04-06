@@ -296,7 +296,7 @@ public class CalendarFragment extends Fragment
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
             toolbar.removeView(mToolbarTitle);
             mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_title_with_arrow, toolbar, false);
-            setToolbarTitle("Events");
+            //setToolbarTitle("Events");
             mToolbarTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -553,9 +553,8 @@ public class CalendarFragment extends Fragment
 
         @Override
         public void onChangeMonth(final int month, final int year) {
-            if (mCalendarIsShowing) {
-                setToolbarTitle(getTitleStringFromDate(year, month));
-            }
+
+            setToolbarTitle(getTitleStringFromDate(year, month));
 
             // TODO in current implementation there is no need
             // TODO for upper and lower bounds, and they are not set.
@@ -591,7 +590,7 @@ public class CalendarFragment extends Fragment
 
         // Change toolbar title from "Events" to the month shown in the calendar
         // Flip the arrow
-        setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
+        //setToolbarTitle(getTitleStringFromDate(mYear, mMonth+1));
         ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle_up, 0);
 
         // Animate calendar entrance
@@ -620,7 +619,7 @@ public class CalendarFragment extends Fragment
 
         // Change toolbar title back to "Events"
         // Flip the arrow
-        setToolbarTitle("Events");
+        //setToolbarTitle("Events");
         ((TextView) mToolbarTitle.findViewById(android.R.id.text1)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spinner_triangle, 0);
 
         // Animate calendar exit

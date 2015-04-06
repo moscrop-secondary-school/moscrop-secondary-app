@@ -7,8 +7,9 @@
     <LinearLayout
         android:layout_width="72dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="12dp"
+        android:paddingTop="7dp"
         android:orientation="vertical">
 
         <TextView
@@ -21,6 +22,7 @@
             android:id="@+id/day_month"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="2dp"
             android:paddingBottom="12dp"
             style="@style/agenda_day_month"/>
 

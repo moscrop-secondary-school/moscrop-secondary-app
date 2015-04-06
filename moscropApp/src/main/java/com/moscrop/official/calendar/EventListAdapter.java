@@ -194,10 +194,10 @@ public class EventListAdapter extends BaseAdapter {
         Date date = new Date(dayMillis);
 
         SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
-        SimpleDateFormat sdfMonth = new SimpleDateFormat("MMM yyyy");
+        SimpleDateFormat sdfWeek = new SimpleDateFormat("EEE");
 
         dayNumberText.setText(sdfDay.format(date));
-        dayMonthText.setText(sdfMonth.format(date));
+        dayMonthText.setText(sdfWeek.format(date));
         dayEventsGroup.removeAllViews();
 
         for (final GCalEvent event : day.events) {
