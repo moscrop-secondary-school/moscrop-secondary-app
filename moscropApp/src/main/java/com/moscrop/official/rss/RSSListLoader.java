@@ -115,6 +115,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
 
         RSSDatabase database = new RSSDatabase(getContext());
+        int prevCycleDatabaseCount = database.getCount();
 
         while (list.size() < loadLimit) {
 
@@ -135,11 +136,16 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
                 updatedOldestPostDate = database.getOldestPostDate(null);
             }
             List<RSSItem> appendList = downloadParseSaveGetList(true, updatedOldestPostDate);
-            if (appendList.size() == 0) {
+            if (database.getCount() <= prevCycleDatabaseCount) {
+                // If this "page" added no new items to the database,
+                // we now know that there are no more posts in Blogger.
+                // Therefore, we can stop trying and give up.
                 break;
             } else {
                 list.addAll(appendList);
             }
+
+            prevCycleDatabaseCount = database.getCount();
         }
 
         if (list.size() > loadLimit) {

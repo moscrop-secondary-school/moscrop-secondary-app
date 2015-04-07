@@ -136,6 +136,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             // On first launch, load everything and force online
             // because there is assumed to be nothing cached
             loadFeed(false, null, false, true, true, false);      // Just in case there is some cache
+            Toast.makeText(getActivity(), "First load may take a while", Toast.LENGTH_SHORT).show();
         } else {
             // Otherwise do not load online automatically unless
             // the user specified it in SharedPreferences.
@@ -540,7 +541,10 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public Loader<RSSResult> onCreateLoader(int i, Bundle bundle) {
         if (mSwipeLayout != null) {
+            Logger.error("starting progress spinner");
             mSwipeLayout.setRefreshing(true);
+        } else {
+            Logger.error("Why is swipe refresh layout null??");
         }
         long oldestPostDate = System.currentTimeMillis();
         if (mAdapter.getCount() > 0 && mAppend) {
@@ -554,6 +558,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     public void onLoadFinished(Loader<RSSResult> listLoader, RSSResult result) {
 
         if (mSwipeLayout != null) {
+            Logger.error("stopping progress spinner");
             mSwipeLayout.setRefreshing(false);
         }
 
