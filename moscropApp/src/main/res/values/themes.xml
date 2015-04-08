@@ -239,10 +239,4 @@
 
     <style name="Theme.Transparent.Drawer" parent="Theme.Transparent" />
 
-    <!--<style name="Transparent" parent="Theme.">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>-->
-
 </resources>
