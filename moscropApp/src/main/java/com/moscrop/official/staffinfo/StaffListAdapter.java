@@ -61,11 +61,11 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
     }
 
     private int[] iconBgColors = new int[] {
-            0x882962FF,
-            0x882979FF,
-            0x88448AFF,
-            0x8882B1FF,
-            0x880D47A1
+            0xFFF44336,
+            0xFF673AB7,
+            0xFF3F51B5,
+            0xFF4CAF50,
+            0xFFFF5722
     };
 
     private int generateRandomColor(StaffInfoModel model) {
