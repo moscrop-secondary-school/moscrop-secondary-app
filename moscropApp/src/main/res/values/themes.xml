@@ -67,8 +67,8 @@
         <item name="nav_drawer_item_text_color">@color/nav_drawer_item_text</item>
         <item name="nav_drawer_header_text_color">@color/dnav_drawer_item_text</item>
 
-        <item name="nav_drawer_selected_item_color">@color/pmoscrop</item>
-        <item name="nav_drawer_unselected_item_color">@color/textt</item>
+        <item name="nav_drawer_selected_item_color">@color/dmoscrop</item>
+        <item name="nav_drawer_unselected_item_color">@color/texttt</item>
 
         <item name="credits_allan_banner">@drawable/credits_allan_banner</item>
         <item name="credits_ivon_banner">@drawable/credits_ivon_banner</item>
@@ -130,7 +130,7 @@
         <item name="nav_drawer_header_text_color">@color/dnav_drawer_item_text</item>
 
         <item name="nav_drawer_selected_item_color">@color/pmoscrop</item>
-        <item name="nav_drawer_unselected_item_color">@color/dtextt</item>
+        <item name="nav_drawer_unselected_item_color">@color/dtexttt</item>
 
         <item name="status">@color/primary_dark_indigo_d</item>
         <item name="toolbar_color">@color/primary_indigo_d</item>
