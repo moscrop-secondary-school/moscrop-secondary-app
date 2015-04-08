@@ -3,7 +3,6 @@ package com.moscrop.official.calendar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,7 +217,7 @@ public class EventListAdapter extends BaseAdapter {
             String duration = DateUtil.formatEventDuration(event);
             subtitleText.setText(duration);
 
-            CardView eventCard = (CardView) eventView.findViewById(R.id.calendar_event_card);
+            View eventCard = eventView.findViewById(R.id.calendar_event_container);
             eventCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

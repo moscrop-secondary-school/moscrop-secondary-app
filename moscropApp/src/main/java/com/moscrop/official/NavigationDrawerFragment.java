@@ -1,6 +1,5 @@
 package com.moscrop.official;
 
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.moscrop.official.egg.LLandActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +73,7 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
 
         // Add header
         View headerView = inflater.inflate(R.layout.drawer_header, mDrawerList, false);
-        View eggTrigger = headerView.findViewById(R.id.circleAvatar);
+        /*View eggTrigger = headerView.findViewById(R.id.circleAvatar);
         eggTrigger.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -84,7 +81,7 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
                 startActivity(intent);
                 return true;
             }
-        });
+        });*/
         mDrawerList.addHeaderView(headerView, null, false);
 
         /*// Add footer

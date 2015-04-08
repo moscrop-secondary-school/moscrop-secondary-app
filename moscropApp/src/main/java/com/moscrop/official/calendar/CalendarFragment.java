@@ -269,7 +269,6 @@ public class CalendarFragment extends Fragment
                         CalendarDatabase db = new CalendarDatabase(getActivity());
                         final List<GCalEvent> events = db.getAllEvents();
 
-                        //final List<GCalEvent> events = db.getAllEvents();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -280,6 +279,8 @@ public class CalendarFragment extends Fragment
                                 scrollTo(System.currentTimeMillis());
 
                                 loadEventsIntoCaldroid(events);
+                                // TODO workaround for caldroidListener not working
+                                mCaldroid.setCaldroidListener(mCaldroidListener);
                             }
                         });
                     }
@@ -297,7 +298,7 @@ public class CalendarFragment extends Fragment
             Toolbar toolbar = ((ToolbarActivity) getActivity()).getToolbar();
             toolbar.removeView(mToolbarTitle);
             mToolbarTitle = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_title_with_arrow, toolbar, false);
-            //setToolbarTitle("Events");
+            setToolbarTitle("Events");
             mToolbarTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
