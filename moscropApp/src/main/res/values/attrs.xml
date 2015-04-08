@@ -49,6 +49,9 @@
         <attr name="nav_drawer_header_text_color" format="reference" />
         <attr name="nav_drawer_divider_color" format="reference" />
 
+        <attr name="nav_drawer_selected_item_color" format="reference" />
+        <attr name="nav_drawer_unselected_item_color" format="reference" />
+
         <!--banners-->
         <attr name="credits_allan_banner" format="reference" />
         <attr name="credits_ivon_banner" format="reference" />

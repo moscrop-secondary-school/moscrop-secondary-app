@@ -69,6 +69,7 @@ public abstract class NavigationDrawerBase extends Fragment {
 
     protected abstract View onCreateDrawer(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
     protected abstract ListView getNavigationItemsList();
+    protected abstract NavDrawerAdapter getNavigationDrawerAdapter();
 
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mDrawerContentContainer);
@@ -100,8 +101,10 @@ public abstract class NavigationDrawerBase extends Fragment {
 
     private void selectItem(final int position, final boolean fromSavedInstanceState) {
         mCurrentSelectedPosition = position;
-        if (getNavigationItemsList() != null && position < getNavigationItemsList().getCount()) {
-            getNavigationItemsList().setItemChecked(position, true);
+        if (getNavigationItemsList() != null && position < getNavigationItemsList().getCount()
+                && getNavigationDrawerAdapter() != null
+                && mCallbacks != null && mCallbacks.shouldSetDrawerItemSelected(position)) {
+            getNavigationDrawerAdapter().setSelectedItem(position);
         }
 
         /*
@@ -168,5 +171,6 @@ public abstract class NavigationDrawerBase extends Fragment {
          */
         public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState);
         public int getNavigationDrawerCloseDelay(int position);
+        public boolean shouldSetDrawerItemSelected(int position);
     }
 }

@@ -243,6 +243,11 @@ public class MainActivity extends ToolbarActivity
         }
     }
 
+    @Override
+    public boolean shouldSetDrawerItemSelected(int position) {
+        return position < NavigationDrawerFragment.SETTINGS;
+    }
+
     private void removeCustomTitleFromOldFragment() {
         Fragment fragment = null;
         switch (mCurrentFragment) {

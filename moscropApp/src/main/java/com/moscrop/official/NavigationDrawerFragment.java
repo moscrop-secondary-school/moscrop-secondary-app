@@ -123,6 +123,10 @@ public class NavigationDrawerFragment extends NavigationDrawerBase {
         // Load banner using Picasso to initialize its singleton ahead of time
         //Picasso.with(this).load(R.drawable.banner).into((ImageView) headerView.findViewById(R.id.imgBanner));
 
-        mDrawerList.setItemChecked(getCurrentSelectedPosition(), true);
+        mDrawerAdapter.setSelectedItem(getCurrentSelectedPosition());
+    }
+
+    protected NavDrawerAdapter getNavigationDrawerAdapter() {
+        return mDrawerAdapter;
     }
 }

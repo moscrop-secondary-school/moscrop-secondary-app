@@ -1,13 +1,17 @@
 package com.moscrop.official;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.moscrop.official.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +23,17 @@ public class NavDrawerAdapter extends BaseAdapter
     private List<Integer> mDrawerIcons;
     private List<Integer> mDividerPositions;
 	private Context mContext;
-	
-	// Current index and custom fonts
-	private int currentPage;
-	private Typeface fontNormal;
-	private Typeface fontSelected;
+
+    private int mSelectedPosition;
+    private int mSelectedItemColor;
+    private int mUnselectedItemColor;
 	
 	public NavDrawerAdapter(Context context)
 	{
 		this.mDrawerItems = new ArrayList<String>();
 		this.mContext = context;
-		
-		//this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
-		//this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
+
+        setUpColors();
 	}
 	
 	public NavDrawerAdapter(Context context, List<String> drawerItems, List<Integer> drawerIcons, List<Integer> dividerPositions)
@@ -40,10 +42,18 @@ public class NavDrawerAdapter extends BaseAdapter
         this.mDrawerIcons = drawerIcons;
         this.mDividerPositions = dividerPositions;
 		this.mContext = context;
-		
-		//this.fontNormal = Typeface.create("sans-serif-light", Typeface.NORMAL);
-		//this.fontSelected = Typeface.create("sans-serif", Typeface.BOLD);
+
+        setUpColors();
 	}
+
+    private void setUpColors() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = mContext.getTheme();
+        theme.resolveAttribute(R.attr.nav_drawer_selected_item_color, typedValue, true);
+        mSelectedItemColor = typedValue.data;
+        theme.resolveAttribute(R.attr.nav_drawer_unselected_item_color, typedValue, true);
+        mUnselectedItemColor = typedValue.data;
+    }
 	
 	public void addItem(String drawerItem)
 	{
@@ -56,13 +66,7 @@ public class NavDrawerAdapter extends BaseAdapter
             addItem(drawerItem);
         }
     }
-	
-	public void setCurrentPage(int currentPage)
-	{
-		this.currentPage = currentPage;
-		notifyDataSetChanged();
-	}
-	
+
 	@Override
 	public int getCount()
 	{
@@ -121,6 +125,16 @@ public class NavDrawerAdapter extends BaseAdapter
             holder.divider.setVisibility(View.GONE);
         }
 
+        if (position == mSelectedPosition) {
+            Logger.log("Position " + position + " is the currently selected position (" + mSelectedPosition + ")");
+            holder.icon.setColorFilter(mSelectedItemColor, PorterDuff.Mode.SRC_ATOP);
+            holder.text.setTextColor(mSelectedItemColor);
+        } else {
+            Logger.log("Position " + position + " is NOT the currently selected position (" + mSelectedPosition + ")");
+            holder.icon.setColorFilter(mUnselectedItemColor, PorterDuff.Mode.SRC_ATOP);
+            holder.text.setTextColor(mUnselectedItemColor);
+        }
+
         return convertView;
 	}
 	
@@ -131,4 +145,10 @@ public class NavDrawerAdapter extends BaseAdapter
         public TextView text;
         public View divider;
 	}
+
+    public void setSelectedItem(int position) {
+        Logger.log("Setting selected item to: " + position);
+        mSelectedPosition = position;
+        notifyDataSetChanged();
+    }
 }
