@@ -29,7 +29,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.moscrop.official.MainActivity;
 import com.moscrop.official.R;
@@ -663,7 +662,7 @@ public class CalendarFragment extends Fragment
     public void doSearch(final String query) {
 
         // TODO debug toast, remove before release
-        Toast.makeText(getActivity(), "Events: " + query, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Events: " + query, Toast.LENGTH_SHORT).show();
 
         new Thread(new Runnable() {
             @Override

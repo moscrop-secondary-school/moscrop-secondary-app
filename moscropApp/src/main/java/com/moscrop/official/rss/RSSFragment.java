@@ -532,7 +532,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     public void doSearch(String query) {
 
         // TODO debug toast, remove before release
-        Toast.makeText(getActivity(), "News: " + query, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "News: " + query, Toast.LENGTH_SHORT).show();
 
         // Search request handled by loadFeed()
         loadFeed(true, query, false, false, false, true);

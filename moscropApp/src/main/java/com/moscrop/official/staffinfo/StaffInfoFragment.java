@@ -209,7 +209,7 @@ public class StaffInfoFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     public void doSearch(final String query) {
-        Toast.makeText(getActivity(), "Staff: " + query, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Staff: " + query, Toast.LENGTH_SHORT).show();
 
         new Thread(new Runnable() {
             @Override
