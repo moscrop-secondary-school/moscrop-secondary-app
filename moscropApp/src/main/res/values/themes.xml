@@ -166,6 +166,7 @@
         <item name="rss_card_bg_1">@color/bbackground</item>
         <item name="rss_card_bg_2">@color/dbackground</item>
         <item name="rss_divider_size">@dimen/rss_divider_size_black</item>
+        <item name="calendarListBackground">@color/dbackground</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.Dark">
@@ -197,7 +198,9 @@
 
         <item name="rss_divider_size">@dimen/rss_divider_size_transparent</item>
 
-        <item name="caldroid_bg_color">@color/card_background_tblack</item>
+        <item name="caldroid_bg_color">@color/tcalendarwidget</item>
+        <item name="calendarListBackground">@color/tdbackground</item>
+
 
     </style>
 

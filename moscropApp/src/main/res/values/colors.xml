@@ -21,6 +21,7 @@
 
     <color name="window_background">@color/backgroundd</color>
     <color name="divider">#11000000</color>
+    <color name="tcalendarwidget">#aa000000</color>
 
     <color name="black_transparent">#55000000</color>
     <color name="black_transparent_ex">#22000000</color>

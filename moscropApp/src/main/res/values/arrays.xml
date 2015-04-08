@@ -13,7 +13,6 @@
     <string-array name="drawer_icons_light">
         <item>@drawable/ic_action_news_light</item>
         <item>@drawable/ic_action_newsletters_light</item>
-        <!--<item>@drawable/ic_action_student_light</item>-->
         <item>@drawable/ic_action_event_light</item>
         <item>@drawable/ic_action_teacher_light</item>
         <item>@drawable/ic_action_settings_light</item>
@@ -24,7 +23,6 @@
     <string-array name="drawer_icons_dark">
         <item>@drawable/ic_action_news_dark</item>
         <item>@drawable/ic_action_newsletters_dark</item>
-        <!--<item>@drawable/ic_action_student_dark</item>-->
         <item>@drawable/ic_action_event_dark</item>
         <item>@drawable/ic_action_teacher_dark</item>
         <item>@drawable/ic_action_settings_dark</item>
