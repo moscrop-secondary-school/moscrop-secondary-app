@@ -1,10 +1,12 @@
 package com.moscrop.official.staffinfo;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,16 +63,21 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
     }
 
     private int[] iconBgColors = new int[] {
-            0xFFF44336,
+            /*0xFFF44336,
             0xFF673AB7,
             0xFF3F51B5,
             0xFF4CAF50,
-            0xFFFF5722
+            0xFFFF5722*/
+            0xFF81D4FA
     };
 
     private int generateRandomColor(StaffInfoModel model) {
-        int index = Math.abs(model.hashCode()) % iconBgColors.length;
-        return iconBgColors[index];
+        /*int index = Math.abs(model.hashCode()) % iconBgColors.length;
+        return iconBgColors[index];*/
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.toolbar_color, typedValue, true);
+        return typedValue.data;
     }
 
     private int getIconDrawable(String department) {
