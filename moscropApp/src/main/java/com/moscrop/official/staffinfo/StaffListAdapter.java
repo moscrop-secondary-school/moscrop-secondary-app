@@ -89,7 +89,7 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
             case "career programs":
                 return R.drawable.ic_staff_career_prep;
             case "english":
-                return R.drawable.ic_staff_english;     // TODO replace with dedicated english icon
+                return R.drawable.ic_staff_english;
             case "library":
             case "library assistant":
                 return R.drawable.ic_staff_library;
