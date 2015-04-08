@@ -112,4 +112,6 @@
 
     <dimen name="caldroid_elevation">0dp</dimen>    <!-- shadows taken care of with 9patches for pre-lollipop -->
 
+    <dimen name="list_left_icon_size">40dp</dimen>
+
 </resources>

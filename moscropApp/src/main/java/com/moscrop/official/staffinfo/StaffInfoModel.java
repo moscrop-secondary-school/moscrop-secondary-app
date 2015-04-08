@@ -109,4 +109,10 @@ public class StaffInfoModel {
         return sites;
     }
 
+    @Override
+    public int hashCode() {
+        return namePrefix.hashCode() + firstName.hashCode() + lastName.hashCode()
+                + Arrays.hashCode(rooms) + department.hashCode() + email.hashCode() + Arrays.hashCode(sites);
+    }
+
 }

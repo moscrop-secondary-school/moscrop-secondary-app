@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="12dp"
-    android:paddingLeft="72dp"
-    android:paddingBottom="12dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/staff_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:paddingBottom="4dp"
-        style="@style/staff_title"/>
+        android:paddingTop="12dp"
+        android:paddingLeft="72dp"
+        android:paddingBottom="12dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/staff_department"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        style="@style/staff_subhead"/>
+        <TextView
+            android:id="@+id/staff_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingBottom="4dp"
+            style="@style/staff_title"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/staff_department"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            style="@style/staff_subhead"/>
+
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/staff_icon"
+        android:layout_width="@dimen/list_left_icon_size"
+        android:layout_height="@dimen/list_left_icon_size"
+        android:layout_marginLeft="16dp"
+        android:layout_gravity="center_vertical"/>
+
+</FrameLayout>
