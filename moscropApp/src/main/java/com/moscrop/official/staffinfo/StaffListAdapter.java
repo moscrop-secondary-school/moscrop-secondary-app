@@ -61,11 +61,11 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
     }
 
     private int[] iconBgColors = new int[] {
-            0xFFF44336,
-            0xFF673AB7,
-            0xFF3F51B5,
-            0xFF4CAF50,
-            0xFFFF5722
+            0x882962FF,
+            0x882979FF,
+            0x88448AFF,
+            0x8882B1FF,
+            0x880D47A1
     };
 
     private int generateRandomColor(StaffInfoModel model) {
@@ -82,7 +82,7 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
             case "career programs":
                 return R.drawable.ic_staff_career_prep;
             case "english":
-                return R.drawable.ic_staff_library;     // TODO replace with dedicated english icon
+                return R.drawable.ic_staff_english;     // TODO replace with dedicated english icon
             case "library":
             case "library assistant":
                 return R.drawable.ic_staff_library;
@@ -96,7 +96,7 @@ public class StaffListAdapter extends ArrayAdapter<StaffInfoModel> {
             case "social studies":
                 return R.drawable.ic_staff_socials;
             case "languages":
-                return R.drawable.ic_staff_library;     // TODO replace with dedicated languages icon
+                return R.drawable.ic_staff_language;
             default:
                 return R.drawable.ic_staff_youth_worker;
         }
