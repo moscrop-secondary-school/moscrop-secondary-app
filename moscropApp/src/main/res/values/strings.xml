@@ -58,7 +58,7 @@
 
 <!--Preferences-->
     <string name="load_on_wifi_only_title">Load on WiFi Only</string>
-    <string name="load_on_wifi_only_summary">Will only refresh when connected to WiFi is enabled</string>
+    <string name="load_on_wifi_only_summary">Will only refresh when connected to WiFi</string>
     <string name="theme_selector_title">Theme</string>
     <string name="theme_selector_summary">Choose one of 4 themes</string>
     <string name="tag_chooser_title">Select Categories</string>
