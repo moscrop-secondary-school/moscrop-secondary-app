@@ -8,8 +8,8 @@ android {
         applicationId "com.moscrop.official"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 991
-        versionName "0.9.9_rc2"
+        versionCode 1000
+        versionName "1.0.0"
     }
     buildTypes {
         release {
