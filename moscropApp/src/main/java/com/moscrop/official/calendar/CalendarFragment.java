@@ -266,7 +266,7 @@ public class CalendarFragment extends Fragment
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        CalendarDatabase db = new CalendarDatabase(getActivity());
+                        CalendarDatabase db = CalendarDatabase.getInstance(getActivity());
                         final List<GCalEvent> events = db.getAllEvents();
 
                         getActivity().runOnUiThread(new Runnable() {
@@ -346,7 +346,7 @@ public class CalendarFragment extends Fragment
     private void loadCalendar(boolean showCacheWhileLoading) {
 
         // Check if database is empty
-        CalendarDatabase db = new CalendarDatabase(getActivity());
+        CalendarDatabase db = CalendarDatabase.getInstance(getActivity());
         int count = db.getCount();
 
         // Get information about current cached version and last update time
@@ -670,7 +670,7 @@ public class CalendarFragment extends Fragment
             public void run() {
 
                 // Perform FTS query
-                CalendarDatabase db = new CalendarDatabase(getActivity());
+                CalendarDatabase db = CalendarDatabase.getInstance(getActivity());
                 final List<GCalEvent> events = db.search(query);
 
                 // Load resulting list into ListView

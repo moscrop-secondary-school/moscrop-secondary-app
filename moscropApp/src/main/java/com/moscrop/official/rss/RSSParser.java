@@ -313,7 +313,7 @@ public class RSSParser {
                         // Exterminate! Exterminate the cache!
                         // Of course, then replace with new data.
 
-                        RSSDatabase database = new RSSDatabase(mContext);
+                        RSSDatabase database = RSSDatabase.getInstance(mContext);
                         database.deleteAll();
                         database.save(feed.items);
                         database.close();
@@ -325,7 +325,7 @@ public class RSSParser {
 
             //Logger.log("Append load");
 
-            RSSDatabase database = new RSSDatabase(mContext);
+            RSSDatabase database = RSSDatabase.getInstance(mContext);
 
             // Determine if a full load is needed
             RSSInfo info = null;

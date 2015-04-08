@@ -49,7 +49,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
             // If this is a search request, we will
             // simply use the search() method of RSSDatabase
 
-            RSSDatabase db = new RSSDatabase(getContext());
+            RSSDatabase db = RSSDatabase.getInstance(getContext());
             List<RSSItem> items = db.search(getFilterTags(), mSearchQuery);
             db.close();
 
@@ -114,7 +114,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
         SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
 
-        RSSDatabase database = new RSSDatabase(getContext());
+        RSSDatabase database = RSSDatabase.getInstance(getContext());
         int prevCycleDatabaseCount = database.getCount();
 
         while (list.size() < loadLimit) {
@@ -184,7 +184,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
                 String lastFeedVersion = prefs.getString(Preferences.App.Keys.RSS_VERSION, Preferences.App.Default.RSS_VERSION);
                 int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
 
-                RSSDatabase database = new RSSDatabase(getContext());
+                RSSDatabase database = RSSDatabase.getInstance(getContext());
                 parser.parseAndSave(mBlogId, lastFeedVersion, append);
 
                 // Display list
@@ -209,7 +209,7 @@ public class RSSListLoader extends AsyncTaskLoader<RSSResult> {
     private List<RSSItem> getListOnly() {
         SharedPreferences prefs = getContext().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
         int loadLimit = prefs.getInt(Preferences.Keys.LOAD_LIMIT, Preferences.Default.LOAD_LIMIT);
-        RSSDatabase database = new RSSDatabase(getContext());
+        RSSDatabase database = RSSDatabase.getInstance(getContext());
         List<RSSItem> list = database.getItems(getFilterTags(), loadLimit);
         database.close();
         return list;

@@ -241,7 +241,7 @@ public class CalendarParser {
 
         if (feed != null) {
             saveUpdateInfo(context, feed.version);
-            CalendarDatabase db = new CalendarDatabase(context);
+            CalendarDatabase db = CalendarDatabase.getInstance(context);
             db.deleteAll();
             db.saveEventsToDatabase(feed.events);
             db.close();
@@ -308,7 +308,7 @@ public class CalendarParser {
                 // updating the database was needed
 
                 saveUpdateInfo(context, feed.version);
-                CalendarDatabase db = new CalendarDatabase(context);
+                CalendarDatabase db = CalendarDatabase.getInstance(context);
 
                 String newGcalVersion = feed.version;
                 if (!newGcalVersion.equals(lastGcalVersion)) {

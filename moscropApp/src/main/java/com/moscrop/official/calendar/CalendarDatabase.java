@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class CalendarDatabase extends SQLiteOpenHelper {
 
-    private SQLiteDatabase mDB;
+    private static CalendarDatabase mInstance;
     private Context mContext;
 
     private static final String _ID = "_id";
@@ -32,12 +32,19 @@ public class CalendarDatabase extends SQLiteOpenHelper {
 
     private static final String NAME = "calendar";
     private static final String NAME_FTS = "calendar_fts";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2015040701;
 
-    public CalendarDatabase(Context context) {
+    private CalendarDatabase(Context context) {
         super(context, NAME, null, VERSION);
         mContext = context;
-        mDB = getWritableDatabase();
+    }
+
+    public static synchronized CalendarDatabase getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new CalendarDatabase(context);
+        }
+
+        return mInstance;
     }
 
     @Override
@@ -63,15 +70,17 @@ public class CalendarDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // N/A
+        db.execSQL("DROP TABLE IF EXISTS " + NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + NAME_FTS);
+        onCreate(db);
     }
 
     public int deleteAll() {
-        return mDB.delete(NAME_FTS, null, null);
+        return getWritableDatabase().delete(NAME_FTS, null, null);
     }
 
     public int deleteAfterTime(long time) {
-        return mDB.delete(NAME_FTS, COLUMN_END + ">=?", new String[]{String.valueOf(time)});
+        return getWritableDatabase().delete(NAME_FTS, COLUMN_END + ">=?", new String[]{String.valueOf(time)});
     }
 
     /**
@@ -79,7 +88,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
      * @param events
      */
     public void saveEventsToDatabase(List<GCalEvent> events) {
-        mDB.beginTransaction();
+        getWritableDatabase().beginTransaction();
         try {
             for (GCalEvent event : events) {
                 ContentValues values = new ContentValues();
@@ -88,11 +97,11 @@ public class CalendarDatabase extends SQLiteOpenHelper {
                 values.put(COLUMN_LOCATION, event.location);
                 values.put(COLUMN_START, event.startTime);
                 values.put(COLUMN_END, event.endTime);
-                mDB.insert(NAME_FTS, null, values);
+                getWritableDatabase().insert(NAME_FTS, null, values);
             }
-            mDB.setTransactionSuccessful();
+            getWritableDatabase().setTransactionSuccessful();
         } finally {
-            mDB.endTransaction();
+            getWritableDatabase().endTransaction();
         }
     }
 
@@ -136,7 +145,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
         String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
         String[] selectionArgs = new String[] { appendWildcard(query) };
 
-        Cursor c = mDB.query(NAME_FTS, null, selection, selectionArgs, null, null, null);
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, selection, selectionArgs, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
         c.moveToPosition(-1);
         while (c.moveToNext()) {
@@ -166,7 +175,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
      * Retrieve a list of all events stored in the database
      */
     public List<GCalEvent> getAllEvents() {
-        Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, null, null, null, null, null);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
         c.moveToPosition(-1);
         while (c.moveToNext()) {
@@ -192,7 +201,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
 
         String orderBy = COLUMN_START + " ASC";
 
-        Cursor c = mDB.query(NAME_FTS, null, selection, null, null, null, orderBy);
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, selection, null, null, null, orderBy);
         List<GCalEvent> events = new ArrayList<GCalEvent>();
         c.moveToPosition(-1);
         while (c.moveToNext()) {
@@ -242,7 +251,7 @@ public class CalendarDatabase extends SQLiteOpenHelper {
      * Get a count of how many events are in the database
      */
     public int getCount() {
-        Cursor c = mDB.query(NAME_FTS, null, null, null, null, null, null);
+        Cursor c = getReadableDatabase().query(NAME_FTS, null, null, null, null, null, null);
         int count = c.getCount();
         c.close();
         return count;

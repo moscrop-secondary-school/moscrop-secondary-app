@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class RSSDatabase extends SQLiteOpenHelper {
 
-    private SQLiteDatabase mDB;
+    private static RSSDatabase mInstance;
     private Context mContext;
 
     private static final String _ID                 = "_id";
@@ -30,13 +30,20 @@ public class RSSDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_METADATA     = "metadata";
 
     private static final String NAME = "rssfeeds";
-    private static final String NAME_FTS = "rssfeeds_fts";
-    private static final int VERSION = 1;
+    //private static final String NAME_FTS = "rssfeeds_fts";
+    private static final int VERSION = 2015040701;
 
-    public RSSDatabase(Context context) {
+    private RSSDatabase(Context context) {
         super(context, NAME, null, VERSION);
         mContext = context;
-        mDB = getWritableDatabase();
+    }
+
+    public static synchronized RSSDatabase getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new RSSDatabase(context);
+        }
+
+        return mInstance;
     }
 
     @Override
@@ -51,7 +58,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 COLUMN_URL + " TEXT, " +
                 COLUMN_METADATA + " TEXT" + ")");
 
-        db.execSQL("CREATE VIRTUAL TABLE " + NAME_FTS + " USING fts3 (" +
+        /*db.execSQL("CREATE VIRTUAL TABLE " + NAME_FTS + " USING fts3 (" +
                 _ID + ", " +
                 COLUMN_DATE + ", " +
                 COLUMN_TITLE + ", " +
@@ -59,12 +66,13 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 COLUMN_PREVIEW + ", " +
                 COLUMN_TAGS + ", " +
                 COLUMN_URL + ", " +
-                COLUMN_METADATA + ")");
+                COLUMN_METADATA + ")");*/
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // N/A
+        db.execSQL("DROP TABLE IF EXISTS " + NAME);
+        onCreate(db);
     }
 
     /**
@@ -92,7 +100,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
         String orderBy = COLUMN_DATE + " asc";
         String limit = "1";
 
-        Cursor c = mDB.query(NAME_FTS, columns, selection, null, null, null, orderBy, limit);
+        Cursor c = getReadableDatabase().query(NAME, columns, selection, null, null, null, orderBy, limit);
         long oldestPostDate = System.currentTimeMillis();
         if (c.getCount() >= 1) {
             c.moveToPosition(0);
@@ -105,7 +113,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
      * Save a list of RSSItems to the database
      */
     public void save(List<RSSItem> items) {
-        mDB.beginTransaction();
+        getWritableDatabase().beginTransaction();
         try {
             for (RSSItem item : items) {
                 ContentValues values = new ContentValues();
@@ -124,11 +132,11 @@ public class RSSDatabase extends SQLiteOpenHelper {
                 values.put(COLUMN_URL, item.url);
                 values.put(COLUMN_METADATA, item.metadata);
 
-                mDB.insert(NAME_FTS, null, values);
+                getWritableDatabase().insert(NAME, null, values);
             }
-            mDB.setTransactionSuccessful();
+            getWritableDatabase().setTransactionSuccessful();
         } finally {
-            mDB.endTransaction();
+            getWritableDatabase().endTransaction();
         }
     }
 
@@ -137,7 +145,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
      */
     public int getCount() {
         String[] columns = new String[] { _ID };
-        Cursor c = mDB.query(NAME_FTS, columns, null, null, null, null, null, null);
+        Cursor c = getReadableDatabase().query(NAME, columns, null, null, null, null, null, null);
         int count = c.getCount();
         c.close();
         return count;
@@ -151,7 +159,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
      *          posts that match these filters
      */
     public List<RSSItem> search(String[] filterTags, String query) {
-        String selection = NAME_FTS + " MATCH ? COLLATE NOCASE";
+        /*String selection = NAME + " MATCH ? COLLATE NOCASE";
         if (filterTags != null && filterTags.length >= 1) {
             selection += " AND (";
             for (int i=0; i<filterTags.length; i++) {
@@ -169,7 +177,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
 
         List<RSSItem> items = new ArrayList<RSSItem>();
 
-        Cursor c = mDB.query(NAME_FTS, null, selection, selectionArgs, null, null, orderBy);
+        Cursor c = mDB.query(NAME, null, selection, selectionArgs, null, null, orderBy);
         c.moveToPosition(-1);
         while (c.moveToNext()) {
             long duration = c.getLong(c.getColumnIndex(COLUMN_DATE));
@@ -182,7 +190,8 @@ public class RSSDatabase extends SQLiteOpenHelper {
             RSSItem item = new RSSItem(duration, title, content, preview, tags, url, metadata);
             items.add(item);
         }
-        c.close();
+        c.close();*/
+        List<RSSItem> items = new ArrayList<RSSItem>();
 
         return items;
 
@@ -251,7 +260,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
 
         List<RSSItem> items = new ArrayList<RSSItem>();
 
-        Cursor c = mDB.query(NAME_FTS, null, selection, null, null, null, orderBy, limit);
+        Cursor c = getReadableDatabase().query(NAME, null, selection, null, null, null, orderBy, limit);
         c.moveToPosition(-1);
         while (c.moveToNext()) {
             long duration = c.getLong(c.getColumnIndex(COLUMN_DATE));
@@ -274,7 +283,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
      * @return  number of posts deleted
      */
     public int deleteAll() {
-        return mDB.delete(NAME_FTS, null, null);
+        return getWritableDatabase().delete(NAME, null, null);
     }
 
     /**
@@ -285,6 +294,6 @@ public class RSSDatabase extends SQLiteOpenHelper {
      * @return  number of posts deleted
      */
     public int deleteIfPublishedAfter(long time) {
-        return mDB.delete(NAME_FTS, COLUMN_DATE + ">=?", new String[] { String.valueOf(time) });
+        return getWritableDatabase().delete(NAME, COLUMN_DATE + ">=?", new String[]{String.valueOf(time)});
     }
 }
