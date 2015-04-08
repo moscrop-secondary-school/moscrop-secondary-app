@@ -8,7 +8,7 @@
     card_view:cardMaxElevation="0dp"
     card_view:cardElevation="0dp"
     card_view:cardCornerRadius="0dp"
-    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardBackgroundColor="?attr/calendarListBackground"
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout

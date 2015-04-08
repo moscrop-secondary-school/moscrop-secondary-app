@@ -33,6 +33,8 @@
         <attr name="backgrounddd" format="reference" />
         <attr name="linkTextColor" format="reference" />
 
+        <attr name="calendarListBackground" format="reference" />
+
         <!--navdrawer-->
         <attr name="banner" format="reference" />
         <attr name="news" format="reference" />
