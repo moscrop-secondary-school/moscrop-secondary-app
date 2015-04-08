@@ -7,7 +7,6 @@ import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
 import com.moscrop.official.rss.RSSTagCriteria;
-import com.moscrop.official.util.Logger;
 import com.moscrop.official.util.Preferences;
 import com.moscrop.official.util.ThemesUtil;
 import com.moscrop.official.util.Util;
@@ -61,9 +60,6 @@ public class SettingsFragment extends PreferenceFragment
         mTagChooser = (MultiSelectListPreference) findPreference(Preferences.Keys.TAGS);
         updateTagsList();
         mTagChooser.setOnPreferenceChangeListener(this);
-
-        Preference refresh = findPreference("refresh_tag_list");
-        refresh.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -80,12 +76,12 @@ public class SettingsFragment extends PreferenceFragment
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        int titleRes = preference.getTitleRes();
+        /*int titleRes = preference.getTitleRes();
         if (titleRes == R.string.refresh_tag_list_title) {
             Logger.log("Refresh clicked");
             refreshTagsFromServer();
             return true;
-        }
+        }*/
         return false;
     }
 

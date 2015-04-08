@@ -285,6 +285,7 @@ public class NewsDisplayFragment extends Fragment {
                 .setInterpolator(mInterpolator)
                 .alpha(0);
 
+        mColorTo = mColorTo | 0xFF000000;
         ValueAnimator colorAnim = ObjectAnimator.ofInt(mCardCopy, "backgroundColor", mColorFrom, mColorTo);
         colorAnim.setDuration(primaryDuration);
         colorAnim.setEvaluator(new ArgbEvaluator());

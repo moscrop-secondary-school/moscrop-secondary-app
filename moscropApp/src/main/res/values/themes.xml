@@ -113,7 +113,7 @@
         <item name="backgrounddd">@color/dbackgrounddd</item>
         <item name="linkTextColor">@color/linkColorDark</item>
 
-        <item name="calendarListBackground">@color/dbackgroundd</item>
+        <item name="calendarListBackground">?android:attr/windowBackground</item>
 
         <item name="banner">@drawable/banner</item>
         <item name="drawer_icon_array">@array/drawer_icons_dark</item>

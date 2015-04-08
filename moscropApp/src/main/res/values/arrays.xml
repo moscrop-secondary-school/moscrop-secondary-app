@@ -7,7 +7,7 @@
         <item>Teachers</item>
         <item>Settings</item>
         <item>About</item>
-        <item>Contacts</item>
+        <item>Contact Us</item>
     </string-array>
 
     <string-array name="drawer_icons_light">

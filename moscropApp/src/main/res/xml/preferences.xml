@@ -19,10 +19,6 @@
         android:entries="@array/theme_texts"
         android:entryValues="@array/tag_values"
         android:defaultValue="@array/default_tags"/>
-    <Preference
-        android:key="refresh_tag_list"
-        android:title="@string/refresh_tag_list_title"
-        android:summary="@string/refresh_tag_list_summary"/>
 
 </PreferenceScreen>
 
