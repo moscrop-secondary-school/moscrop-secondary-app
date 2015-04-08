@@ -1,10 +1,12 @@
 package com.moscrop.official.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 
 import java.io.BufferedReader;
@@ -47,7 +49,8 @@ public class Util {
         return sb.toString();
     }
 
-    public static boolean isConnected(Context context) {
+    public static boolean isConnected(final Context context) {
+
         if(context == null)
             return false;
 
@@ -55,7 +58,14 @@ public class Util {
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
+
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (prefs.getBoolean(Preferences.Keys.LOAD_ON_WIFI_ONLY, Preferences.Default.LOAD_ON_WIFI_ONLY)) {
+            return activeNetwork != null && activeNetwork.isConnected() && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+        } else {
+            return activeNetwork != null && activeNetwork.isConnected();
+        }
     }
 
 

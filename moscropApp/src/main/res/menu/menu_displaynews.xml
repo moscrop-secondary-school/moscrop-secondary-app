@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.moscrop.official.NewsDisplayActivity" >
     
@@ -7,12 +8,14 @@
 	    android:orderInCategory="100"
 	    android:title="@string/action_openbrowser"
 	    android:icon="@drawable/ic_action_browser"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 	
 	<item 
 	    android:id="@+id/action_viewsource"
 	    android:orderInCategory="200"
 	    android:title="View source"
-        android:showAsAction="never"/>
+        android:enabled="false"
+        android:visible="false"
+        app:showAsAction="never"/>
 	    
 </menu>

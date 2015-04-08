@@ -10,6 +10,7 @@ import java.util.Set;
 public class Preferences {
 
     public static class Default {
+        public static final boolean LOAD_ON_WIFI_ONLY = true;
         public static final String THEME = "0";
         public static final Set<String> TAGS = new HashSet<String>(Arrays.asList(new String[] { "Official" }));
         public static final int LOAD_LIMIT = 24;
@@ -18,6 +19,7 @@ public class Preferences {
 
     public static class Keys {
         // Default shared preferences
+        public static final String LOAD_ON_WIFI_ONLY = "load_on_wifi_only";
         public static final String THEME = "theme_selector";
         public static final String TAGS = "tag_chooser";
         public static final String LOAD_LIMIT = "load_limit";
