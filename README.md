@@ -1,22 +1,3 @@
-********** To Do **********
-
-** Important **
-
-In nav bar, settings to contact do not have ripples
-Add search functions app wide (for posts & teachers)
-Add notifications & settings for pull periods
-
-** Theme/Design Related **
-
-Theme webview/html view - ie text when forwarded, bolded, underlined, and links etc  
-Make light transparent theme?  
-Add animations when opening cards (ie animup)
-
-** Questionable **
-
-Add option to hide a card  
-Add filters for calendar
-
 ********** Dependencies **********
 
 All dependencies are configured correctly already. Some dependencies are in git submodules. These will be updated automatically (see section on updating below) and are relatively hassle-free. Others you will need to install beforehand. So far, the dependencies you will need to install separately are:
