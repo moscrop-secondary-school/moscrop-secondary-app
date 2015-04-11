@@ -36,6 +36,7 @@ import com.moscrop.official.ToolbarActivity;
 import com.moscrop.official.ToolbarSpinnerAdapter;
 import com.moscrop.official.util.Logger;
 import com.moscrop.official.util.Preferences;
+import com.moscrop.official.util.Util;
 
 import org.json.JSONException;
 
@@ -583,7 +584,16 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             }
 
         } else {
-            Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
+            if (!Util.isConnected(getActivity())) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                if (prefs.getBoolean(Preferences.Keys.LOAD_ON_WIFI_ONLY, Preferences.Default.LOAD_ON_WIFI_ONLY)) {
+                    Toast.makeText(getActivity(), "Please make sure you have a valid WiFi connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Please make sure you have a valid internet connection", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
