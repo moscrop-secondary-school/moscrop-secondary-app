@@ -41,7 +41,7 @@ import java.util.Set;
 public class RSSTagCriteria {
 
     public static final String TAG_LIST_JSON = "taglist.json";
-    public static final String TAG_LIST_URL = "http://pastebin.com/raw.php?i=dMePcZ9e";
+    public static final String TAG_LIST_URL = "https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropApp/src/main/assets/taglist.json";
 
     public static final String NO_IMAGE = "no image";
 
