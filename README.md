@@ -20,7 +20,7 @@ Clone (SSH):
 ```
 #!bash
 
-git clone git@bitbucket.org:IvonLiu/moscrop-secondary-app.git
+git clone git@github.com:IvonLiu/moscrop-secondary-app.git
 ```
 
 Clone (HTTPS):
@@ -28,7 +28,7 @@ Clone (HTTPS):
 ```
 #!bash
 
-git clone https://IvonLiu@bitbucket.org/IvonLiu/moscrop-secondary-app.git
+git clone https://github.com/IvonLiu/moscrop-secondary-app.git
 ```
 
 Configure submodules:
@@ -85,9 +85,9 @@ That means that the main repository is referencing a submodule commit that the a
 
 ********** Miscellaneous **********
 
-Google Play Store page: https://play.google.com/store/apps/details?id=com.moscropsecondary.official
+Google Play Store page: https://play.google.com/store/apps/details?id=com.moscrop.official
 Beta testing group: https://plus.google.com/communities/112676384883353874549  
-Google Play beta opt-in: https://play.google.com/apps/testing/com.moscropsecondary.official
+Google Play beta opt-in: https://play.google.com/apps/testing/com.moscrop.official
 Guide on git submodules: http://git-scm.com/book/en/Git-Tools-Submodules
 
 Have fun!
