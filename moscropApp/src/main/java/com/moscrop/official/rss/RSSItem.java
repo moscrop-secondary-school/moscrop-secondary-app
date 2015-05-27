@@ -35,7 +35,7 @@ public class RSSItem implements Parcelable {
 
     public RSSItem(long date, String title, String content, String preview, String[] tags, String url, String metadata) {
         this.date = date;
-        this.title = title;
+        this.title = cleanUpTitle(title);
         this.content = content;
         if (preview != null) {
             this.preview = preview;
@@ -49,6 +49,12 @@ public class RSSItem implements Parcelable {
         } else {
             this.metadata = generateDisplayMetaData(content);
         }
+    }
+
+    private String cleanUpTitle(String title) {
+        return title.replaceAll("(?<=\\[).*?(?=\\])", "")   // Remove things within [stuff]
+                .replaceAll("\\[\\]", "")                   // Remove the [] that are leftover
+                .trim();                                    // Remove leading and trailing white spaces
     }
 
     private String generateDisplayMetaData(String content) {
