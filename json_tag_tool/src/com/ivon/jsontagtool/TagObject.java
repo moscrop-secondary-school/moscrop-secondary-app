@@ -18,7 +18,7 @@ public class TagObject {
 	public static class InvalidCriteriaException extends RuntimeException {
 		private static final long serialVersionUID = 1068142240712211856L;
 		public InvalidCriteriaException() { super(); }
-		public InvalidCriteriaException(String message) { super(message); }
+		public InvalidCriteriaException(String messokay howage) { super(message); }
 		public InvalidCriteriaException(String message, Throwable cause) { super(message, cause); }
 		public InvalidCriteriaException(Throwable cause) { super(cause); }
 		protected InvalidCriteriaException(String message, Throwable cause,
