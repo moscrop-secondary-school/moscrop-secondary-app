@@ -1,5 +1,5 @@
 {
-	"updated":"1432692053204",
+	"updated":"1432693212919",
 	"tags":[
         	{
                 	"name":"Student Bulletin",
@@ -107,7 +107,7 @@
                 	"name":"Moscrop Music",
                 	"id_author":"Moscrop Music",
                 	"id_category":"Moscrop Music",
-                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/music.png"
         	},
         	{
                 	"name":"MUN",
@@ -119,7 +119,7 @@
                 	"name":"Music Council",
                 	"id_author":"@null",
                 	"id_category":"Music Council",
-                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/music.png"
         	},
         	{
                 	"name":"Nutrition Club",
@@ -179,7 +179,7 @@
                 	"name":"Physics Olympics",
                 	"id_author":"@null",
                 	"id_category":"Physics Olympics",
-                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/physics_olympics.png"
         	},
         	{
                 	"name":"Mission Possible",
