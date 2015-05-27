@@ -247,7 +247,7 @@ public class RSSDatabase extends SQLiteOpenHelper {
             selection += " AND (";
             for (int i=0; i<filterTags.length; i++) {
                 String tag = filterTags[i];
-                tag = "\'%" + tag + "%\'";
+                tag = "\'%," + tag + "%\'";
                 selection += COLUMN_TAGS + " LIKE " + tag;
                 if (i < filterTags.length-1) {
                     selection += " OR ";
