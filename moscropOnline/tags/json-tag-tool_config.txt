@@ -1,0 +1,2 @@
+input:tag_data_spreadsheet.csv
+output:taglist.json

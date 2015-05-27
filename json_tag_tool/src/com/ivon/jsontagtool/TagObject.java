@@ -29,7 +29,7 @@ public class TagObject {
 	}
 	
 	public static final String EMPTY_FIELD = "@null";
-	public static final String DEFAULT_ICON = "https://copy.com/orrImpof8iSJFJWt";
+	public static final String DEFAULT_ICON = "moscrop_app";
 	
 	public final String name;
 	public final String id_author;
@@ -56,14 +56,21 @@ public class TagObject {
 		}
 		
 		if (isStringEmpty(image)) {
-			this.icon_img = DEFAULT_ICON;
+			this.icon_img = completeIconGithubUrl(DEFAULT_ICON);
 		} else {
-			this.icon_img = image;
+			this.icon_img = completeIconGithubUrl(image);
 		}
+		completeIconGithubUrl(image);
 		
 		if (this.id_author.equals(EMPTY_FIELD) && this.id_category.equals(EMPTY_FIELD)) {
 			throw new InvalidCriteriaException("You must specify either a name or category to match for!");
 		}
+	}
+	
+	private static String completeIconGithubUrl(String iconName) {
+		return "https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/"
+				+ iconName
+				+ ".png";
 	}
 	
 	private boolean isStringEmpty(String s) {
