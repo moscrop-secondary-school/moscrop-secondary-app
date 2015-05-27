@@ -1,173 +1,191 @@
 {
-	"updated":"1428472456788",
+	"updated":"1432692053204",
 	"tags":[
         	{
                 	"name":"Student Bulletin",
                 	"id_author":"Moscrop School",
                 	"id_category":"Newsletters",
-                	"icon_img":"https://copy.com/4sYt7piMw4Kkyccm"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_official.png"
         	},
         	{
                 	"name":"Official",
                 	"id_author":"Moscrop Dev",
                 	"id_category":"Official",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Scholarships",
                 	"id_author":"Moscrop Scholarships",
                 	"id_category":"Scholarships",
-                	"icon_img":"https://copy.com/BhR1IcyiLf7K8JA6"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/scholarships.png"
         	},
         	{
                 	"name":"Mod",
                 	"id_author":"Allan W",
                 	"id_category":"Mod",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Animal Protection Club",
                 	"id_author":"Andrew Zhen",
                 	"id_category":"APC",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Best Buddies",
                 	"id_author":"Moscrop BestBuddies",
                 	"id_category":"Best Buddies",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Book Club",
                 	"id_author":"@null",
                 	"id_category":"Book Club",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Cancer Society",
                 	"id_author":"Unknown",
                 	"id_category":"Cancer Society",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Children with Disabilities Committee",
                 	"id_author":"Moscrop CWD",
                 	"id_category":"Children with Disabilities Committee",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Christian Club",
                 	"id_author":"Christian Club",
                 	"id_category":"Christian Club",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
+        	},
+        	{
+                	"name":"Entrepreneurship Club",
+                	"id_author":"@null",
+                	"id_category":"Entrepreneurship Club",
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Fine Arts Council",
                 	"id_author":"Moscrop Fine Arts Council",
                 	"id_category":"Fine Arts Council",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"GAAP",
                 	"id_author":"Gaap Moscrop",
                 	"id_category":"GAAP",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Grad 2k15",
                 	"id_author":"Grad 2k15",
                 	"id_category":"Grad 2k15",
-                	"icon_img":"https://copy.com/ld1kJnhBemiFCgUO"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/grad_council.png"
         	},
         	{
                 	"name":"Leo",
                 	"id_author":"Leo Club",
                 	"id_category":"Leo Club",
-                	"icon_img":"https://copy.com/XsbaHfIRKgTneTH2"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/leo_club.png"
         	},
         	{
                 	"name":"MAC",
                 	"id_author":"Moscrop MAC",
                 	"id_category":"MAC",
-                	"icon_img":"https://copy.com/4sYt7piMw4Kkyccm"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/mac.png"
         	},
         	{
                 	"name":"Mind Over Autism",
                 	"id_author":"Ohin",
                 	"id_category":"Mind Over Autism",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
+        	},
+        	{
+                	"name":"Moscrop Music",
+                	"id_author":"Moscrop Music",
+                	"id_category":"Moscrop Music",
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"MUN",
                 	"id_author":"Moscrop Model United Nations Club",
                 	"id_category":"MUN",
-                	"icon_img":"https://copy.com/4sYt7piMw4Kkyccm"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/MUN.png"
         	},
         	{
                 	"name":"Music Council",
                 	"id_author":"@null",
                 	"id_category":"Music Council",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Nutrition Club",
                 	"id_author":"@null",
                 	"id_category":"Nutrition Club",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Open Door Club",
                 	"id_author":"@null",
                 	"id_category":"Open Door Club",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Reach for the Top",
                 	"id_author":"LAPD RAMPART",
                 	"id_category":"Reach for the Top",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Sleep Tight",
                 	"id_author":"Moscrop Sleep Tight",
                 	"id_category":"Sleep Tight",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
+        	},
+        	{
+                	"name":"Squash Club",
+                	"id_author":"@null",
+                	"id_category":"Squash Club",
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"SWC",
                 	"id_author":"Moscrop SWC",
                 	"id_category":"SWC",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Taste of Asia Club",
                 	"id_author":"Moscrop TasteofAsia",
                 	"id_category":"Taste of Asia Club",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Unity in Green",
                 	"id_author":"Unity in Green",
                 	"id_category":"Unity in Green",
-                	"icon_img":"https://copy.com/4sYt7piMw4Kkyccm"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/unity_in_green.png"
         	},
         	{
                 	"name":"Ski Team",
                 	"id_author":"Kirsten Geyer",
                 	"id_category":"Ski Team",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Physics Olympics",
                 	"id_author":"@null",
                 	"id_category":"Physics Olympics",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	},
         	{
                 	"name":"Mission Possible",
                 	"id_author":"Mission Possible",
                 	"id_category":"Mission Possible",
-                	"icon_img":"https://copy.com/orrImpof8iSJFJWt"
+                	"icon_img":"https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png"
         	}
 	]
 }

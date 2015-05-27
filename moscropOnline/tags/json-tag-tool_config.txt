@@ -1,2 +1,2 @@
 input:tag_data_spreadsheet.csv
-output:taglist.json
+output:../../moscropApp/src/main/assets/taglist.json
