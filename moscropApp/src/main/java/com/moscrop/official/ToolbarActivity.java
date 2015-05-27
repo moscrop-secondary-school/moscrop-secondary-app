@@ -2,14 +2,14 @@ package com.moscrop.official;
 
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 /**
  * Created by ivon on 19/10/14.
  */
-public abstract class ToolbarActivity extends ActionBarActivity {
+public abstract class ToolbarActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
