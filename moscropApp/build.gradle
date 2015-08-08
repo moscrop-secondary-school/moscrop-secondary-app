@@ -18,15 +18,8 @@ android {
         }
     }
     productFlavors {
-        app_release {
-            buildConfigField "boolean", "MOSCROPDEBUG", "false"
-        }
         side_apk {
-            buildConfigField "boolean", "MOSCROPDEBUG", "true"
             applicationId "com.moscrop.official.test"
-        }
-        app_debug {
-            buildConfigField "boolean", "MOSCROPDEBUG", "true"
         }
     }
 }
