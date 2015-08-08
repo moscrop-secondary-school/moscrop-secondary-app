@@ -65,6 +65,14 @@ proguard/
 # Other Misc. files
 #############################################################################
 
+node_modules/
+
+# API keys stored here
+api_config.*
+
+# Cached copy of blogger feed
+blogger_posts.json
+
 # Temp files for KDE and other Editor's 
 *~
 
