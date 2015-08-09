@@ -9,11 +9,9 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,10 +30,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moscrop.official.R;
 import com.moscrop.official.util.Logger;
 import com.moscrop.official.util.ThemesUtil;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 public class NewsDisplayFragment extends Fragment {
 
@@ -51,7 +55,6 @@ public class NewsDisplayFragment extends Fragment {
 
     private static final TimeInterpolator mInterpolator = new AccelerateDecelerateInterpolator();
 
-	private String mUrl = null;
 	private String mRawHtmlContent = "";
 	private String mTitle = "";
 
@@ -101,8 +104,6 @@ public class NewsDisplayFragment extends Fragment {
 		
 		View mContentView = inflater.inflate(R.layout.fragment_newsdisplay, container, false);
 
-        mUrl = getArguments().getString(NewsDisplayActivity.EXTRA_URL);
-        mRawHtmlContent = getArguments().getString(NewsDisplayActivity.EXTRA_CONTENT);
         mTitle = getArguments().getString(NewsDisplayActivity.EXTRA_TITLE);
 
         mOriginalOrientation = getArguments().getInt(NewsDisplayActivity.EXTRA_ORIENTATION);
@@ -202,6 +203,19 @@ public class NewsDisplayFragment extends Fragment {
                 runEnterAnimation(savedInstanceState == null);
 
                 return true;
+            }
+        });
+
+        // Fetch the content from Parse
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
+        query.selectKeys(Arrays.asList("content"));
+        query.getInBackground(item.objectId, new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e == null) {
+                    mRawHtmlContent = parseObject.getString("content");
+                    mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
+                }
             }
         });
 
@@ -486,16 +500,17 @@ public class NewsDisplayFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
 	}
-	
+
 	private void openExternalBrowser() {
-		if(mUrl != null) {
+		/*if(mUrl != null) {
 			Uri webpage = Uri.parse(mUrl);
 		    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
 		    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
 		        startActivity(intent);
 		    }
-		}
-	}
+		}*/
+        Toast.makeText(getActivity(), "This feature is no longer supported", Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * For debug purposes.
