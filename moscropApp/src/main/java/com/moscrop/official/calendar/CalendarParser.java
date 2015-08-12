@@ -3,6 +3,7 @@ package com.moscrop.official.calendar;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.moscrop.official.util.ApiConfig;
 import com.moscrop.official.util.DateUtil;
 import com.moscrop.official.util.JsonUtil;
 import com.moscrop.official.util.Logger;
@@ -24,8 +25,6 @@ import java.util.List;
  * Created by ivon on 9/2/14.
  */
 public class CalendarParser {
-
-    public static final String API_KEY = "AIzaSyDQgD1es2FQdm4xTA1tU8vFniOglwe4HsE";
 
     private static class CalendarInfo {
         private final String version;
@@ -195,14 +194,20 @@ public class CalendarParser {
     private static String getCalendarUrlFromId(String id, String timeMin, boolean headerInfoOnly) {
         if (!headerInfoOnly) {
             if (timeMin == null) {
-                return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&key=" + API_KEY;
+                return "https://www.googleapis.com/calendar/v3/calendars/" + id
+                        + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&key="
+                        + ApiConfig.GoogleCalendar.API_KEY;
             } else {
-                return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&timeMin=" + timeMin + "&key=" + API_KEY;
+                return "https://www.googleapis.com/calendar/v3/calendars/" + id
+                        + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&timeMin="
+                        + timeMin + "&key=" + ApiConfig.GoogleCalendar.API_KEY;
             }
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             String now = sdf.format(new Date(System.currentTimeMillis()));
-            return "https://www.googleapis.com/calendar/v3/calendars/" + id + "/events?maxResults=1&timeMax=" + now + "&timeMax=" + now + "&key=" + API_KEY;
+            return "https://www.googleapis.com/calendar/v3/calendars/" + id
+                    + "/events?maxResults=1&timeMax=" + now + "&timeMax=" + now + "&key="
+                    + ApiConfig.GoogleCalendar.API_KEY;
         }
     }
 
