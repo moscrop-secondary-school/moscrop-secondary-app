@@ -196,18 +196,18 @@ public class CalendarParser {
             if (timeMin == null) {
                 return "https://www.googleapis.com/calendar/v3/calendars/" + id
                         + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&key="
-                        + ApiConfig.GoogleCalendar.API_KEY;
+                        + ApiConfig.Google.API_KEY;
             } else {
                 return "https://www.googleapis.com/calendar/v3/calendars/" + id
                         + "/events?maxResults=1000&orderBy=startTime&singleEvents=true&timeMin="
-                        + timeMin + "&key=" + ApiConfig.GoogleCalendar.API_KEY;
+                        + timeMin + "&key=" + ApiConfig.Google.API_KEY;
             }
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             String now = sdf.format(new Date(System.currentTimeMillis()));
             return "https://www.googleapis.com/calendar/v3/calendars/" + id
                     + "/events?maxResults=1&timeMax=" + now + "&timeMax=" + now + "&key="
-                    + ApiConfig.GoogleCalendar.API_KEY;
+                    + ApiConfig.Google.API_KEY;
         }
     }
 

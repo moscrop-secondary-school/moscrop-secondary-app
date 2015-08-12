@@ -17,6 +17,6 @@ public class App extends Application {
         // Enable Local Datastore
         Parse.enableLocalDatastore(this);
         // Initialize Parse
-        Parse.initialize(this, ApiConfig.API_KEY, ApiConfig.CLIENT_KEY);
+        Parse.initialize(this, ApiConfig.Parse.API_KEY, ApiConfig.Parse.CLIENT_KEY);
     }
 }
