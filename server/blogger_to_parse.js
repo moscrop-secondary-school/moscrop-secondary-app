@@ -1,7 +1,7 @@
 var fs = require('fs');
 var api_config = require('./api_config.js');
 var Parse = require('parse').Parse;
-Parse.initialize(api_config.API_KEY, api_config.JS_KEY);
+Parse.initialize(api_config.Parse.API_KEY, api_config.Parse.JS_KEY);
 
 var BlogPost = Parse.Object.extend("BlogPosts");
 
@@ -18,13 +18,16 @@ for (var i=posts.length-1; i>=0; i--) {
     var bloggerItem = posts[i];
     var post = new BlogPost();
 
-    var date = new Date(Date.parse(bloggerItem.published.$t));
+    var published = new Date(Date.parse(bloggerItem.published.$t));
+    var updated = new Date(Date.parse(bloggerItem.updated.$t));
 
     var categoryInfo = getCategoryInfo(bloggerItem);
 
     post.save({
+              bloggerId: "0",
               title: cleanUpTitle(bloggerItem.title.$t),
-              date: date,
+              published: published,
+              updated: updated,
               category: categoryInfo[0],
               content: bloggerItem.content.$t,
               icon: categoryInfo[1],
