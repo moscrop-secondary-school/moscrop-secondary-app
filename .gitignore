@@ -70,6 +70,7 @@ node_modules/
 # API keys stored here
 api_config.js
 ApiConfig.java
+global.json
 
 # Cached copy of blogger feed
 blogger_posts.json
