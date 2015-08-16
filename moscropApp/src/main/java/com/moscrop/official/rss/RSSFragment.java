@@ -477,8 +477,8 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         }
         ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
         query.whereContainedIn("category", Arrays.asList(getFilterTags()));
-        query.selectKeys(Arrays.asList("date", "title", "category", "icon", "bgImage"));
-        query.orderByDescending("date");
+        query.selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"));
+        query.orderByDescending("published");
         query.setLimit(Preferences.Default.LOAD_LIMIT);
 
         if (append) {
@@ -510,7 +510,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                         if (item.getString("category") != null) {
                             RSSItem post = new RSSItem(
                                     item.getObjectId(),
-                                    item.getDate("date").getTime(),
+                                    item.getDate("published").getTime(),
                                     item.getString("title"),
                                     item.getString("category").split(","),
                                     item.getString("icon"),
