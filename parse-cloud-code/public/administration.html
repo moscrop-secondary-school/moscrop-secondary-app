@@ -1,0 +1,219 @@
+<html>
+
+    <head>
+        <title>Moscrop Secondary | Admin</title>
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!-- Import Parse -->
+        <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+    </head>
+
+    <body>
+
+        <div id="superuserActions" class="row">
+            <form class="col s12">
+                <div class="row">    
+                    <div class="input-field col s12">
+                      <input id="admin_username_field" type="text" class="validate">
+                      <label for="admin_username_field">Username</label>
+                    </div>
+                    <a class="waves-effect waves-light btn" onclick="addAdministrator()">Add Administrator</a>
+                </div>
+            </form>
+        </div>
+
+        <div id="administratorActions" class="row">
+            <form class="col s12">
+                <div class="row">    
+                    <div class="input-field col s12">
+                      <input id="mod_username_field" type="text" class="validate">
+                      <label for="mod_username_field">Username</label>
+                    </div>
+                    <a class="waves-effect waves-light btn" onclick="addModerator()">Add Moderator</a>
+                </div>
+            </form>
+        </div>
+
+        <div id="moderatorActions" class="row">
+            <form class="col s12">
+                <div class="row">    
+                    <div class="input-field col s6">
+                      <input id="contributor_username_field" type="text" class="validate">
+                      <label for="contributor_username_field">Username</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <input id="contributor_group_field" type="text" class="validate">
+                      <label for="contributor_group_field">Group</label>
+                    </div>                    
+                    <a class="waves-effect waves-light btn" onclick="addContributor()">Add Contributor</a>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
+            var currentUser = Parse.User.current();
+
+            if (currentUser) {
+                // Only administrator or Superuser can access
+                if (currentUser.getUsername() != "Superuser") {
+                    var divSuperuserActions = document.getElementById("superuserActions");
+                    divSuperuserActions.style.display = "none"
+                    var query = new Parse.Query(Parse.Role);
+                    query.equalTo("name", "administrator");
+                    query.equalTo("users", Parse.User.current());
+                    query.first().then(function(adminRole) {
+                        if (!adminRole) {
+                            var divAdministratorActions = document.getElementById("administratorActions");
+                            divAdministratorActions.style.display = "none"
+                            query.equalTo("name", "moderator");
+                            query.first().then(function(modRole) {
+                                if (!modRole) {
+                                    Parse.User.logOut();
+                                    currentUser = Parse.User.current();  // this will now be null
+                                    window.location.href = "login.html"
+                                }
+                            });
+                        }
+                    });
+                }
+            } else {
+                // show the signup or login page
+                window.location.href = "login.html"
+            }
+
+            function addAdministrator() {
+                if (currentUser.getUsername() != "Superuser") {
+                    alert("You do not have permission to add administrators.");
+                    return;
+                }
+
+                var username = document.getElementById("admin_username_field").value;
+                var roleName = "administrator";
+
+                addUserToRole(username, roleName);
+            }
+
+            function addModerator() {
+                if (currentUser.getUsername() != "Superuser") {
+                    var roleQuery = new Parse.Query(Parse.Role);
+                    roleQuery.equalTo("name", "administrator");
+                    roleQuery.equalTo("users", Parse.User.current());
+                    roleQuery.first().then(function(role) {
+                        if (!role) {
+                            alert("You do not have permission to add moderators.");
+                            return;
+                        }
+                    });
+                }
+
+                var username = document.getElementById("mod_username_field").value;
+                var roleName = "moderator";
+
+                addUserToRole(username, roleName);
+            }
+
+            function addContributor() {
+                if (currentUser.getUsername() != "Superuser") {
+                    var roleQuery = new Parse.Query(Parse.Role);
+                    roleQuery.equalTo("name", ["admin", "moderator"]);
+                    roleQuery.equalTo("users", Parse.User.current());
+                    roleQuery.first().then(function(role) {
+                        if (!role) {
+                            alert("You do not have permission to add contributors.");
+                            return;                    
+                        }
+                    });
+                }
+
+                var username = document.getElementById("contributor_username_field").value;
+                var roleName = document.getElementById("contributor_group_field").value;
+
+                addUserToRole(username, roleName);
+            }
+
+            function addUserToRole(username, roleName) {
+
+                var roleQuery = new Parse.Query(Parse.Role);
+                roleQuery.equalTo("name", roleName);
+                roleQuery.first({
+                    success: function(role) {
+                        if (!role) {
+                            roleQuery.equalTo("name", "moderator");
+                            roleQuery.first().then(function(modRole) {
+                                var roleACL = new Parse.ACL();
+                                roleACL.setPublicReadAccess(true);
+                                roleACL.setRoleWriteAccess(modRole, true);
+                                role = new Parse.Role(roleName, roleACL);
+                                role.getRoles().add(modRole);
+                                role.save({
+                                    success: function(newRole) {
+                                        roleQuery.equalTo("name", "contributor");
+                                        roleQuery.first().then(function(contributorRole) {
+                                            contributorRole.getRoles().add(newRole);
+                                            contributorRole.save({
+                                                success: function(updatedContributorRole) {
+                                                    console.log("Successfully added new role: " + newRole.getName());
+                                                    addUserToRole(username, roleName);
+                                                    return;
+                                                },
+                                                error: function(object, error) {
+                                                    alert("Error saving contributor role after adding " + roleName + " as subrole: " + error.code + ", " + error.message);
+                                                }
+                                            })
+                                        });
+                                    },
+                                    error: function(object, error) {
+                                        alert("Error adding new role " + roleName + ": " + error.code + ", " + error.message);
+                                    }
+                                });
+                            });
+                        } else {
+                            var userQuery = new Parse.Query(Parse.User);
+                            userQuery.equalTo("username", username);
+                            userQuery.first({
+                                success: function(user) {
+                                    if (!user) {
+                                        alert("User '" + username + "' does not exist!");
+                                        return;
+                                    }
+                                    role.getUsers().add(user);
+                                    role.save({
+                                        success: function(updatedRole) {
+                                            console.log("Added " + username + " to " + roleName);
+                                            if (roleName == "administrator") {
+                                                document.getElementById("admin_username_field").value = "";
+                                            } else if (roleName == "moderator") {
+                                                document.getElementById("mod_username_field").value = "";
+                                            } else {
+                                                document.getElementById("contributor_username_field").value = "";
+                                                document.getElementById("contributor_group_field").value = "";
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function(object, error) {
+                                    alert("Error getting user " + username + ": " + error.code + ", " + error.message);
+                                }
+                            });
+                        }
+                    },
+                    error: function(object, error) {
+                        alert("Error getting " + roleName + " role: " + error.code + ", " + error.message);
+                    }
+                });
+            }
+
+        </script>
+
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+    </body>
+</html>

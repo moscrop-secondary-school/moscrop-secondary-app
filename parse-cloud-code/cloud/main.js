@@ -21,7 +21,9 @@ var FETCH_FROM_BLOGGER = {
 
 	response: undefined,
 
-	tags:undefined,
+	tags: undefined,
+
+	moderatorRole: undefined,
 	
 	taskTotals: {
 		blogInfo: 1,				// there will always be one blogInfo task
@@ -74,6 +76,9 @@ Parse.Cloud.define("fetch_from_blogger", function(request, response) {
 
 	FETCH_FROM_BLOGGER.response = response;
 
+    // Use master key to bypass ACL
+    Parse.Cloud.useMasterKey();
+
 	var tags_url = "https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropApp/src/main/assets/taglist.json";
 	Parse.Cloud.httpRequest({
 		method: "GET",
@@ -84,22 +89,34 @@ Parse.Cloud.define("fetch_from_blogger", function(request, response) {
 			var responseStr = httpResponse.text;
 			FETCH_FROM_BLOGGER.tags = JSON.parse(responseStr).tags;
 
-			var blogger_info_url = "https://www.googleapis.com/blogger/v3/blogs/2266114278608361042?key=" + api_config.Google.API_KEY;
+			var roleQuery = new Parse.Query(Parse.Role);
+            roleQuery.equalTo("name", "moderator");
+            roleQuery.first({
+                success: function(role) {
 
-			Parse.Cloud.httpRequest({
-				method: "GET",
-				url: blogger_info_url,
-				
-				success: function(httpResponse) {
-					bloggerInfo = httpResponse.data;
-					processBloggerInfo(bloggerInfo);
-				},
-				
-				error: function(httpResponse) {
-					response.error("Fetch blogger info failed: " + httpResponse.status);
-				}
+                    FETCH_FROM_BLOGGER.moderatorRole = role;
 
-			});
+        			var blogger_info_url = "https://www.googleapis.com/blogger/v3/blogs/2266114278608361042?key=" + api_config.Google.API_KEY;
+
+        			Parse.Cloud.httpRequest({
+        				method: "GET",
+        				url: blogger_info_url,
+        				
+        				success: function(httpResponse) {
+        					bloggerInfo = httpResponse.data;
+        					processBloggerInfo(bloggerInfo);
+        				},
+        				
+        				error: function(httpResponse) {
+        					response.error("Fetch blogger info failed: " + httpResponse.status);
+        				}
+
+        			});
+                },
+                error: function(object, error) {
+                    response.error("Fetch moderator role error: " + error.code + ", " + error.message);
+                }
+            });
 		},
 		error: function(httpResponse) {
 			response.error("Fetch tag list failed: " + httpResponse.status);
@@ -125,7 +142,7 @@ function processBloggerInfo(bloggerInfo) {
 	  	},
 	  	
 	  	error: function(object, error) {
-	    	FETCH_FROM_BLOGGER.response.error("Fetch parse blog info failed: " + error);	
+	    	FETCH_FROM_BLOGGER.response.error("Fetch parse blog info failed: " + error.code + ", " + error.message);	
 	  	}
 
 	});
@@ -154,7 +171,7 @@ function updateParseBlogInfo(bloggerInfo, parseBlogInfo) {
             	FETCH_FROM_BLOGGER.trySendSuccess("blogInfo");
             },
             error: function(object, error) {
-                FETCH_FROM_BLOGGER.response.error("Save parse blog info failed: " + error);
+                FETCH_FROM_BLOGGER.response.error("Save parse blog info failed: " + error.code + ", " + error.message);
             }
         }
     );
@@ -187,7 +204,7 @@ function getPostHeaders(bloggerInfo) {
 			    	updateParseBlogPosts(bloggerPostHeaders, parsePostHeaders);
 			    },
 			    error: function(error) {
-			        FETCH_FROM_BLOGGER.response.error("Fetch parse post headers failed: " + error);
+			        FETCH_FROM_BLOGGER.response.error("Fetch parse post headers failed: " + erro.code + ", " + error.message);
 			    }
 			});
 
@@ -341,7 +358,7 @@ function deletePost(parsePost) {
     			FETCH_FROM_BLOGGER.trySendSuccess("deleted");
   			},
   			error: function(parsePost, error) {
-				FETCH_FROM_BLOGGER.response.error("Delete parse post (parseId=" + parsePost.id + ") failed: " + error);
+				FETCH_FROM_BLOGGER.response.error("Delete parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
   			}
   		}
 	);
@@ -373,7 +390,7 @@ function updatePost(bloggerPost, parsePost) {
             	FETCH_FROM_BLOGGER.trySendSuccess("updated");	            	
             },
             error: function(parsePost, error) {
-                FETCH_FROM_BLOGGER.response.error("Update parse post (parseId=" + parsePost.id + ") failed: " + error);
+                FETCH_FROM_BLOGGER.response.error("Update parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
        		}
        	}
     );
@@ -393,6 +410,11 @@ function savePost(bloggerPost) {
 
 	var post = new BlogPost();
 
+    var acl = new Parse.ACL();
+    acl.setPublicReadAccess(true);
+    acl.setRoleWriteAccess(FETCH_FROM_BLOGGER.moderatorRole, true);
+    post.setACL(acl);
+
 	post.save(
 		{
 			bloggerId: bloggerId,
@@ -408,7 +430,7 @@ function savePost(bloggerPost) {
 				FETCH_FROM_BLOGGER.trySendSuccess("saved");
 			},
 			error: function(parsePost, error) {
-                FETCH_FROM_BLOGGER.response.error("Save parse post (parseId=" + parsePost.id + ") failed: " + error);
+                FETCH_FROM_BLOGGER.response.error("Save parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
 			}
 		}
 	);
