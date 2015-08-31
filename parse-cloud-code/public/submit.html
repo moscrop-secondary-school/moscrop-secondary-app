@@ -262,13 +262,13 @@
 
                 var bloggerId = "0";    // No bloggerId for posts created with Parse
                 var createdBy = currentUser;
-                var title = titleField.getText();
+                var title = cleanUpTitle(titleField.getText());
                 var published = new Date();
                 var updated = published;
                 var category = userRoles[0].getName();
                 var content = editor.getHTML();
                 var icon = "https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png";
-                var bgImage = "@null";
+                var bgImage = getBgImage(content);
 
                 var acl = new Parse.ACL();
                 acl.setPublicReadAccess(true);
@@ -296,6 +296,12 @@
                         }
                     }
                 );
+            }
+
+            function cleanUpTitle(title) {
+                return title.replace(/ *\[[^\]]*]/g, "")        // Remove things within [stuff]
+                        .replace(/[\[\]']+/g, "")               // Remove the [] that are leftover
+                        .trim();                                // Remove leading and trailing white spaces
             }
 
             function getBgImage(content) {
