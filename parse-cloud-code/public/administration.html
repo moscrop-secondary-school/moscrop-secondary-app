@@ -96,7 +96,7 @@
                     divSuperuserActions.style.display = "none"
                     var query = new Parse.Query(Parse.Role);
                     query.equalTo("name", "administrator");
-                    query.equalTo("users", Parse.User.current());
+                    query.equalTo("users", currentUser);
                     query.first().then(function(adminRole) {
                         if (!adminRole) {
                             var divAdministratorActions = document.getElementById("administratorActions");
@@ -237,6 +237,12 @@
                         alert("Error getting " + roleName + " role: " + error.code + ", " + error.message);
                     }
                 });
+            }
+
+            function logout() {
+                Parse.User.logOut();
+                currentUser = Parse.User.current();  // this will now be null
+                window.location.href="index.html";
             }
 
         </script>

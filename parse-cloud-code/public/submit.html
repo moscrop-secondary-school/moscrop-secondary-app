@@ -206,14 +206,9 @@
             </span>
         </div>
 
-        <div id="title_field">
-            <p>Title</p>
-        </div>
+        <div id="title_field"></div>
 
-        <div id="editor">
-            <p>Hello World!</p>
-            <p>This is just some sample text you can <b>delete</b>.</p>
-        </div>
+        <div id="editor"></div>
         
         <div class="fixed-action-btn" style="bottom: 42px; right: 42px;">
             <a class="btn-floating btn-large waves-effect waves-light red" onclick="submitPost()">
@@ -258,6 +253,20 @@
                     },
                     error: function(object, error) {
                         alert("Error getting contributor role: " + error.code + ", " + error.message);
+                    }
+                });
+
+                roleQuery = new Parse.Query(Parse.Role);
+                roleQuery.containedIn("name", ["administrator", "moderator"]);
+                roleQuery.equalTo("users", currentUser);
+                roleQuery.first({
+                    success: function(privilegedRole) {
+                        if (!privilegedRole) {
+                            document.getElementById("adminButton").style.display = "none";
+                        }
+                    },
+                    error: function(object, error) {
+                        alert("Error getting privileged role: " + error.code + ", " + error.message);
                     }
                 });
 
@@ -340,6 +349,13 @@
                     return "@null";
                 }
             }
+
+            function logout() {
+                Parse.User.logOut();
+                currentUser = Parse.User.current();  // this will now be null
+                window.location.href="index.html";
+            }
+
         </script>
 
     </body>

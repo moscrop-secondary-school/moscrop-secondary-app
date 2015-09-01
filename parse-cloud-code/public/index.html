@@ -29,23 +29,25 @@
           <!--<li class="divider"></li>-->
           <li><a onclick="logout()">Logout</a></li>
         </ul>
-        <nav style="margin-bottom:16px">
-            <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
-                <a href="#" class="brand-logo">Moscrop Secondary</a>
-                <div id="toolbarActions" class="hidden">
-                    <ul id="loggedInActions" class="right hide-on-med-and-down">
-                        <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
-                        <li id="submitButton"><a href="submit.html"><i class="material-icons">create</i></a></li>
-                        <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
-                        <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
-                    </ul>
-                    <ul id="loggedOutActions" class="right hide-on-med-and-down">
-                        <li id="loginButton"><a href="login.html">Login</a></li>
-                        <li id="registerButton"><a href="register.html">Register</a></li>
-                    </ul>
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="#" class="brand-logo">Moscrop Secondary</a>
+                    <div id="toolbarActions" class="hidden">
+                        <ul id="loggedInActions" class="right hide-on-med-and-down">
+                            <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                            <li id="submitButton"><a href="submit.html"><i class="material-icons">create</i></a></li>
+                            <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                            <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                        </ul>
+                        <ul id="loggedOutActions" class="right hide-on-med-and-down">
+                            <li id="loginButton"><a href="login.html">Login</a></li>
+                            <li id="registerButton"><a href="register.html">Register</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </div>
 
         <!--Import jQuery before materialize.js-->
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -62,6 +64,7 @@
                 // do stuff with the user
                 divLoggedOutActions.style.display = "none";
 
+                // Setup navbar elements
                 $(".dropdown-button").dropdown({ hover: false });
                 document.getElementById("username").innerHTML = currentUser.getUsername();
 
@@ -86,27 +89,11 @@
                 $("div#toolbarActions").removeClass("hidden");
             }
 
-            /*function showSubmitPage() {
-                window.location.href = "submit.html";
-            }
-
-            function showAdminPage() {
-                window.location.href = "administration.html";
-            }*/
-
             function logout() {
                 Parse.User.logOut();
                 currentUser = Parse.User.current();  // this will now be null
                 location.reload();
             }
-
-            /*function showLoginPage() {
-                window.location.href = "login.html";
-            }
-
-            function showRegisterPage() {
-                window.location.href = "register.html";
-            }*/
 
         </script>
     </body>
