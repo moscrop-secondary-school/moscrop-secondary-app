@@ -12,18 +12,44 @@
 
         <!-- Import Parse -->
         <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+
+        <style>
+            div.hidden
+            {
+               display: none
+            }
+        </style>
     </head>
 
     <body>
-        <div id="loggedInActions">
-            <a id="submitButton" class="waves-effect waves-light btn" href="submit.html">Submit</a>
-            <a id="adminButton" class="waves-effect waves-light btn" href="administration.html">Administration</a>
-            <a id="logoutButton" class="waves-effect waves-light btn" onclick="logout()">Logout</a>
-        </div>
-        <div id="loggedOutActions">
-            <a id="loginButton" class="waves-effect waves-light btn" href="login.html">Login</a>
-            <a id="registerButton" class="waves-effect waves-light btn" href="register.html">Register</a>
-        </div>
+
+        <!-- Dropdown Structure -->
+        <ul id="accountDropdownItems" class="dropdown-content">
+          <li><a href="settings.html">Settings</a></li>
+          <!--<li class="divider"></li>-->
+          <li><a onclick="logout()">Logout</a></li>
+        </ul>
+        <nav style="margin-bottom:16px">
+            <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                <a href="#" class="brand-logo">Moscrop Secondary</a>
+                <div id="toolbarActions" class="hidden">
+                    <ul id="loggedInActions" class="right hide-on-med-and-down">
+                        <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                        <li id="submitButton"><a href="submit.html"><i class="material-icons">create</i></a></li>
+                        <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                        <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                    </ul>
+                    <ul id="loggedOutActions" class="right hide-on-med-and-down">
+                        <li id="loginButton"><a href="login.html">Login</a></li>
+                        <li id="registerButton"><a href="register.html">Register</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
 
         <script>
             Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
@@ -36,6 +62,9 @@
                 // do stuff with the user
                 divLoggedOutActions.style.display = "none";
 
+                $(".dropdown-button").dropdown({ hover: false });
+                document.getElementById("username").innerHTML = currentUser.getUsername();
+
                 // get user permissions
                 if (currentUser.getUsername() != "Superuser") {
                     var query = new Parse.Query(Parse.Role);
@@ -45,19 +74,16 @@
                         if (!privilegedRole) {                            
                             var adminButton = document.getElementById("adminButton");
                             adminButton.style.display = "none";
-                            query.equalTo("name", "contributor");
-                            query.first().then(function(contributorRole) {
-                                if (!contributorRole) {
-                                    var submitButton = document.getElementById("submitButton");
-                                    submitButton.style.display = "none";
-                                }
-                            });
                         }
+                        $("div#toolbarActions").removeClass("hidden");
                     });
+                } else {
+                    $("div#toolbarActions").removeClass("hidden");
                 }
             } else {
                 // show the signup or login page
                 divLoggedInActions.style.display = "none";
+                $("div#toolbarActions").removeClass("hidden");
             }
 
             /*function showSubmitPage() {
@@ -83,9 +109,5 @@
             }*/
 
         </script>
-
-        <!--Import jQuery before materialize.js-->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="js/materialize.js"></script>
     </body>
 </html>

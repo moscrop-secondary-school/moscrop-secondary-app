@@ -23,7 +23,7 @@
                 margin: 20px auto;
                 box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
                 border: 1px solid #e5e5e5;
-                height: calc(100% - 172px);
+                height: calc(100% - 244px);
             }        
 
             /* override Quill styles for mobile devices */
@@ -46,7 +46,7 @@
                     margin: 20px auto;
                     box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
                     border: 1px solid #e5e5e5;
-                    height: calc(100% - 86px);
+                    height: calc(100% - 172px);
                 }
             }
         </style>
@@ -66,7 +66,27 @@
     </head>
 
     <body>
-    	
+        
+        <!-- Dropdown Structure -->
+        <ul id="accountDropdownItems" class="dropdown-content">
+          <li><a href="settings.html">Settings</a></li>
+          <!--<li class="divider"></li>-->
+          <li><a onclick="logout()">Logout</a></li>
+        </ul>
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="index.html" class="brand-logo">Moscrop Secondary</a>
+                    <ul id="loggedInActions" class="right hide-on-med-and-down">
+                        <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                        <li id="submitButton" class="active"><a href="#"><i class="material-icons">create</i></a></li>
+                        <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                        <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
         <div id="toolbar" class="ql-toolbar-container toolbar">
             <span class="ql-format-group">
                 <select title="Font" class="ql-font">
@@ -201,6 +221,10 @@
             </a>
         </div>
 
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+
         <script>
             Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
 
@@ -208,9 +232,11 @@
 
             var currentUser = Parse.User.current();
             if (currentUser) {
-                // do stuff with the user
-                // TODO check to make sure user has been verified and has permission to post.
-                // TODO for now we'll let anyone that has registered post.
+
+                // Setup navbar elements
+                $(".dropdown-button").dropdown({ hover: false });
+                document.getElementById("username").innerHTML = currentUser.getUsername();
+
                 var roleQuery = new Parse.Query(Parse.Role);
                 roleQuery.equalTo("name", "contributor");
                 roleQuery.first({
@@ -315,10 +341,6 @@
                 }
             }
         </script>
-
-        <!--Import jQuery before materialize.js-->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="js/materialize.js"></script>
 
     </body>
 

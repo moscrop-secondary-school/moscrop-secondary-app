@@ -15,6 +15,26 @@
     </head>
 
     <body>
+        
+        <!-- Dropdown Structure -->
+        <ul id="accountDropdownItems" class="dropdown-content">
+          <li><a href="settings.html">Settings</a></li>
+          <!--<li class="divider"></li>-->
+          <li><a onclick="logout()">Logout</a></li>
+        </ul>
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="index.html" class="brand-logo">Moscrop Secondary</a>
+                    <ul id="loggedInActions" class="right hide-on-med-and-down">
+                        <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                        <li id="submitButton"><a href="submit.html"><i class="material-icons">create</i></a></li>
+                        <li id="adminButton" class="active"><a href="#"><i class="material-icons">lock</i></a></li>
+                        <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
 
         <div id="superuserActions" class="row">
             <form class="col s12">
@@ -56,11 +76,20 @@
             </form>
         </div>
 
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+
         <script>
             Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
             var currentUser = Parse.User.current();
 
             if (currentUser) {
+
+                // Setup navbar elements
+                $(".dropdown-button").dropdown({ hover: false });
+                document.getElementById("username").innerHTML = currentUser.getUsername();
+
                 // Only administrator or Superuser can access
                 if (currentUser.getUsername() != "Superuser") {
                     var divSuperuserActions = document.getElementById("superuserActions");
@@ -211,9 +240,5 @@
             }
 
         </script>
-
-        <!--Import jQuery before materialize.js-->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="js/materialize.js"></script>
     </body>
 </html>
