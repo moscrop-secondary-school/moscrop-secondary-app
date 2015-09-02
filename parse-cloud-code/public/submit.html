@@ -4,6 +4,11 @@
         <title>Moscrop Secondary | Create Post</title>
         <style>
 
+            div.hidden
+            {
+               display: none
+            }
+
             /* default styles for Quill */
             #toolbar {
                 border: 1px solid #e5e5e5;
@@ -77,12 +82,14 @@
             <nav>
                 <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
                     <a href="index.html" class="brand-logo">Moscrop Secondary</a>
-                    <ul id="loggedInActions" class="right hide-on-med-and-down">
-                        <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
-                        <li id="submitButton" class="active"><a href="#"><i class="material-icons">create</i></a></li>
-                        <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
-                        <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
-                    </ul>
+                    <div id="toolbarActions" class="hidden">
+                        <ul id="loggedInActions" class="right hide-on-med-and-down">
+                            <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                            <li id="submitButton" class="active"><a href="#"><i class="material-icons">create</i></a></li>
+                            <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                            <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                        </ul>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -217,7 +224,7 @@
         </div>
 
         <!--Import jQuery before materialize.js-->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
 
         <script>
@@ -264,6 +271,7 @@
                         if (!privilegedRole) {
                             document.getElementById("adminButton").style.display = "none";
                         }
+                        $("div#toolbarActions").removeClass("hidden");
                     },
                     error: function(object, error) {
                         alert("Error getting privileged role: " + error.code + ", " + error.message);
