@@ -98,7 +98,7 @@ public class NewsDisplayFragment extends Fragment {
 
     private boolean mWebViewFadedIn = false;
     private int mPreFadeInWebViewTaskCompleteCount = 0;
-    private void fadeInWebView(boolean showFullAnimation) {
+    private void fadeInWebView() {
 
         if (mWebViewFadedIn) {
             return;
@@ -106,9 +106,8 @@ public class NewsDisplayFragment extends Fragment {
 
         mPreFadeInWebViewTaskCompleteCount++;
         if (mPreFadeInWebViewTaskCompleteCount >= 2) {
-            long secondaryDuration = showFullAnimation ? SECONDARY_DURATION : 0;
             mWebView.setAlpha(0);
-            mWebView.animate().setDuration(secondaryDuration)
+            mWebView.animate().setDuration(SECONDARY_DURATION)
                     .alpha(1)
                     .setInterpolator(mInterpolator);
             mWebView.setVisibility(View.VISIBLE);
@@ -167,7 +166,7 @@ public class NewsDisplayFragment extends Fragment {
 
                 @Override
                 public void onPageFinished(WebView view, String url) {
-                    fadeInWebView(savedInstanceState == null);
+                    fadeInWebView();
                 }
             });
             mWebView.getSettings().setBuiltInZoomControls(true);
@@ -331,7 +330,7 @@ public class NewsDisplayFragment extends Fragment {
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            fadeInWebView(showFullAnimation);
+                            fadeInWebView();
                         }
                     });
         } else {
@@ -341,7 +340,7 @@ public class NewsDisplayFragment extends Fragment {
                     .setInterpolator(mInterpolator)
                     .withEndAction(new Runnable() {
                         public void run() {
-                            fadeInWebView(showFullAnimation);
+                            fadeInWebView();
                         }
                     });
         }
