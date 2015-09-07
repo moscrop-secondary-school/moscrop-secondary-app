@@ -1,7 +1,7 @@
 var fs = require('fs');
 var api_config = require('./api_config.js');
 var Parse = require('parse').Parse;
-Parse.initialize(api_config.API_KEY, api_config.JS_KEY);
+Parse.initialize(api_config.Parse.API_KEY, api_config.Parse.JS_KEY);
 
 var BlogPost = Parse.Object.extend("BlogPosts");
 
@@ -13,26 +13,48 @@ var posts = obj.feed.entry;
 console.log("Found " + posts.length + " items");
 
 //for (var i=posts.length-1; i>=posts.length-2; i--) {
-for (var i=posts.length-1; i>=0; i--) {
 //for (var i=0; i<posts.length; i++) {
+for (var i=posts.length-1; i>=0; i--) {
     var bloggerItem = posts[i];
     var post = new BlogPost();
 
-    var date = new Date(Date.parse(bloggerItem.published.$t));
+    var published = new Date(Date.parse(bloggerItem.published.$t));
+    var updated = new Date(Date.parse(bloggerItem.updated.$t));
+
+    var categoryInfo = getCategoryInfo(bloggerItem);
 
     post.save({
-            title: bloggerItem.title.$t,
-            category: getCategory(bloggerItem),
-            content: bloggerItem.content.$t,
-            date: date
+              bloggerId: "0",
+              title: cleanUpTitle(bloggerItem.title.$t),
+              published: published,
+              updated: updated,
+              category: categoryInfo[0],
+              content: bloggerItem.content.$t,
+              icon: categoryInfo[1],
+              bgImage: getBgImage(bloggerItem)
+            }, {
+              success: function(post) {
+                // Execute any logic that should take place after the object is saved.
+                console.log('New object created with title: ' + post.get("title"));
+              },
+              error: function(post, error) {
+                // Execute any logic that should take place if the save fails.
+                // error is a Parse.Error with an error code and message.
+                console.log('Failed to create new object (' + post.get("title") + '), with error code: ' + error.message);
+              }
             });
 }
 
-function getCategory(bloggerItem) {
+function cleanUpTitle(title) {
+    return title.replace(/ *\[[^\]]*]/g, "")        // Remove things within [stuff]
+            .replace(/[\[\]']+/g, "")               // Remove the [] that are leftover
+            .trim();                                // Remove leading and trailing white spaces
+}
 
-    console.log(bloggerItem.title.$t);
+function getCategoryInfo(bloggerItem) {
 
     var categories = [];
+    var icons = [];
     var bloggerCategories = bloggerItem.category;
 
     if (bloggerCategories !== undefined) {
@@ -47,6 +69,7 @@ function getCategory(bloggerItem) {
             for (var j=0; j<tags.length; j++) {
                 if (bloggerCategory.toString() == tags[j].id_category.toString()) {
                     categories.push(tags[j].name);
+                    icons.push(tags[j].icon_img);
                 }
             }
 
@@ -65,15 +88,24 @@ function getCategory(bloggerItem) {
             for (var j=0; j<tags.length; j++) {
                 if (author.toString() == tags[j].id_author.toString()) {
                     categories.push(tags[j].name);
+                    icons.push(tags[j].icon_img);
                 }
             }
         }
 
     }
 
-    console.log(categories.join());
-    console.log("");
-    return categories.join();
+    return [categories.join(), icons[0]];
 }
 
+function getBgImage(bloggerItem) {
+    var content = bloggerItem.content.$t;
+    var regex = /src=\"([^\"]+)/g;
+    var match= regex.exec(content);
 
+    if (match !== null && match[1].indexOf("http") > -1) {
+        return match[1];
+    } else {
+        return "@null";
+    }
+}

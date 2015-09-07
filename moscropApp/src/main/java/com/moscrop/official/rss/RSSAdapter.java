@@ -184,16 +184,14 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         TextView title = (TextView) view.findViewById(R.id.rlc_title);
 
         // Process the metadata into an usable String array format
-        String[] metadata = item.metadata.split(",");
-
         view.setBackgroundColor(bgColor);
 
         // Set background image
         if (bgImage != null) {
-            if (metadata.length >= 2) {
+            if (!item.bgImage.equals("@null")) {
                 bgImage.setVisibility(View.VISIBLE);
                 Picasso.with(context)
-                        .load(metadata[1])
+                        .load(item.bgImage)
                         .fit().centerCrop()
                         .into(bgImage);
             } else {
@@ -203,10 +201,10 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         // Set icon
         if (tagIcon != null) {
-            if (!item.tags[0].equals(RSSTagCriteria.NO_IMAGE)) {
+            if (!item.icon.equals(RSSTagCriteria.NO_IMAGE)) {
                 tagIcon.setVisibility(View.VISIBLE);
                 Picasso.with(context)
-                        .load(item.tags[0])
+                        .load(item.icon)
                         .fit().centerCrop()
                         .into(tagIcon);
             } else {
@@ -218,9 +216,9 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
         if (tagListText != null) {
             String tags = "";
             // Start at i=1 because tags[0] is used to store image url
-            for (int i=1; i<item.tags.length; i++) {
-                tags += item.tags[i];
-                if (i < item.tags.length-1) {
+            for (int i=0; i<item.categories.length; i++) {
+                tags += item.categories[i];
+                if (i < item.categories.length-1) {
                     tags += ", ";
                 }
             }

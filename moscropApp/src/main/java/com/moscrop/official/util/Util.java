@@ -49,27 +49,38 @@ public class Util {
         return sb.toString();
     }
 
-    public static boolean isConnected(final Context context) {
+    public static final int CONNECTION_TYPE_DATA = 0;
+    public static final int CONNECTION_TYPE_WIFI = 1;
+    public static final int CONNECTION_TYPE_NONE = 2;
+
+    public static boolean isConnected(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (prefs.getBoolean(Preferences.Keys.LOAD_ON_WIFI_ONLY, Preferences.Default.LOAD_ON_WIFI_ONLY)) {
+            return getConnectionType(context) == CONNECTION_TYPE_WIFI;
+        } else {
+            return getConnectionType(context) != CONNECTION_TYPE_NONE;
+        }
+    }
+
+    public static int getConnectionType(Context context) {
 
         if(context == null)
-            return false;
+            return CONNECTION_TYPE_NONE;
 
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getBoolean(Preferences.Keys.LOAD_ON_WIFI_ONLY, Preferences.Default.LOAD_ON_WIFI_ONLY)) {
-            return activeNetwork != null && activeNetwork.isConnected() && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                return CONNECTION_TYPE_WIFI;
+            } else {
+                return CONNECTION_TYPE_DATA;
+            }
         } else {
-            return activeNetwork != null && activeNetwork.isConnected();
+            return CONNECTION_TYPE_NONE;
         }
     }
-
-
-
 
     /**
      * This method converts dp unit to equivalent pixels, depending on device density.

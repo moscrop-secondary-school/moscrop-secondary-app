@@ -1,0 +1,79 @@
+<html>
+
+    <head>
+        <title>Moscrop Secondary | Login</title>
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!-- Import Parse -->
+        <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+    </head>
+
+    <body>
+
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="index.html" class="brand-logo">Moscrop Secondary</a>
+                    <ul class="right hide-on-med-and-down">
+                        <li id="registerButton"><a href="register.html">Register</a></li>
+                    </ul>   
+                </div>
+            </nav>
+        </div>
+
+        <div class="row">
+            <form class="col s12">
+                <div class="row">    
+                    <div class="input-field col s12">
+                      <input id="username_field" type="text" class="validate">
+                      <label for="username_field">Username</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                      <input id="password_field" type="password" class="validate">
+                      <label for="password_field">Password</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="fixed-action-btn" style="bottom: 42px; right: 42px;">
+            <a class="btn-floating btn-large waves-effect waves-light red" onclick="done()">
+                <i class="material-icons">done</i>
+            </a>
+        </div>
+
+        <script>
+            Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
+
+            function done() {
+                var user = new Parse.User();
+
+                var username = document.getElementById("username_field").value;
+                var password = document.getElementById("password_field").value;
+
+                Parse.User.logIn(username, password, {
+                    success: function(user) {
+                        // Do stuff after successful login.
+                        window.location.href = "index.html"
+                    },
+                    error: function(user, error) {
+                        // The login failed. Check error to see why.
+                        alert("Error: " + error.code + " " + error.message);
+                    }
+                });
+            }
+        </script>
+
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+    </body>
+</html>

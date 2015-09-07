@@ -18,15 +18,8 @@ android {
         }
     }
     productFlavors {
-        app_release {
-            buildConfigField "boolean", "MOSCROPDEBUG", "false"
-        }
         side_apk {
-            buildConfigField "boolean", "MOSCROPDEBUG", "true"
             applicationId "com.moscrop.official.test"
-        }
-        app_debug {
-            buildConfigField "boolean", "MOSCROPDEBUG", "true"
         }
     }
 }
@@ -37,5 +30,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'de.hdodenhof:circleimageview:1.2.2'
+    compile 'com.parse.bolts:bolts-android:1.+'
     compile project(':Caldroid:caldroid')
 }

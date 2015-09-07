@@ -134,13 +134,13 @@ public class MainActivity extends ToolbarActivity
                     if (mNewsFragment == null) {
                         SharedPreferences prefs = getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS);
                         String lastTag = prefs.getString(Preferences.App.Keys.RSS_LAST_TAG, Preferences.App.Default.RSS_LAST_TAG);
-                        mNewsFragment = RSSFragment.newInstance(0, RSSFragment.FEED_NEWS, lastTag);
+                        mNewsFragment = RSSFragment.newInstance(0, lastTag);
                     }
                     mNextFragment = mNewsFragment;
                     mNextTag = "mNewsFragment";
                     break;
                 case NavigationDrawerFragment.EMAIL:
-                    if (mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(NavigationDrawerFragment.EMAIL, RSSFragment.FEED_NEWS, "Student Bulletin");
+                    if (mEmailFragment == null) mEmailFragment = RSSFragment.newInstance(NavigationDrawerFragment.EMAIL, "Student Bulletin");
                     mNextFragment = mEmailFragment;
                     mNextTag = "mEmailFragment";
                     break;

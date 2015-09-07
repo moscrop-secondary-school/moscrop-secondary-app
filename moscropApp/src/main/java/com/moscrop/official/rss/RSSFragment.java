@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -37,15 +35,20 @@ import com.moscrop.official.ToolbarSpinnerAdapter;
 import com.moscrop.official.util.Logger;
 import com.moscrop.official.util.Preferences;
 import com.moscrop.official.util.Util;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RSSFragment extends Fragment implements AdapterView.OnItemClickListener,
-        OnRefreshListener, LoaderManager.LoaderCallbacks<RSSResult>, AbsListView.OnScrollListener,
+        OnRefreshListener, AbsListView.OnScrollListener,
         SettingsFragment.SubscriptionListChangedListener, MainActivity.CustomTitleFragment {
 
     public static final String FEED_NEWS = "moscropschool";
@@ -62,12 +65,9 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
     private boolean mAlreadyStartingDetailActivity = false;
 
-	private String mBlogId = "";
     private String mTag = "";
     private String mSearchQuery = null;
-    private boolean mAppend = false;
-    private boolean mOnlineEnabled = true;
-    private boolean mShowCacheWhileLoadingOnline = false;
+    private int mPage = 0;
 
     private boolean mScrolling = false;
 
@@ -88,13 +88,10 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
     /**
 	 * Create and return a new instance of RSSFragment with given parameters
-	 *
-	 * @param blogId URL of the RSS feed to load and display
 	 */
-	public static RSSFragment newInstance(int position, String blogId, String tag) {
+	public static RSSFragment newInstance(int position, String tag) {
 		RSSFragment fragment = new RSSFragment();
         fragment.mPosition = position;
-		fragment.mBlogId = blogId;
         fragment.mTag = tag;
         if (tag.equals("Student Bulletin")) {
             fragment.mHasSpinner = false;
@@ -115,7 +112,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
         // Retrieve data that was persisted across a configuration change
         if(savedInstanceState != null) {
-            mBlogId = savedInstanceState.getString(KEY_BLOGID, mBlogId);
             mTag = savedInstanceState.getString(KEY_TAG, mTag);
             mHasSpinner = savedInstanceState.getBoolean(KEY_HAS_SPINNER, mHasSpinner);
             mPosition = savedInstanceState.getInt(KEY_POSITION, mPosition);
@@ -133,10 +129,10 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
 
-        if (firstLaunch()) {
+        /*if (firstLaunch()) {
             // On first launch, load everything and force online
             // because there is assumed to be nothing cached
-            loadFeed(false, null, false, true, true, false);      // Just in case there is some cache
+            loadFeed();      // Just in case there is some cache
             Toast.makeText(getActivity(), "First load may take a while", Toast.LENGTH_SHORT).show();
         } else {
             // Otherwise do not load online automatically unless
@@ -146,7 +142,8 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             boolean existingLoadedPostsAreStale = (System.currentTimeMillis() - lastRefreshMillis) > STALE_POST_THRESHOLD;
             boolean loadOnline = existingLoadedPostsAreStale && (autoRefresh && (savedInstanceState == null));
             loadFeed(false, null, false, loadOnline, true, false);
-        }
+        }*/
+        loadFeed(false);
 
         // Initialize and add the toolbar spinner
         mSpinnerAdapter = new ToolbarSpinnerAdapter(getActivity(), new ArrayList<String>());
@@ -198,7 +195,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             // TODO only reload when the user is viewing "Subscribed",
             // TODO otherwise their subscription preferences have no
             // TODO affect on the posts shown.
-            loadFeed(true, null, false, false, false, false);
+            loadFeed(false);
         }
     }
 
@@ -249,7 +246,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     String tag = mSpinnerAdapter.getItem(position);
                     if (!tag.equals(mTag)) {
                         mTag = tag;
-                        loadFeed(true, null, false, false, false, true);    // Not loading online, so don't worry about cache
+                        loadFeed(false);    // Not loading online, so don't worry about cache
                         // Stop previous loader and start new one
                     }
                 }
@@ -331,7 +328,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_BLOGID, mBlogId);
         outState.putString(KEY_TAG, mTag);
         outState.putBoolean(KEY_HAS_SPINNER, mHasSpinner);
         outState.putInt(KEY_POSITION, mPosition);
@@ -364,7 +360,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                 }
                 if (mSearchQuery != null) {
                     // Return to the main feed
-                    loadFeed(true, null, false, false, false, true);
+                    loadFeed(false);
                 }
                 return true;
             }
@@ -396,8 +392,8 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
             // Pass on information about the RSS post
             // to the NewsDisplayActivity.
-            intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
-            intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
+            //intent.putExtra(NewsDisplayActivity.EXTRA_URL, r.url);
+            //intent.putExtra(NewsDisplayActivity.EXTRA_CONTENT, r.content);
             intent.putExtra(NewsDisplayActivity.EXTRA_TITLE, r.title);
 
             // Pass on information about the position and state
@@ -475,59 +471,158 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         return typedValue.data;
     }
 
-    /**
-     * Perform a refresh of the feed.
-     * This method will create and start
-     * an AsyncTaskLoader to download
-     * and parse a RSS feed.
-     *
-     * @param force
-     *          If true, feed will refresh even if there are already items. Else feed will only refresh when empty.
-     * @param searchQuery
-     *          Query for posts matching this String.
-     *          Set null for no search.
-     * @param append
-     *          True to only load posts after the oldest cached post
-     *          and for results to be added to the bottom of the RSS list.
-     *          False for a normal load that performs a full refresh
-     *          of the cache and completely reloads the list.
-     * @param onlineEnabled
-     *          True to allow loading online.
-     *          False to load only from cache.
-     * @param showCacheWhileLoadingOnline
-     *          True to perform a load from cache so the user
-     *          is not staring at a blank screen while waiting
-     *          for content to load from online.
-     *          False to only reload list content once an
-     *          updated feed is done downloading and parsing.
-     * @param runEvenIfHasRunningLoaders
-     *          True to allow the load to run even if
-     *          other loads are already running.
-     *          False to cancel this load request if
-     *          other loads are already running.
-     */
-	private void loadFeed(boolean force, String searchQuery, boolean append, boolean onlineEnabled, boolean showCacheWhileLoadingOnline, boolean runEvenIfHasRunningLoaders) {
-		if(force || (mAdapter.getCount() == 0)) {
-            if(runEvenIfHasRunningLoaders || !getLoaderManager().hasRunningLoaders()) {
+    private void loadFeed(final boolean append) {
 
-                mSearchQuery = searchQuery;
-                mAppend = append;
-                mOnlineEnabled = onlineEnabled;
-                mShowCacheWhileLoadingOnline = showCacheWhileLoadingOnline && mOnlineEnabled;
+        if (mSwipeLayout != null) {
+            mSwipeLayout.setRefreshing(true);
+        }
 
-                if (mOnlineEnabled) {
-                    lastRefreshMillis = System.currentTimeMillis();
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts")
+                .whereContainedIn("category", Arrays.asList(getFilterTags()))
+                .selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"))
+                .orderByDescending("published")
+                .setLimit(Preferences.Default.LOAD_LIMIT);
+
+        if (append) {
+            query.setSkip(Preferences.Default.LOAD_LIMIT * mPage);
+        }
+
+        if (Util.isConnected(getActivity())) {
+            query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ONLY);
+        } else {
+            query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ONLY);
+        }
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+
+                if (mSwipeLayout != null) {
+                    mSwipeLayout.setRefreshing(false);
                 }
 
-                Logger.log("refreshing list");
-                getLoaderManager().restartLoader(0, null, this);    // Force a new reload
+                if (e == null) {
+
+                    // Remove empty cache that might get "orphaned"
+                    // before we lose a way to delete it.
+                    if (list == null || list.size() == 0) {
+                        query.clearCachedResult();
+                    }
+
+                    if (!append) {
+                        mPage = 1;
+                        mAdapter.clear();
+                        new ClearOutdatedCachesTask().execute();
+                    } else {
+                        mPage++;
+                    }
+
+                    for (ParseObject item : list) {
+                        if (item.getString("category") != null) {
+                            RSSItem post = new RSSItem(
+                                    item.getObjectId(),
+                                    item.getDate("published").getTime(),
+                                    item.getString("title"),
+                                    item.getString("category").split(","),
+                                    item.getString("icon"),
+                                    item.getString("bgImage")
+                            );
+                            mAdapter.add(post);
+                        }
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    Logger.log("Done loading");
+                } else {
+                    if (e.getCode() == ParseException.CACHE_MISS) {
+                        // We are offline and there is no cache available.
+                        // Possible causes are:
+                        // 1. User has no internet connection (at all)
+                        // 2. User has a data connection, but chose to only load over WiFi
+
+                        if (Util.getConnectionType(getActivity()) == Util.CONNECTION_TYPE_NONE) {
+                            Toast.makeText(getActivity(), "No cache available. Please try again when you have a valid internet connection.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if (!Util.isConnected(getActivity())) {
+                                Toast.makeText(getActivity(), "Loading over data is disabled. Please check your app preferences.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Error loading posts", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        if (!append) {
+                            mPage = 1;
+                            mAdapter.clear();
+                            mAdapter.notifyDataSetChanged();
+                        }
+
+                    } else {
+                        Toast.makeText(getActivity(), "Error loading post", Toast.LENGTH_SHORT).show();
+                    }
+                    query.clearCachedResult();
+                }
             }
-		}
-	}
+        });
+    }
+
+    private class ClearOutdatedCachesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            String[] tags = getFilterTags();
+
+            // Clear appended pages
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts")
+                    .whereContainedIn("category", Arrays.asList(tags))
+                    .selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"))
+                    .orderByDescending("published");
+
+            int count = -1;
+            try {
+                 count = query.count();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int numPages = (int) Math.ceil(((float) count) / Preferences.Default.LOAD_LIMIT);
+
+            query.setLimit(Preferences.Default.LOAD_LIMIT);
+
+            for (int i=1; i<numPages; i++) {
+                query.setSkip(Preferences.Default.LOAD_LIMIT * i);
+                query.clearCachedResult();
+            }
+
+            return null;
+        }
+    }
+
+    private String[] getFilterTags() {
+        String[] tags = null;
+        switch (mTag) {
+            case "All":
+                try {
+                    tags = RSSTagCriteria.getTagNames(getActivity());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "Subscribed":
+                try {
+                    tags = RSSTagCriteria.getSubscribedTags(getActivity());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                tags = new String[]{mTag};
+                break;
+        }
+        return tags;
+    }
 
 	@Override
 	public void onRefresh() {
-		loadFeed(true, null, false, true, false, false);     // Don't show cache as old data is still not cleared
+		loadFeed(false);
 	}
 
     public void doSearch(String query) {
@@ -536,106 +631,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         //Toast.makeText(getActivity(), "News: " + query, Toast.LENGTH_SHORT).show();
 
         // Search request handled by loadFeed()
-        loadFeed(true, query, false, false, false, true);
-    }
-
-    @Override
-    public Loader<RSSResult> onCreateLoader(int i, Bundle bundle) {
-        if (mSwipeLayout != null) {
-            Logger.error("starting progress spinner");
-            mSwipeLayout.setRefreshing(true);
-        } else {
-            Logger.error("Why is swipe refresh layout null??");
-        }
-        long oldestPostDate = System.currentTimeMillis();
-        if (mAdapter.getCount() > 0 && mAppend) {
-            oldestPostDate = mAdapter.getItem(mAdapter.getCount()-1).date;
-        }
-
-        return new RSSListLoader(getActivity(), mBlogId, mTag, mSearchQuery, mAppend, oldestPostDate, mOnlineEnabled, mShowCacheWhileLoadingOnline);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<RSSResult> listLoader, RSSResult result) {
-
-        if (mSwipeLayout != null) {
-            Logger.error("stopping progress spinner");
-            mSwipeLayout.setRefreshing(false);
-        }
-
-        if (result != null && result.items != null) {
-
-            Logger.log("Result code: " + result.resultCode);
-
-            switch(result.resultCode) {
-                case RSSResult.RESULT_OK:
-                    updateListOnLoadFinished(result);
-                    break;
-                case RSSResult.RESULT_REDUNDANT:
-                    Logger.log("RSS load finished for tag " + mTag + ", result is redundant");
-                    break;
-                case RSSResult.RESULT_REDO_ONLINE:
-                    updateListOnLoadFinished(result);
-                    loadFeed(true, null, false, true, false, true);
-                    break;
-                case RSSResult.RESULT_FAIL:
-                    Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
-                    break;
-            }
-
-        } else {
-            if (!Util.isConnected(getActivity())) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                if (prefs.getBoolean(Preferences.Keys.LOAD_ON_WIFI_ONLY, Preferences.Default.LOAD_ON_WIFI_ONLY)) {
-                    Toast.makeText(getActivity(), "Please make sure you have a valid WiFi connection", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Please make sure you have a valid internet connection", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(getActivity(), R.string.load_error_text, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void updateListOnLoadFinished(RSSResult result) {
-        if (result.append) {
-
-            List<RSSItem> items = result.items;
-            if (items.size() == 0) {
-                Toast.makeText(getActivity(), "No more items to load", Toast.LENGTH_SHORT).show();
-                // TODO replace with text view
-            } else {
-                for (RSSItem item : items) {
-                    mAdapter.add(item);
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-
-        } else {
-
-            mAdapter.clear();
-            List<RSSItem> items = result.items;
-            if (items.size() == 0) {
-                Toast.makeText(getActivity(), "No items returned", Toast.LENGTH_SHORT).show();
-                // TODO replace with text view
-            } else {
-                for (RSSItem item : items) {
-                    mAdapter.add(item);
-                }
-                mAdapter.notifyDataSetChanged();
-                if (firstLaunch()) {
-                    SharedPreferences.Editor prefs = getActivity().getSharedPreferences(Preferences.App.NAME, Context.MODE_MULTI_PROCESS).edit();
-                    prefs.putBoolean(Preferences.App.Keys.FIRST_LAUNCH, false);
-                    prefs.apply();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<RSSResult> listLoader) {
-        // No reference to the list provided by the loader is held
-        // So no resetting is needed to be done here
+        //loadFeed(true, query, false, false, false, true);
     }
 
     @Override
@@ -659,7 +655,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             }
 
             if (loadMore) {
-                loadFeed(true, null, true, true, false, false);  // No need to show cache, old posts still there
+                loadFeed(true);
                 mScrolling = false;
             }
         }

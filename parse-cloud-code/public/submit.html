@@ -1,0 +1,371 @@
+<html>
+
+    <head>
+        <title>Moscrop Secondary | Create Post</title>
+        <style>
+
+            div.hidden
+            {
+               display: none
+            }
+
+            /* default styles for Quill */
+            #toolbar {
+                border: 1px solid #e5e5e5;
+                width: 70%;
+                margin: 20px auto;
+                box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
+            }
+            #title_field {
+                width: 70%;
+                margin: 20px auto;
+                box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
+                border: 1px solid #e5e5e5;
+                height: 48px;
+            }
+            #editor {
+                width: 70%;
+                margin: 20px auto;
+                box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
+                border: 1px solid #e5e5e5;
+                height: calc(100% - 244px);
+            }        
+
+            /* override Quill styles for mobile devices */
+            @media screen and (max-width: 1024px) {
+                #toolbar {
+                    border: 1px solid #e5e5e5;
+                    width: 95%;
+                    margin: 20px auto;
+                    box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
+                }
+                #title_field {
+                    width: 95%;
+                    margin: 20px auto;
+                    box-shadow: 2px 1px 5px rbga(0,0,0,0.2);
+                    border: 1px solid #e5e5e5;
+                    height: 48px;
+                }
+                #editor {
+                    width: 95%;
+                    margin: 20px auto;
+                    box-shadow: 2px 1px 5px rgba(0,0,0,0.2);
+                    border: 1px solid #e5e5e5;
+                    height: calc(100% - 172px);
+                }
+            }
+        </style>
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <link rel="stylesheet" href="css/quill.snow.css">
+        <script src="js/quill.js"></script> 
+
+        <!-- Import Parse -->
+        <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+    </head>
+
+    <body>
+        
+        <!-- Dropdown Structure -->
+        <ul id="accountDropdownItems" class="dropdown-content">
+          <li><a href="settings.html">Settings</a></li>
+          <!--<li class="divider"></li>-->
+          <li><a onclick="logout()">Logout</a></li>
+        </ul>
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="index.html" class="brand-logo">Moscrop Secondary</a>
+                    <div id="toolbarActions" class="hidden">
+                        <ul id="loggedInActions" class="right hide-on-med-and-down">
+                            <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                            <li id="submitButton" class="active"><a href="#"><i class="material-icons">create</i></a></li>
+                            <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                            <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div id="toolbar" class="ql-toolbar-container toolbar">
+            <span class="ql-format-group">
+                <select title="Font" class="ql-font">
+                    <option value="sans-serif" selected>Sans Serif</option>
+                    <option value="serif">Serif</option>
+                    <option value="monospace">Monospace</option>
+                </select>
+                <select title="Size" class="ql-size">
+                    <option value="10px">Small</option>
+                    <option value="13px" selected>Normal</option>
+                    <option value="18px">Large</option>
+                    <option value="32px">Huge</option>
+                </select>
+            </span>
+            <span class="ql-format-group">
+                <span title="Bold" class="ql-format-button ql-bold"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Italic" class="ql-format-button ql-italic"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Underline" class="ql-format-button ql-underline"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+            </span>
+            <span class="ql-format-group">
+                <select title="Text Color" class="ql-color">
+                    <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)" selected></option>
+                    <option value="rgb(230, 0, 0)" label="rgb(230, 0, 0)"></option>
+                    <option value="rgb(255, 153, 0)" label="rgb(255, 153, 0)"></option>
+                    <option value="rgb(255, 255, 0)" label="rgb(255, 255, 0)"></option>
+                    <option value="rgb(0, 138, 0)" label="rgb(0, 138, 0)"></option>
+                    <option value="rgb(0, 102, 204)" label="rgb(0, 102, 204)"></option>
+                    <option value="rgb(153, 51, 255)" label="rgb(153, 51, 255)"></option>
+                    <option value="rgb(255, 255, 255)" label="rgb(255, 255, 255)"></option>
+                    <option value="rgb(250, 204, 204)" label="rgb(250, 204, 204)"></option>
+                    <option value="rgb(255, 235, 204)" label="rgb(255, 235, 204)"></option>
+                    <option value="rgb(255, 255, 204)" label="rgb(255, 255, 204)"></option>
+                    <option value="rgb(204, 232, 204)" label="rgb(204, 232, 204)"></option>
+                    <option value="rgb(204, 224, 245)" label="rgb(204, 224, 245)"></option>
+                    <option value="rgb(235, 214, 255)" label="rgb(235, 214, 255)"></option>
+                    <option value="rgb(187, 187, 187)" label="rgb(187, 187, 187)"></option>
+                    <option value="rgb(240, 102, 102)" label="rgb(240, 102, 102)"></option>
+                    <option value="rgb(255, 194, 102)" label="rgb(255, 194, 102)"></option>
+                    <option value="rgb(255, 255, 102)" label="rgb(255, 255, 102)"></option>
+                    <option value="rgb(102, 185, 102)" label="rgb(102, 185, 102)"></option>
+                    <option value="rgb(102, 163, 224)" label="rgb(102, 163, 224)"></option>
+                    <option value="rgb(194, 133, 255)" label="rgb(194, 133, 255)"></option>
+                    <option value="rgb(136, 136, 136)" label="rgb(136, 136, 136)"></option>
+                    <option value="rgb(161, 0, 0)" label="rgb(161, 0, 0)"></option>
+                    <option value="rgb(178, 107, 0)" label="rgb(178, 107, 0)"></option>
+                    <option value="rgb(178, 178, 0)" label="rgb(178, 178, 0)"></option>
+                    <option value="rgb(0, 97, 0)" label="rgb(0, 97, 0)"></option>
+                    <option value="rgb(0, 71, 178)" label="rgb(0, 71, 178)"></option>
+                    <option value="rgb(107, 36, 178)" label="rgb(107, 36, 178)"></option>
+                    <option value="rgb(68, 68, 68)" label="rgb(68, 68, 68)"></option>
+                    <option value="rgb(92, 0, 0)" label="rgb(92, 0, 0)"></option>
+                    <option value="rgb(102, 61, 0)" label="rgb(102, 61, 0)"></option>
+                    <option value="rgb(102, 102, 0)" label="rgb(102, 102, 0)"></option>
+                    <option value="rgb(0, 55, 0)" label="rgb(0, 55, 0)"></option>
+                    <option value="rgb(0, 41, 102)" label="rgb(0, 41, 102)"></option>
+                    <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+                <span class="ql-format-separator"></span>
+                <select title="Background Color" class="ql-background">
+                    <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                    <option value="rgb(230, 0, 0)" label="rgb(230, 0, 0)"></option>
+                    <option value="rgb(255, 153, 0)" label="rgb(255, 153, 0)"></option>
+                    <option value="rgb(255, 255, 0)" label="rgb(255, 255, 0)"></option>
+                    <option value="rgb(0, 138, 0)" label="rgb(0, 138, 0)"></option>
+                    <option value="rgb(0, 102, 204)" label="rgb(0, 102, 204)"></option>
+                    <option value="rgb(153, 51, 255)" label="rgb(153, 51, 255)"></option>
+                    <option value="rgb(255, 255, 255)" label="rgb(255, 255, 255)" selected></option>
+                    <option value="rgb(250, 204, 204)" label="rgb(250, 204, 204)"></option>
+                    <option value="rgb(255, 235, 204)" label="rgb(255, 235, 204)"></option>
+                    <option value="rgb(255, 255, 204)" label="rgb(255, 255, 204)"></option>
+                    <option value="rgb(204, 232, 204)" label="rgb(204, 232, 204)"></option>
+                    <option value="rgb(204, 224, 245)" label="rgb(204, 224, 245)"></option>
+                    <option value="rgb(235, 214, 255)" label="rgb(235, 214, 255)"></option>
+                    <option value="rgb(187, 187, 187)" label="rgb(187, 187, 187)"></option>
+                    <option value="rgb(240, 102, 102)" label="rgb(240, 102, 102)"></option>
+                    <option value="rgb(255, 194, 102)" label="rgb(255, 194, 102)"></option>
+                    <option value="rgb(255, 255, 102)" label="rgb(255, 255, 102)"></option>
+                    <option value="rgb(102, 185, 102)" label="rgb(102, 185, 102)"></option>
+                    <option value="rgb(102, 163, 224)" label="rgb(102, 163, 224)"></option>
+                    <option value="rgb(194, 133, 255)" label="rgb(194, 133, 255)"></option>
+                    <option value="rgb(136, 136, 136)" label="rgb(136, 136, 136)"></option>
+                    <option value="rgb(161, 0, 0)" label="rgb(161, 0, 0)"></option>
+                    <option value="rgb(178, 107, 0)" label="rgb(178, 107, 0)"></option>
+                    <option value="rgb(178, 178, 0)" label="rgb(178, 178, 0)"></option>
+                    <option value="rgb(0, 97, 0)" label="rgb(0, 97, 0)"></option>
+                    <option value="rgb(0, 71, 178)" label="rgb(0, 71, 178)"></option>
+                    <option value="rgb(107, 36, 178)" label="rgb(107, 36, 178)"></option>
+                    <option value="rgb(68, 68, 68)" label="rgb(68, 68, 68)"></option>
+                    <option value="rgb(92, 0, 0)" label="rgb(92, 0, 0)"></option>
+                    <option value="rgb(102, 61, 0)" label="rgb(102, 61, 0)"></option>
+                    <option value="rgb(102, 102, 0)" label="rgb(102, 102, 0)"></option>
+                    <option value="rgb(0, 55, 0)" label="rgb(0, 55, 0)"></option>
+                    <option value="rgb(0, 41, 102)" label="rgb(0, 41, 102)"></option>
+                    <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+            </span>
+            <span class="ql-format-group">
+                <span title="List" class="ql-format-button ql-list"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                <span class="ql-format-separator"></span>
+                <select title="Text Alignment" class="ql-align">
+                    <option value="left" label="Left" selected></option>
+                    <option value="center" label="Center"></option>
+                    <option value="right" label="Right"></option>
+                    <option value="justify" label="Justify"></option>
+                </select>
+            </span>
+            <span class="ql-format-group">
+                <span title="Link" class="ql-format-button ql-link"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Image" class="ql-format-button ql-image"></span>
+            </span>
+        </div>
+
+        <div id="title_field"></div>
+
+        <div id="editor"></div>
+        
+        <div class="fixed-action-btn" style="bottom: 42px; right: 42px;">
+            <a class="btn-floating btn-large waves-effect waves-light red" onclick="submitPost()">
+                <i class="material-icons">send</i>
+            </a>
+        </div>
+
+        <!--Import jQuery before materialize.js-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+
+        <script>
+            Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
+
+            var userRoles = undefined;
+
+            var currentUser = Parse.User.current();
+            if (currentUser) {
+
+                // Setup navbar elements
+                $(".dropdown-button").dropdown({ hover: false });
+                document.getElementById("username").innerHTML = currentUser.getUsername();
+
+                var roleQuery = new Parse.Query(Parse.Role);
+                roleQuery.equalTo("name", "contributor");
+                roleQuery.first({
+                    success: function(contributorRole) {
+                        var contributorQuery = contributorRole.getRoles().query();
+                        contributorQuery.equalTo("users", currentUser);
+                        contributorQuery.find({
+                            success: function(result) {
+                                if (result && result.length > 0) {
+                                    userRoles = result;
+                                } else {
+                                    window.location.href = "login.html";
+                                }
+                            },
+                            error: function(object, error) {
+                                alert("Error getting user roles for " + currentUser.getUsername() + ": " + error.code + ", " + error.message);
+                            }
+                        });
+                    },
+                    error: function(object, error) {
+                        alert("Error getting contributor role: " + error.code + ", " + error.message);
+                    }
+                });
+
+                roleQuery = new Parse.Query(Parse.Role);
+                roleQuery.containedIn("name", ["administrator", "moderator"]);
+                roleQuery.equalTo("users", currentUser);
+                roleQuery.first({
+                    success: function(privilegedRole) {
+                        if (!privilegedRole) {
+                            document.getElementById("adminButton").style.display = "none";
+                        }
+                        $("div#toolbarActions").removeClass("hidden");
+                    },
+                    error: function(object, error) {
+                        alert("Error getting privileged role: " + error.code + ", " + error.message);
+                    }
+                });
+
+            } else {
+                // show the signup or login page
+                window.location.href = "login.html"
+            }
+
+            var titleField = new Quill('#title_field', {
+                theme: 'snow'
+            });
+
+            var editor = new Quill('#editor', {
+                modules: {
+                    'toolbar': {
+                        container: '#toolbar'
+                    },
+                    'image-tooltip': true,
+                    'link-tooltip': true
+                },
+                theme: 'snow'
+            });
+
+            function submitPost() {
+                
+                var BlogPost = Parse.Object.extend("BlogPosts");
+                var post = new BlogPost();
+
+                var bloggerId = "0";    // No bloggerId for posts created with Parse
+                var createdBy = currentUser;
+                var title = cleanUpTitle(titleField.getText());
+                var published = new Date();
+                var updated = published;
+                var category = userRoles[0].getName();
+                var content = editor.getHTML();
+                var icon = "https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png";
+                var bgImage = getBgImage(content);
+
+                var acl = new Parse.ACL();
+                acl.setPublicReadAccess(true);
+                acl.setRoleWriteAccess(userRoles[0], true);
+                post.setACL(acl);
+
+                post.save(
+                    {
+                        bloggerId: bloggerId,
+                        createdBy: createdBy,
+                        title: title,
+                        published: published,
+                        updated: updated,
+                        category: category,
+                        content: content,
+                        icon: icon,
+                        bgImage: bgImage
+                    }, {
+                        success: function(savedParsePost) {
+                            //alert("Successfully submitted");
+                            window.location.href = "index.html";
+                        },
+                        error: function(parsePost, error) {
+                            alert("Save parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
+                        }
+                    }
+                );
+            }
+
+            function cleanUpTitle(title) {
+                return title.replace(/ *\[[^\]]*]/g, "")        // Remove things within [stuff]
+                        .replace(/[\[\]']+/g, "")               // Remove the [] that are leftover
+                        .trim();                                // Remove leading and trailing white spaces
+            }
+
+            function getBgImage(content) {
+                var regex = /src=\"([^\"]+)/g;
+                var match= regex.exec(content);
+
+                if (match !== null && match[1].indexOf("http") > -1) {
+                    return match[1];
+                } else {
+                    return "@null";
+                }
+            }
+
+            function logout() {
+                Parse.User.logOut();
+                currentUser = Parse.User.current();  // this will now be null
+                window.location.href="index.html";
+            }
+
+        </script>
+
+    </body>
+
+</html>

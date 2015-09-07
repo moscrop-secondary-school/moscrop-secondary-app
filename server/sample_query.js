@@ -1,6 +1,6 @@
 var api_config = require('./api_config.js');
 var Parse = require('parse').Parse;
-Parse.initialize(api_config.API_KEY, api_config.JS_KEY);
+Parse.initialize(api_config.Parse.API_KEY, api_config.Parse.JS_KEY);
 
 var BlogPost = Parse.Object.extend("BlogPosts");
 

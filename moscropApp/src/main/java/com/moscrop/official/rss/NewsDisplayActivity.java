@@ -13,8 +13,6 @@ import com.moscrop.official.util.ThemesUtil;
 public class NewsDisplayActivity extends ActionBarActivity
         implements ThemesUtil.ThemeChangedListener {
 
-	public static final String EXTRA_URL = "url";
-	public static final String EXTRA_CONTENT = "content";
 	public static final String EXTRA_TITLE = "abTitle";
 
     public static final String EXTRA_ORIENTATION = "orientation";

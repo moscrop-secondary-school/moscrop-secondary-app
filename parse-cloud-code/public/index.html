@@ -1,0 +1,100 @@
+<html>
+
+    <head>
+        <title>Moscrop Secondary</title>
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!-- Import Parse -->
+        <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+
+        <style>
+            div.hidden
+            {
+               display: none
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Dropdown Structure -->
+        <ul id="accountDropdownItems" class="dropdown-content">
+          <li><a href="settings.html">Settings</a></li>
+          <!--<li class="divider"></li>-->
+          <li><a onclick="logout()">Logout</a></li>
+        </ul>
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="#" class="brand-logo">Moscrop Secondary</a>
+                    <div id="toolbarActions" class="hidden">
+                        <ul id="loggedInActions" class="right hide-on-med-and-down">
+                            <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                            <li id="submitButton"><a href="submit.html"><i class="material-icons">create</i></a></li>
+                            <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                            <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                        </ul>
+                        <ul id="loggedOutActions" class="right hide-on-med-and-down">
+                            <li id="loginButton"><a href="login.html">Login</a></li>
+                            <li id="registerButton"><a href="register.html">Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!--Import jQuery before materialize.js-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+
+        <script>
+            Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
+            var currentUser = Parse.User.current();
+
+            var divLoggedInActions = document.getElementById("loggedInActions");
+            var divLoggedOutActions = document.getElementById("loggedOutActions");
+
+            if (currentUser) {
+                // do stuff with the user
+                divLoggedOutActions.style.display = "none";
+
+                // Setup navbar elements
+                $(".dropdown-button").dropdown({ hover: false });
+                document.getElementById("username").innerHTML = currentUser.getUsername();
+
+                // get user permissions
+                if (currentUser.getUsername() != "Superuser") {
+                    var query = new Parse.Query(Parse.Role);
+                    query.containedIn("name", ["administrator", "moderator"]);
+                    query.equalTo("users", Parse.User.current());
+                    query.first().then(function(privilegedRole) {
+                        if (!privilegedRole) {                            
+                            var adminButton = document.getElementById("adminButton");
+                            adminButton.style.display = "none";
+                        }
+                        $("div#toolbarActions").removeClass("hidden");
+                    });
+                } else {
+                    $("div#toolbarActions").removeClass("hidden");
+                }
+            } else {
+                // show the signup or login page
+                divLoggedInActions.style.display = "none";
+                $("div#toolbarActions").removeClass("hidden");
+            }
+
+            function logout() {
+                Parse.User.logOut();
+                currentUser = Parse.User.current();  // this will now be null
+                location.reload();
+            }
+
+        </script>
+    </body>
+</html>
