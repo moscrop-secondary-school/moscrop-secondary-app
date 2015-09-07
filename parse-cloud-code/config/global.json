@@ -1,0 +1,14 @@
+{
+  "global": {
+    "parseVersion": "1.5.0"
+  },
+  "applications": {
+    "Moscrop Secondary": {
+      "applicationId": "TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit",
+      "masterKey": "TcNzc4TiOi2fj1IONrwJLp45IKRy0bBMFVvR0Z05"
+    },
+    "_default": {
+      "link": "Moscrop Secondary"
+    }
+  }
+}
