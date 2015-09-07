@@ -14,8 +14,17 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        /**
+         * Not using local datastore because it doesn't
+         * seem to handle incomplete objects properly.
+         *
+         * Instead, I'm using ParseQuery.setCachePolicy(),
+         * which requires local datastore to be disabled.
+         */
+
         // Enable Local Datastore
-        Parse.enableLocalDatastore(this);
+        //Parse.enableLocalDatastore(this);
+
         // Initialize Parse
         Parse.initialize(this, ApiConfig.Parse.API_KEY, ApiConfig.Parse.CLIENT_KEY);
     }

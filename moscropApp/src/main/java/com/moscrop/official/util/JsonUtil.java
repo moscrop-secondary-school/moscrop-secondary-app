@@ -25,8 +25,6 @@ import java.io.InputStreamReader;
  */
 public class JsonUtil {
 
-
-
     public static JSONObject getJsonObjectFromUrl(Context context, String url) throws JSONException {
 
         JSONObject resultObj = null;

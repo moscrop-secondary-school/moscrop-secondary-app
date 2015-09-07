@@ -52,4 +52,17 @@ public class Preferences {
             public static final String TAG_LIST_VERSION = "tag_list_version";
         }
     }
+
+    public static class ParseCacheTracker {
+
+        public static final String NAME = "parse_cache_tracker";
+
+        public static class Default {
+            public static final String PARSE_CACHE_TRACKER = "{cacheList:[]}";
+        }
+
+        public static class Keys {
+            public static final String PARSE_CACHE_TRACKER = "parse_cache_tracker";
+        }
+    }
 }

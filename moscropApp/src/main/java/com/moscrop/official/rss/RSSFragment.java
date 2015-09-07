@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -24,6 +25,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.moscrop.official.MainActivity;
 import com.moscrop.official.R;
@@ -32,6 +34,7 @@ import com.moscrop.official.ToolbarActivity;
 import com.moscrop.official.ToolbarSpinnerAdapter;
 import com.moscrop.official.util.Logger;
 import com.moscrop.official.util.Preferences;
+import com.moscrop.official.util.Util;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -469,20 +472,25 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     }
 
     private void loadFeed(final boolean append) {
+
         if (mSwipeLayout != null) {
-            Logger.error("starting progress spinner");
             mSwipeLayout.setRefreshing(true);
-        } else {
-            Logger.error("Why is swipe refresh layout null??");
         }
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
-        query.whereContainedIn("category", Arrays.asList(getFilterTags()));
-        query.selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"));
-        query.orderByDescending("published");
-        query.setLimit(Preferences.Default.LOAD_LIMIT);
+
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts")
+                .whereContainedIn("category", Arrays.asList(getFilterTags()))
+                .selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"))
+                .orderByDescending("published")
+                .setLimit(Preferences.Default.LOAD_LIMIT);
 
         if (append) {
             query.setSkip(Preferences.Default.LOAD_LIMIT * mPage);
+        }
+
+        if (Util.isConnected(getActivity())) {
+            query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ONLY);
+        } else {
+            query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ONLY);
         }
 
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -490,18 +498,21 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             public void done(List<ParseObject> list, ParseException e) {
 
                 if (mSwipeLayout != null) {
-                    Logger.error("stopping progress spinner");
                     mSwipeLayout.setRefreshing(false);
-                } else {
-                    Logger.error("Why is swipe refresh layout null??");
                 }
 
                 if (e == null) {
 
+                    // Remove empty cache that might get "orphaned"
+                    // before we lose a way to delete it.
+                    if (list == null || list.size() == 0) {
+                        query.clearCachedResult();
+                    }
 
                     if (!append) {
                         mPage = 1;
                         mAdapter.clear();
+                        new ClearOutdatedCachesTask().execute();
                     } else {
                         mPage++;
                     }
@@ -521,9 +532,68 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                     }
                     mAdapter.notifyDataSetChanged();
                     Logger.log("Done loading");
+                } else {
+                    if (e.getCode() == ParseException.CACHE_MISS) {
+                        // We are offline and there is no cache available.
+                        // Possible causes are:
+                        // 1. User has no internet connection (at all)
+                        // 2. User has a data connection, but chose to only load over WiFi
+
+                        if (Util.getConnectionType(getActivity()) == Util.CONNECTION_TYPE_NONE) {
+                            Toast.makeText(getActivity(), "No cache available. Please try again when you have a valid internet connection.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if (!Util.isConnected(getActivity())) {
+                                Toast.makeText(getActivity(), "Loading over data is disabled. Please check your app preferences.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Error loading posts", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        if (!append) {
+                            mPage = 1;
+                            mAdapter.clear();
+                            mAdapter.notifyDataSetChanged();
+                        }
+
+                    } else {
+                        Toast.makeText(getActivity(), "Error loading post", Toast.LENGTH_SHORT).show();
+                    }
+                    query.clearCachedResult();
                 }
             }
         });
+    }
+
+    private class ClearOutdatedCachesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            String[] tags = getFilterTags();
+
+            // Clear appended pages
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts")
+                    .whereContainedIn("category", Arrays.asList(tags))
+                    .selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"))
+                    .orderByDescending("published");
+
+            int count = -1;
+            try {
+                 count = query.count();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int numPages = (int) Math.ceil(((float) count) / Preferences.Default.LOAD_LIMIT);
+
+            query.setLimit(Preferences.Default.LOAD_LIMIT);
+
+            for (int i=1; i<numPages; i++) {
+                query.setSkip(Preferences.Default.LOAD_LIMIT * i);
+                query.clearCachedResult();
+            }
+
+            return null;
+        }
     }
 
     private String[] getFilterTags() {

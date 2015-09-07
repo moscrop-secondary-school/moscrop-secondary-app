@@ -7,11 +7,13 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,10 +37,13 @@ import android.widget.Toast;
 import com.moscrop.official.R;
 import com.moscrop.official.util.Logger;
 import com.moscrop.official.util.ThemesUtil;
+import com.moscrop.official.util.Util;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+
+import org.json.JSONException;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -46,6 +51,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 public class NewsDisplayFragment extends Fragment {
@@ -89,6 +95,26 @@ public class NewsDisplayFragment extends Fragment {
 
     private View mCardCopyContentContainer;
     private View mWebViewContainer;
+
+    private boolean mWebViewFadedIn = false;
+    private int mPreFadeInWebViewTaskCompleteCount = 0;
+    private void fadeInWebView(boolean showFullAnimation) {
+
+        if (mWebViewFadedIn) {
+            return;
+        }
+
+        mPreFadeInWebViewTaskCompleteCount++;
+        if (mPreFadeInWebViewTaskCompleteCount >= 2) {
+            long secondaryDuration = showFullAnimation ? SECONDARY_DURATION : 0;
+            mWebView.setAlpha(0);
+            mWebView.animate().setDuration(secondaryDuration)
+                    .alpha(1)
+                    .setInterpolator(mInterpolator);
+            mWebView.setVisibility(View.VISIBLE);
+            mWebViewFadedIn = true;
+        }
+    }
 
     public static NewsDisplayFragment newInstance(Bundle args) {
 		NewsDisplayFragment ndf = new NewsDisplayFragment();
@@ -138,10 +164,15 @@ public class NewsDisplayFragment extends Fragment {
                     Logger.log("Loading " + url);
                     return mAlreadyExiting;
                 }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    fadeInWebView(savedInstanceState == null);
+                }
             });
             mWebView.getSettings().setBuiltInZoomControls(true);
             mWebView.getSettings().setDisplayZoomControls(false);
-            mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
+            //mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
 		}
 
         mTopLevelLayout = mContentView.findViewById(R.id.news_display_container);
@@ -199,7 +230,6 @@ public class NewsDisplayFragment extends Fragment {
                 mTitleWidthScale = (float) thumbnailWidth / mTitleContainer.getWidth();
                 mTitleHeightScale = (float) thumbnailHeight / mTitleContainer.getHeight();
 
-
                 runEnterAnimation(savedInstanceState == null);
 
                 return true;
@@ -209,12 +239,33 @@ public class NewsDisplayFragment extends Fragment {
         // Fetch the content from Parse
         ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
         query.selectKeys(Arrays.asList("content"));
+        query.setCachePolicy(ParseCacheTracker.getCachePolicy(getActivity(), item.objectId));
         query.getInBackground(item.objectId, new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 if (e == null) {
+                    new AddCacheTask(getActivity()).execute(parseObject.getObjectId());
                     mRawHtmlContent = parseObject.getString("content");
                     mWebView.loadDataWithBaseURL(null, getHtmlData(mRawHtmlContent), "text/html", "UTF-8", null);
+                } else {
+                    if (e.getCode() == ParseException.CACHE_MISS) {
+                        // We are offline and there is no cache available.
+                        // Possible causes are:
+                        // 1. User has no internet connection (at all)
+                        // 2. User has a data connection, but chose to only load over WiFi
+
+                        if (Util.getConnectionType(getActivity()) == Util.CONNECTION_TYPE_NONE) {
+                            Toast.makeText(getActivity(), "No cache available. Please try again when you have a valid internet connection.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if (!Util.isConnected(getActivity())) {
+                                Toast.makeText(getActivity(), "Loading over data is disabled. Please check your app preferences.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Error loading post", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "Error loading post", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -222,10 +273,32 @@ public class NewsDisplayFragment extends Fragment {
         return mContentView;
 	}
 
-    private void runEnterAnimation(boolean showFullAnimation) {
+    private static class AddCacheTask extends AsyncTask<String, Void, Void> {
+
+        private WeakReference<Context> mContext;
+
+        public AddCacheTask(Context context) {
+            mContext = new WeakReference<>(context);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Context context = mContext.get();
+            String id = params[0];
+            if (context != null) {
+                try {
+                    ParseCacheTracker.addCache(context, System.currentTimeMillis(), id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
+
+    private void runEnterAnimation(final boolean showFullAnimation) {
 
         final long primaryDuration = showFullAnimation ? PRIMARY_DURATION : 0;
-        final long secondaryDuration = showFullAnimation ? SECONDARY_DURATION : 0;
 
         // Set starting values for properties we're going to animate. These
         // values scale and position the full size version down to the thumbnail
@@ -258,11 +331,7 @@ public class NewsDisplayFragment extends Fragment {
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            mWebView.setAlpha(0);
-                            mWebView.animate().setDuration(secondaryDuration)
-                                    .alpha(1)
-                                    .setInterpolator(mInterpolator);
-                            mWebView.setVisibility(View.VISIBLE);
+                            fadeInWebView(showFullAnimation);
                         }
                     });
         } else {
@@ -272,11 +341,7 @@ public class NewsDisplayFragment extends Fragment {
                     .setInterpolator(mInterpolator)
                     .withEndAction(new Runnable() {
                         public void run() {
-                            mWebView.setAlpha(0);
-                            mWebView.animate().setDuration(secondaryDuration)
-                                    .alpha(1)
-                                    .setInterpolator(mInterpolator);
-                            mWebView.setVisibility(View.VISIBLE);
+                            fadeInWebView(showFullAnimation);
                         }
                     });
         }
