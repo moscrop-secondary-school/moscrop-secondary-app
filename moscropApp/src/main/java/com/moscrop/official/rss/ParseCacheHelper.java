@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by Owner on 9/6/2015.
  */
-public class ParseCacheTracker  {
+public class ParseCacheHelper {
 
     /**
      * If the user asks for a post again within
@@ -52,7 +52,20 @@ public class ParseCacheTracker  {
                     if (cache.getString("id").equals(id)) {
                         // We found it. There exists a cache
                         // of this post that is relatively new.
-                        return ParseQuery.CachePolicy.CACHE_ONLY;
+
+                        ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
+                        query.selectKeys(Arrays.asList("content"));
+                        query.whereEqualTo("objectId", id);
+                        if (query.hasCachedResult()) {
+                            return ParseQuery.CachePolicy.CACHE_ONLY;
+                        } else {
+                            // Cache is missing.
+                            // No need to remove from tracker,
+                            // chances are it will be added back
+                            // almost immediately.
+                            // Simply tell app to load from network again.
+                            return ParseQuery.CachePolicy.NETWORK_ONLY;
+                        }
                     }
                 } else {
                     break;

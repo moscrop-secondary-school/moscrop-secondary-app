@@ -238,7 +238,7 @@ public class NewsDisplayFragment extends Fragment {
         // Fetch the content from Parse
         ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
         query.selectKeys(Arrays.asList("content"));
-        query.setCachePolicy(ParseCacheTracker.getCachePolicy(getActivity(), item.objectId));
+        query.setCachePolicy(ParseCacheHelper.getCachePolicy(getActivity(), item.objectId));
         query.getInBackground(item.objectId, new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
@@ -286,7 +286,7 @@ public class NewsDisplayFragment extends Fragment {
             String id = params[0];
             if (context != null) {
                 try {
-                    ParseCacheTracker.addCache(context, System.currentTimeMillis(), id);
+                    ParseCacheHelper.addCache(context, System.currentTimeMillis(), id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
