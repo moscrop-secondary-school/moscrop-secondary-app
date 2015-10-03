@@ -300,45 +300,55 @@
 
             function submitPost() {
                 
-                var BlogPost = Parse.Object.extend("BlogPosts");
-                var post = new BlogPost();
+                var Post = Parse.Object.extend("Posts");
+                var Category = Parse.Object.extend("Categories");
+                var post = new Post();
 
-                var bloggerId = "0";    // No bloggerId for posts created with Parse
-                var createdBy = currentUser;
-                var title = cleanUpTitle(titleField.getText());
-                var published = new Date();
-                var updated = published;
-                var category = userRoles[0].getName();
-                var content = editor.getHTML();
-                var icon = "https://raw.githubusercontent.com/IvonLiu/moscrop-secondary-app/master/moscropOnline/clubs/moscrop_app.png";
-                var bgImage = getBgImage(content);
+                var categoryName = userRoles[0].getName();
+                var query = new Parse.Query(Category);
+                query.equalTo("name", categoryName);
+                query.first({
+                    success: function(category) {
+                        var bloggerId = "0";    // No bloggerId for posts created with Parse
+                        var createdBy = currentUser;
+                        var title = cleanUpTitle(titleField.getText());
+                        var published = new Date();
+                        var updated = published;
+                        var content = editor.getHTML();
+                        var bgImage = getBgImage(content);
 
-                var acl = new Parse.ACL();
-                acl.setPublicReadAccess(true);
-                acl.setRoleWriteAccess(userRoles[0], true);
-                post.setACL(acl);
+                        var acl = new Parse.ACL();
+                        acl.setPublicReadAccess(true);
+                        acl.setRoleWriteAccess(userRoles[0], true);
+                        post.setACL(acl);
 
-                post.save(
-                    {
-                        bloggerId: bloggerId,
-                        createdBy: createdBy,
-                        title: title,
-                        published: published,
-                        updated: updated,
-                        category: category,
-                        content: content,
-                        icon: icon,
-                        bgImage: bgImage
-                    }, {
-                        success: function(savedParsePost) {
-                            //alert("Successfully submitted");
-                            window.location.href = "index.html";
-                        },
-                        error: function(parsePost, error) {
-                            alert("Save parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
-                        }
+                        post.save(
+                            {
+                                bloggerId: bloggerId,
+                                createdBy: createdBy,
+                                title: title,
+                                published: published,
+                                updated: updated,
+                                category: category,
+                                content: content,
+                                bgImage: bgImage
+                            }, {
+                                success: function(savedParsePost) {
+                                    //alert("Successfully submitted");
+                                    window.location.href = "index.html";
+                                },
+                                error: function(parsePost, error) {
+                                    alert("Save parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
+                                }
+                            }
+                        );
+                    },
+                    error: function(category, error) {
+                        FETCH_FROM_BLOGGER.response.error("Retrieve category " + categoryName + " failed: " + error.code + ", " + error.message);
                     }
-                );
+                })
+
+                
             }
 
             function cleanUpTitle(title) {

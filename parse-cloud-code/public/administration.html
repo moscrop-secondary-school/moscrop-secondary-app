@@ -76,6 +76,14 @@
             </form>
         </div>
 
+        <div id="tags" class="row">
+            <form class="col s12">
+                <div class="row">
+                    <a class="waves-effect waves-light btn" href="tageditor.html">Edit Tags</a>
+                </div>
+            </form>
+        </div>
+
         <!--Import jQuery before materialize.js-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
@@ -174,35 +182,7 @@
                 roleQuery.first({
                     success: function(role) {
                         if (!role) {
-                            roleQuery.equalTo("name", "moderator");
-                            roleQuery.first().then(function(modRole) {
-                                var roleACL = new Parse.ACL();
-                                roleACL.setPublicReadAccess(true);
-                                roleACL.setRoleWriteAccess(modRole, true);
-                                role = new Parse.Role(roleName, roleACL);
-                                role.getRoles().add(modRole);
-                                role.save({
-                                    success: function(newRole) {
-                                        roleQuery.equalTo("name", "contributor");
-                                        roleQuery.first().then(function(contributorRole) {
-                                            contributorRole.getRoles().add(newRole);
-                                            contributorRole.save({
-                                                success: function(updatedContributorRole) {
-                                                    console.log("Successfully added new role: " + newRole.getName());
-                                                    addUserToRole(username, roleName);
-                                                    return;
-                                                },
-                                                error: function(object, error) {
-                                                    alert("Error saving contributor role after adding " + roleName + " as subrole: " + error.code + ", " + error.message);
-                                                }
-                                            })
-                                        });
-                                    },
-                                    error: function(object, error) {
-                                        alert("Error adding new role " + roleName + ": " + error.code + ", " + error.message);
-                                    }
-                                });
-                            });
+                            alert("Role does not exist. Please add it in tag editor.");
                         } else {
                             var userQuery = new Parse.Query(Parse.User);
                             userQuery.equalTo("username", username);

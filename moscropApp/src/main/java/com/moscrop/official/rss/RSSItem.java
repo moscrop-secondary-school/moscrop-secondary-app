@@ -11,21 +11,21 @@ public class RSSItem implements Parcelable {
     public final String objectId;
     public final long date;
     public final String title;
-    public final String[] categories;
+    public final String category;
     public final String icon;
     public final String bgImage;
 
     public RSSItem(Parcel in) {
-        this(in.readString(), in.readLong(), in.readString(), in.createStringArray(), in.readString(), in.readString());
-        //   objectId,        date           title            categories              icon             bgImage
+        this(in.readString(), in.readLong(), in.readString(), in.readString(), in.readString(), in.readString());
+        //   objectId,        date           title            category         icon             bgImage
     }
 
 
-    public RSSItem(String objectId, long date, String title, String[] categories, String icon, String bgImage) {
+    public RSSItem(String objectId, long date, String title, String category, String icon, String bgImage) {
         this.objectId = objectId;
         this.date = date;
         this.title = title;
-        this.categories = categories;
+        this.category = category;
         this.icon = icon;
         this.bgImage = bgImage;
     }
@@ -42,7 +42,7 @@ public class RSSItem implements Parcelable {
         dest.writeString(objectId);
         dest.writeLong(date);
         dest.writeString(title);
-        dest.writeStringArray(categories);
+        dest.writeString(category);
         dest.writeString(icon);
         dest.writeString(bgImage);
     }

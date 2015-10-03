@@ -38,7 +38,8 @@ public class Preferences {
             public static final String RSS_VERSION = "no rss version info";
             public static final String RSS_LAST_TAG = "Subscribed";
             public static final boolean FIRST_LAUNCH = true;
-            public static final String TAG_LIST_VERSION = "0";
+            public static final long CATEGORIES_VERSION = 0;
+            public static final long CATEGORIES_UPDATED_AT = 0;
         }
 
         public static class Keys {
@@ -49,7 +50,8 @@ public class Preferences {
             public static final String RSS_VERSION = "rss_version";
             public static final String RSS_LAST_TAG = "rss_last_tag";
             public static final String FIRST_LAUNCH = "first_launch";
-            public static final String TAG_LIST_VERSION = "tag_list_version";
+            public static final String CATEGORIES_VERSION = "categories_version";       // The time categories was last modified on server
+            public static final String CATEGORIES_UPDATED_AT = "categories_updated_at"; // The time we last checked with the server
         }
     }
 

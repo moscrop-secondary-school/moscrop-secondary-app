@@ -6,10 +6,9 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
-import com.moscrop.official.rss.RSSTagCriteria;
+import com.moscrop.official.rss.ParseCategoryHelper;
 import com.moscrop.official.util.Preferences;
 import com.moscrop.official.util.ThemesUtil;
-import com.moscrop.official.util.Util;
 
 import org.json.JSONException;
 
@@ -85,43 +84,10 @@ public class SettingsFragment extends PreferenceFragment
         return false;
     }
 
-    private void refreshTagsFromServer() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (Util.isConnected(getActivity())) {
-                    try {
-                        RSSTagCriteria.downloadTagListToStorage(getActivity());
-                        showResult(true);
-                        return;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                showResult(false);
-            }
-
-            private void showResult(final boolean success) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(
-                                getActivity(),
-                                success ? "Categories successfully updated" : "Categories update failed",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                        updateTagsList();
-                    }
-                });
-            }
-        });
-        thread.start();
-    }
-
     private void updateTagsList() {
         String[] tagNamesArray;
         try {
-            tagNamesArray = RSSTagCriteria.getTagNames(getActivity());
+            tagNamesArray = ParseCategoryHelper.getAllTagNames(getActivity());
         } catch (IOException e) {
             tagNamesArray = new String[] {};
         } catch (JSONException e) {

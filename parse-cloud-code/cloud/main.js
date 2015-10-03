@@ -15,7 +15,8 @@ Parse.Cloud.define("hello", function(request, response) {
 /**************************/
 
 var ParseBlogInfo = Parse.Object.extend("BlogInfo");
-var BlogPost = Parse.Object.extend("BlogPosts");
+var Post = Parse.Object.extend("Posts");
+var Category = Parse.Object.extend("Categories");
 
 var FETCH_FROM_BLOGGER = {
 
@@ -68,7 +69,7 @@ var FETCH_FROM_BLOGGER = {
  	}
 };
 
-Parse.Cloud.define("fetch_from_blogger", function(request, response) {
+Parse.Cloud.define("fetchFromBlogger", function(request, response) {
 
 	console.log("**************************");
 	console.log("******** STARTING ********");
@@ -155,10 +156,10 @@ function bloggerHasUpdated(bloggerInfo, parseBlogInfo) {
 	var parseBlogDate = parseBlogInfo.get("lastUpdated");
 
 	var bloggerPostCount = bloggerInfo.posts.totalItems;
-	var parseBlogPostCount = parseBlogInfo.get("postCount");
+	var parsePostCount = parseBlogInfo.get("postCount");
 
 	return (bloggerDate.getTime() != parseBlogDate.getTime())
-			|| (bloggerPostCount != parseBlogPostCount);
+			|| (bloggerPostCount != parsePostCount);
 }
 
 function updateParseBlogInfo(bloggerInfo, parseBlogInfo) {
@@ -194,17 +195,17 @@ function getPostHeaders(bloggerInfo) {
 
 			var bloggerPostHeaders = httpResponse.data.items;
 
-			var query = new Parse.Query(BlogPost);
+			var query = new Parse.Query(Post);
 			query.notEqualTo("bloggerId", "0");
 			query.select("bloggerId", "title", "published", "updated", "category");
 			query.addDescending("published");
 			query.limit(1000);
 			query.find({
 			    success: function(parsePostHeaders) {
-			    	updateParseBlogPosts(bloggerPostHeaders, parsePostHeaders);
+			    	updateParsePosts(bloggerPostHeaders, parsePostHeaders);
 			    },
 			    error: function(error) {
-			        FETCH_FROM_BLOGGER.response.error("Fetch parse post headers failed: " + erro.code + ", " + error.message);
+			        FETCH_FROM_BLOGGER.response.error("Fetch parse post headers failed: " + error.code + ", " + error.message);
 			    }
 			});
 
@@ -217,7 +218,7 @@ function getPostHeaders(bloggerInfo) {
 	});
 }
 
-function updateParseBlogPosts(bloggerPostHeaders, parsePostHeaders) {
+function updateParsePosts(bloggerPostHeaders, parsePostHeaders) {
 	
 	var deletedPosts = getDeletedPosts(bloggerPostHeaders, parsePostHeaders);
 	var updatedPosts = getUpdatedPosts(bloggerPostHeaders, parsePostHeaders);
@@ -366,74 +367,91 @@ function deletePost(parsePost) {
 
 function updatePost(bloggerPost, parsePost) {
 
-	var bloggerId = bloggerPost.id;
-	var title = cleanUpTitle(bloggerPost.title);
-	var published = new Date(Date.parse(bloggerPost.published));
-	var updated = new Date(Date.parse(bloggerPost.updated));
-	var categoryInfo = getCategoryInfo(bloggerPost);
-	var category = categoryInfo[0];
-	var content = bloggerPost.content;
-	var icon = categoryInfo[1];
-	var bgImage = getBgImage(bloggerPost);
+	var categoryName = getCategoryName(bloggerPost);
+	var query = new Parse.Query(Category);
+	query.equalTo("name", categoryName);
+	query.first({
+		success: function(category) {
+			var bloggerId = bloggerPost.id;
+			var title = cleanUpTitle(bloggerPost.title);
+			var published = new Date(Date.parse(bloggerPost.published));
+			var updated = new Date(Date.parse(bloggerPost.updated));
+			//var categoryInfo = getCategoryInfo(bloggerPost);
+			//var category = categoryInfo[0];
+			var category = getCategory(bloggerPost);
+			var content = bloggerPost.content;
+			//var icon = categoryInfo[1];
+			var bgImage = getBgImage(bloggerPost);
 
-	parsePost.set("bloggerId", bloggerId);
-	parsePost.set("title", title);
-	parsePost.set("published", published);
-	parsePost.set("updated", updated);
-	parsePost.set("category", category);
-	parsePost.set("content", content);
-	parsePost.set("icon", icon);
-	parsePost.set("bgImage", bgImage);
-	parsePost.save(
-		{
-        	success: function(updatedParsePost) {
-            	FETCH_FROM_BLOGGER.trySendSuccess("updated");	            	
-            },
-            error: function(parsePost, error) {
-                FETCH_FROM_BLOGGER.response.error("Update parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
-       		}
-       	}
-    );
+			parsePost.set("bloggerId", bloggerId);
+			parsePost.set("title", title);
+			parsePost.set("published", published);
+			parsePost.set("updated", updated);
+			parsePost.set("category", category);
+			parsePost.set("content", content);
+			parsePost.set("bgImage", bgImage);
+			parsePost.save(
+				{
+		        	success: function(updatedParsePost) {
+		            	FETCH_FROM_BLOGGER.trySendSuccess("updated");	            	
+		            },
+		            error: function(parsePost, error) {
+		                FETCH_FROM_BLOGGER.response.error("Update parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
+		       		}
+		       	}
+		    );
+		},
+		error: function(category, error) {
+			FETCH_FROM_BLOGGER.response.error("Retrieve category " + categoryName + " failed: " + error.code + ", " + error.message);
+		}
+	});
 
 }
 
 function savePost(bloggerPost) {
-	var bloggerId = bloggerPost.id;
-	var title = cleanUpTitle(bloggerPost.title);
-	var published = new Date(Date.parse(bloggerPost.published));
-	var updated = new Date(Date.parse(bloggerPost.updated));
-	var categoryInfo = getCategoryInfo(bloggerPost);
-	var category = categoryInfo[0];
-	var content = bloggerPost.content;
-	var icon = categoryInfo[1];
-	var bgImage = getBgImage(bloggerPost);
 
-	var post = new BlogPost();
+	var categoryName = getCategoryName(bloggerPost);
+	var query = new Parse.Query(Category);
+	query.equalTo("name", categoryName);
+	query.first({
+		success: function(category) {
+			var bloggerId = bloggerPost.id;
+			var title = cleanUpTitle(bloggerPost.title);
+			var published = new Date(Date.parse(bloggerPost.published));
+			var updated = new Date(Date.parse(bloggerPost.updated));
+			var content = bloggerPost.content;
+			var bgImage = getBgImage(bloggerPost);
 
-    var acl = new Parse.ACL();
-    acl.setPublicReadAccess(true);
-    acl.setRoleWriteAccess(FETCH_FROM_BLOGGER.moderatorRole, true);
-    post.setACL(acl);
+			var post = new Post();
 
-	post.save(
-		{
-			bloggerId: bloggerId,
-			title: title,
-			published: published,
-			updated: updated,
-			category: category,
-			content: content,
-			icon: icon,
-			bgImage: bgImage
-		}, {
-			success: function(savedParsePost) {
-				FETCH_FROM_BLOGGER.trySendSuccess("saved");
-			},
-			error: function(parsePost, error) {
-                FETCH_FROM_BLOGGER.response.error("Save parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
-			}
+		    var acl = new Parse.ACL();
+		    acl.setPublicReadAccess(true);
+		    acl.setRoleWriteAccess(FETCH_FROM_BLOGGER.moderatorRole, true);
+		    post.setACL(acl);
+
+			post.save(
+				{
+					bloggerId: bloggerId,
+					title: title,
+					published: published,
+					updated: updated,
+					category: category,
+					content: content,
+					bgImage: bgImage
+				}, {
+					success: function(savedParsePost) {
+						FETCH_FROM_BLOGGER.trySendSuccess("saved");
+					},
+					error: function(parsePost, error) {
+		                FETCH_FROM_BLOGGER.response.error("Save parse post (parseId=" + parsePost.id + ") failed: " + error.code + ", " + error.message);
+					}
+				}
+			);		
+		},
+		error: function(category, error) {
+			FETCH_FROM_BLOGGER.response.error("Retrieve category " + categoryName + " failed: " + error.code + ", " + error.message);
 		}
-	);
+	});
 }
 
 /* Helper methods for processing Blogger posts */
@@ -444,10 +462,9 @@ function cleanUpTitle(title) {
             .trim();                                // Remove leading and trailing white spaces
 }
 
-function getCategoryInfo(bloggerPost) {
+function getCategoryName(bloggerPost) {
 
     var categories = [];
-    var icons = [];
     var bloggerCategories = bloggerPost.labels;
 
     if (bloggerCategories !== undefined) {
@@ -462,7 +479,6 @@ function getCategoryInfo(bloggerPost) {
             for (var j=0; j<FETCH_FROM_BLOGGER.tags.length; j++) {
                 if (bloggerCategory.toString() == FETCH_FROM_BLOGGER.tags[j].id_category.toString()) {
                     categories.push(FETCH_FROM_BLOGGER.tags[j].name);
-                    icons.push(FETCH_FROM_BLOGGER.tags[j].icon_img);
                 }
             }
 
@@ -477,13 +493,12 @@ function getCategoryInfo(bloggerPost) {
         for (var i=0; i<FETCH_FROM_BLOGGER.tags.length; i++) {
             if (author.toString() == FETCH_FROM_BLOGGER.tags[i].id_author.toString()) {
         		categories.push(FETCH_FROM_BLOGGER.tags[i].name);
-                icons.push(FETCH_FROM_BLOGGER.tags[i].icon_img);
             }
         }
 
     }
 
-    return [categories.join(), icons[0]];
+    return categories[0];
 }
 
 function getBgImage(bloggerPost) {
@@ -497,3 +512,22 @@ function getBgImage(bloggerPost) {
         return "@null";
     }
 }
+
+/****************************************/
+/*** Get categories last updated time ***/
+/****************************************/
+
+var Category = Parse.Object.extend("Categories");
+
+Parse.Cloud.define("getCategoriesLastUpdatedTime", function(request, response) {
+	
+    // Use master key to bypass ACL
+    Parse.Cloud.useMasterKey();
+
+    var query = new Parse.Query(Category);
+    query.addDescending("updatedAt");
+    query.first().then(function(category) {
+    	var updated = category.updatedAt.getTime();
+    	response.success(updated);
+    });
+});

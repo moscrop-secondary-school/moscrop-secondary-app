@@ -1,0 +1,279 @@
+<html>
+
+    <head>
+        <title>Moscrop Secondary | Admin</title>
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!-- Import Parse -->
+        <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+    </head>
+
+    <body bgcolor="#eee">
+
+        <!-- Navigation Bar -->
+        <ul id="accountDropdownItems" class="dropdown-content">
+          <li><a href="settings.html">Settings</a></li>
+          <!--<li class="divider"></li>-->
+          <li><a onclick="logout()">Logout</a></li>
+        </ul>
+        <div class="navbar-fixed" style="height:72px">
+            <nav>
+                <div class="nav-wrapper" style="background-color:#4784c0; padding-left:16px; padding-right:16px">
+                    <a href="index.html" class="brand-logo">Moscrop Secondary</a>
+                    <ul id="loggedInActions" class="right hide-on-med-and-down">
+                        <li id="username" style="background-color:#4784c0; margin-right:16px"></li>
+                        <li id="submitButton"><a href="submit.html"><i class="material-icons">create</i></a></li>
+                        <li id="adminButton"><a href="administration.html"><i class="material-icons">lock</i></a></li>
+                        <li id="accountDropdown"><a class="dropdown-button" href="#!" data-activates="accountDropdownItems"><i class="material-icons">account_circle</i></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Tag grid container -->
+        <div id="tag_list"></div>
+
+        <!-- Export tags button -->
+        <a class="waves-effect waves-light btn" onclick="exportTags()">Export tags</a>
+
+        <!-- FAB -->
+        <div class="fixed-action-btn" style="bottom: 42px; right: 42px;">
+            <a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#create_tag_modal">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="create_tag_modal" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4>Create Tag</h4>
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">    
+                            <div class="input-field col s12">
+                              <input id="name_field" type="text" class="validate">
+                              <label for="name_field">Category Name</label>
+                            </div>
+                        </div>
+                        <div class="row">    
+                            <div class="input-field col s12">
+                              <input id="id_author_field" type="text" class="validate">
+                              <label for="id_author_field">Blogger Author</label>
+                            </div>
+                        </div>
+                        <div class="row">    
+                            <div class="input-field col s12">
+                              <input id="id_category_field" type="text" class="validate">
+                              <label for="id_category_field">Blogger Category</label>
+                            </div>
+                        </div>
+                        <div class="row">    
+                            <div class="input-field col s12">
+                              <input id="icon_img_field" type="url" class="validate">
+                              <label for="icon_img_field">Icon URL</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" onclick="#!">Cancel</a>
+                <a class="modal-action waves-effect waves-green btn-flat" onclick="addTag()">Create</a>
+            </div>
+        </div>
+
+        <!--Import jQuery before materialize.js-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+
+        <script>
+            Parse.initialize("TtFxol5uKm6piqaomYYvaTtezhRJQFZFRadc9qit", "smiduKJqXsJXvEnYj5nUSBFxxTXMpHiZZibVVyLx");
+            var currentUser = Parse.User.current();
+
+            $(document).ready(function(){
+                // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+                $('.modal-trigger').leanModal();
+            });
+
+            if (currentUser) {
+
+                // Setup navbar elements
+                $(".dropdown-button").dropdown({ hover: false });
+                document.getElementById("username").innerHTML = currentUser.getUsername();
+
+                if (currentUser.getUsername() != "Superuser") {
+                    var query = new Parse.Query(Parse.Role);
+                    query.equalTo("name", "administrator");
+                    query.equalTo("users", currentUser);
+                    query.first().then(function(adminRole) {
+                        if (!adminRole) {
+                            query.equalTo("name", "moderator");
+                            query.first().then(function(modRole) {
+                                if (!modRole) {
+                                    Parse.User.logOut();
+                                    currentUser = Parse.User.current();  // this will now be null
+                                    window.location.href = "login.html"
+                                }
+                            });
+                        }
+                    });
+                }
+            } else {
+                // show the signup or login page
+                window.location.href = "login.html"
+            }
+
+            refreshTags();
+
+            var mTags;
+
+            function refreshTags() {
+                var query = new Parse.Query("Categories");
+                query.ascending("name");
+                query.find().then(function(tags) {
+                    displayTags(tags);
+                });
+            }
+
+            function displayTags(tags) {
+                mTags = tags;
+                $.each(
+                    tags,
+                    function(i, tag) {
+                        var rowNum = Math.floor(i/6);
+                        var row = $("#tag_row_" + rowNum);
+                        if (row.length == 0) {
+                            $("#tag_list").append("<div id=\"tag_row_" + rowNum + "\" class=\"row\"></div>");
+                            row = $("#tag_row_" + rowNum);
+                        }
+                        var name = tag.get("name");
+                        var author = tag.get("id_author");
+                        var category = tag.get("id_category");
+                        var image = tag.get("icon_img");
+                        row.append("<div class=\"col s2\" onclick=\"rowClick("+i+")\">" 
+                            + "<div class=\"card waves-effect\"><div class=\"card-content\"><span class=\"card-title black-text\">"+name+"</span><p>Author: "+author+"</p><p>Category: "+category+"</p></div></div>"
+                            + "</div>");
+                    }
+                );
+            }
+
+            function rowClick(row) {
+                if (mTags) {
+                    console.log("Clicked: " + mTags[row].get("name"));    
+                }
+            }
+
+            function addTag() {
+
+                var name = document.getElementById("name_field").value;
+                var id_author = document.getElementById("id_author_field").value;
+                var id_category = document.getElementById("id_category_field").value;
+                var icon_img = document.getElementById("icon_img_field").value;
+
+                if (!name) {
+                    Materialize.toast('You must enter a name!', 4000);
+                    return;
+                }
+
+                if (!icon_img) {
+                    Materialize.toast('You must enter an icon URL!', 4000);
+                    return;
+                }
+
+                if (!id_author) {
+                    id_author = "@null";
+                }
+
+                if (!id_category) {
+                    id_category = "@null";
+                }
+
+                var roleQuery = new Parse.Query(Parse.Role);
+                roleQuery.equalTo("name", "moderator");
+                roleQuery.first().then(function(modRole) {
+                    var roleACL = new Parse.ACL();
+                    roleACL.setPublicReadAccess(true);
+                    roleACL.setRoleWriteAccess(modRole, true);
+                    role = new Parse.Role(name, roleACL);
+                    role.getRoles().add(modRole);
+                    role.save({
+                        success: function(newRole) {
+                            roleQuery.equalTo("name", "contributor");
+                            roleQuery.first().then(function(contributorRole) {
+                                contributorRole.getRoles().add(newRole);
+                                contributorRole.save({
+                                    success: function(updatedContributorRole) {
+                                        console.log("Successfully added new role: " + newRole.getName());
+                                        return;
+                                    },
+                                    error: function(object, error) {
+                                        alert("Error saving contributor role after adding " + roleName + " as subrole: " + error.code + ", " + error.message);
+                                    }
+                                })
+                            });
+
+                            var Category = Parse.Object.extend("Categories");
+                            var category = new Category();
+                            var categoryACL = new Parse.ACL();
+                            categoryACL.setPublicReadAccess(true);
+                            categoryACL.setRoleWriteAccess(modRole, true);
+                            category.setACL(categoryACL);
+                            category.save(
+                            {
+                                name: name,
+                                id_author: id_author,
+                                id_category: id_category,
+                                icon_img: icon_img,
+                                group: newRole
+                            }, {
+                                success: function(category) {
+                                    
+                                    $('#create_tag_modal').closeModal();
+                                    Materialize.toast('Successfully added ' + name + "!", 4000);
+                                    $("#tag_list").empty();
+                                    refreshTags();
+                                },
+                                error: function(category, error) {
+                                    alert("Create category (" + name + ") failed: " + error.code + ", " + error.message);
+                                }
+                            }
+                        );
+                        },
+                        error: function(object, error) {
+                            alert("Error adding new role " + name + ": " + error.code + ", " + error.message);
+                        }
+                    });
+                });                
+            }
+
+            function exportTags() {
+                
+                var tags = {
+                    tags: []
+                }
+
+                for (var i=0; i<mTags.length; i++) {
+                    var tag = {
+                        name: mTags[i].get("name"),
+                        id: mTags[i].id
+                    }
+                    tags.tags.push(tag);
+                }
+
+                var jsonContent = JSON.stringify(tags);
+
+                var link = document.createElement("a");
+                link.download = "categories.json";
+                link.href = "data:text/html," + jsonContent;
+                link.click();
+            }
+
+        </script>
+    </body>
+</html>

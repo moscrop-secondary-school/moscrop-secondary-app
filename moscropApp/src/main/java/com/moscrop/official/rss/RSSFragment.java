@@ -266,7 +266,7 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
     private void updateSpinnerList() {
         String[] spinnerTagsArray = null;
         try {
-            spinnerTagsArray = RSSTagCriteria.getSubscribedTags(getActivity());
+            spinnerTagsArray = ParseCategoryHelper.getSubscribedTagNames(getActivity());
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -477,89 +477,94 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
             mSwipeLayout.setRefreshing(true);
         }
 
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts")
-                .whereContainedIn("category", Arrays.asList(getFilterTags()))
-                .selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"))
-                .orderByDescending("published")
-                .setLimit(Preferences.Default.LOAD_LIMIT);
-
-        if (append) {
-            query.setSkip(Preferences.Default.LOAD_LIMIT * mPage);
-        }
-
-        if (Util.isConnected(getActivity())) {
-            query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ONLY);
-        } else {
-            query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ONLY);
-        }
-
-        query.findInBackground(new FindCallback<ParseObject>() {
+        ParseCategoryHelper.downloadCategoriesList(getActivity(), new Runnable() {
             @Override
-            public void done(List<ParseObject> list, ParseException e) {
+            public void run() {
+                final ParseQuery<ParseObject> query = ParseQuery.getQuery("Posts")
+                        .whereContainedIn("category", Arrays.asList(ParseCategoryHelper.getFilterCategories(getActivity(), mTag)))
+                        .selectKeys(Arrays.asList("published", "title", "category", "bgImage"))
+                        .include("category")
+                        .orderByDescending("published")
+                        .setLimit(Preferences.Default.LOAD_LIMIT);
 
-                if (mSwipeLayout != null) {
-                    mSwipeLayout.setRefreshing(false);
+                if (append) {
+                    query.setSkip(Preferences.Default.LOAD_LIMIT * mPage);
                 }
 
-                if (e == null) {
-
-                    // Remove empty cache that might get "orphaned"
-                    // before we lose a way to delete it.
-                    if (list == null || list.size() == 0) {
-                        query.clearCachedResult();
-                    }
-
-                    if (!append) {
-                        mPage = 1;
-                        mAdapter.clear();
-                        new ClearOutdatedCachesTask().execute();
-                    } else {
-                        mPage++;
-                    }
-
-                    for (ParseObject item : list) {
-                        if (item.getString("category") != null) {
-                            RSSItem post = new RSSItem(
-                                    item.getObjectId(),
-                                    item.getDate("published").getTime(),
-                                    item.getString("title"),
-                                    item.getString("category").split(","),
-                                    item.getString("icon"),
-                                    item.getString("bgImage")
-                            );
-                            mAdapter.add(post);
-                        }
-                    }
-                    mAdapter.notifyDataSetChanged();
-                    Logger.log("Done loading");
+                if (Util.isConnected(getActivity())) {
+                    query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ONLY);
                 } else {
-                    if (e.getCode() == ParseException.CACHE_MISS) {
-                        // We are offline and there is no cache available.
-                        // Possible causes are:
-                        // 1. User has no internet connection (at all)
-                        // 2. User has a data connection, but chose to only load over WiFi
-
-                        if (Util.getConnectionType(getActivity()) == Util.CONNECTION_TYPE_NONE) {
-                            Toast.makeText(getActivity(), "No cache available. Please try again when you have a valid internet connection.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (!Util.isConnected(getActivity())) {
-                                Toast.makeText(getActivity(), "Loading over data is disabled. Please check your app preferences.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getActivity(), "Error loading posts", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        if (!append) {
-                            mPage = 1;
-                            mAdapter.clear();
-                            mAdapter.notifyDataSetChanged();
-                        }
-
-                    } else {
-                        Toast.makeText(getActivity(), "Error loading post", Toast.LENGTH_SHORT).show();
-                    }
-                    query.clearCachedResult();
+                    query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ONLY);
                 }
+
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+
+                        if (mSwipeLayout != null) {
+                            mSwipeLayout.setRefreshing(false);
+                        }
+
+                        if (e == null) {
+                            // Remove empty cache that might get "orphaned"
+                            // before we lose a way to delete it.
+                            if (list == null || list.size() == 0) {
+                                query.clearCachedResult();
+                            }
+
+                            if (!append) {
+                                mPage = 1;
+                                mAdapter.clear();
+                                new ClearOutdatedCachesTask().execute();
+                            } else {
+                                mPage++;
+                            }
+
+                            for (ParseObject item : list) {
+                                if (item.getParseObject("category") != null) {
+                                    RSSItem post = new RSSItem(
+                                            item.getObjectId(),
+                                            item.getDate("published").getTime(),
+                                            item.getString("title"),
+                                            item.getParseObject("category").getString("name"),
+                                            item.getParseObject("category").getString("icon_img"),
+                                            item.getString("bgImage")
+                                    );
+                                    mAdapter.add(post);
+                                }
+                            }
+                            mAdapter.notifyDataSetChanged();
+                            Logger.log("Done loading");
+                        } else {
+                            if (e.getCode() == ParseException.CACHE_MISS) {
+                                // We are offline and there is no cache available.
+                                // Possible causes are:
+                                // 1. User has no internet connection (at all)
+                                // 2. User has a data connection, but chose to only load over WiFi
+
+                                if (Util.getConnectionType(getActivity()) == Util.CONNECTION_TYPE_NONE) {
+                                    Toast.makeText(getActivity(), "No cache available. Please try again when you have a valid internet connection.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    if (!Util.isConnected(getActivity())) {
+                                        Toast.makeText(getActivity(), "Loading over data is disabled. Please check your app preferences.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getActivity(), "Error loading posts", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                if (!append) {
+                                    mPage = 1;
+                                    mAdapter.clear();
+                                    mAdapter.notifyDataSetChanged();
+                                }
+
+                            } else {
+                                Toast.makeText(getActivity(), "Error loading post", Toast.LENGTH_SHORT).show();
+                            }
+                            query.clearCachedResult();
+                        }
+                    }
+                });
             }
         });
     }
@@ -569,12 +574,13 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
         @Override
         protected Void doInBackground(Void... params) {
 
-            String[] tags = getFilterTags();
+            ParseObject[] tags = ParseCategoryHelper.getFilterCategories(getActivity(), mTag);
 
             // Clear appended pages
             ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts")
                     .whereContainedIn("category", Arrays.asList(tags))
-                    .selectKeys(Arrays.asList("published", "title", "category", "icon", "bgImage"))
+                    .include("category")
+                    .selectKeys(Arrays.asList("published", "title", "category", "bgImage"))
                     .orderByDescending("published");
 
             int count = -1;
@@ -594,30 +600,6 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
 
             return null;
         }
-    }
-
-    private String[] getFilterTags() {
-        String[] tags = null;
-        switch (mTag) {
-            case "All":
-                try {
-                    tags = RSSTagCriteria.getTagNames(getActivity());
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "Subscribed":
-                try {
-                    tags = RSSTagCriteria.getSubscribedTags(getActivity());
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                tags = new String[]{mTag};
-                break;
-        }
-        return tags;
     }
 
 	@Override

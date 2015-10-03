@@ -236,7 +236,7 @@ public class NewsDisplayFragment extends Fragment {
         });
 
         // Fetch the content from Parse
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("BlogPosts");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Posts");
         query.selectKeys(Arrays.asList("content"));
         query.setCachePolicy(ParseCacheHelper.getCachePolicy(getActivity(), item.objectId));
         query.getInBackground(item.objectId, new GetCallback<ParseObject>() {

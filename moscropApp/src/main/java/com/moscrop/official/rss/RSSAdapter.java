@@ -201,7 +201,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         // Set icon
         if (tagIcon != null) {
-            if (!item.icon.equals(RSSTagCriteria.NO_IMAGE)) {
+            if (!item.icon.equals("no image")) {    // TODO not sure if this is needed anymore
                 tagIcon.setVisibility(View.VISIBLE);
                 Picasso.with(context)
                         .load(item.icon)
@@ -214,15 +214,15 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
         // Set tags list
         if (tagListText != null) {
-            String tags = "";
+            /*String tags = "";
             // Start at i=1 because tags[0] is used to store image url
             for (int i=0; i<item.categories.length; i++) {
                 tags += item.categories[i];
                 if (i < item.categories.length-1) {
                     tags += ", ";
                 }
-            }
-            tagListText.setText(tags);
+            }*/
+            tagListText.setText(item.category);
             tagListText.setTextColor(textColor);
         }
 
