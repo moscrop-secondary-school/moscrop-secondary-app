@@ -521,16 +521,20 @@ public class RSSFragment extends Fragment implements AdapterView.OnItemClickList
                             }
 
                             for (ParseObject item : list) {
-                                if (item.getParseObject("category") != null) {
-                                    RSSItem post = new RSSItem(
-                                            item.getObjectId(),
-                                            item.getDate("published").getTime(),
-                                            item.getString("title"),
-                                            item.getParseObject("category").getString("name"),
-                                            item.getParseObject("category").getString("icon_img"),
-                                            item.getString("bgImage")
-                                    );
-                                    mAdapter.add(post);
+                                try {
+                                    if (item.getParseObject("category") != null) {
+                                        RSSItem post = new RSSItem(
+                                                item.getObjectId(),
+                                                item.getDate("published").getTime(),
+                                                item.getString("title"),
+                                                item.getParseObject("category").getString("name"),
+                                                item.getParseObject("category").getString("icon_img"),
+                                                item.getString("bgImage")
+                                        );
+                                        mAdapter.add(post);
+                                    }
+                                } catch (IllegalStateException error) {
+                                    Logger.error("Error displaying \"" + item.getString("title") + "\": ", error);
                                 }
                             }
                             mAdapter.notifyDataSetChanged();
